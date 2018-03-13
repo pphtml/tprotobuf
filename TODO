@@ -1,0 +1,2 @@
+protoc --java_out=src/main/java tensorflow/core/framework/graph.proto
+
