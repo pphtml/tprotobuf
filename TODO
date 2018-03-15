@@ -1,2 +1,5 @@
 protoc --java_out=src/main/java tensorflow/core/framework/graph.proto
 
+- https://github.com/tensorflow/models/blob/master/samples/languages/java/object_detection/src/main/java/DetectObjects.java
+- https://dinantdatascientist.blogspot.de/2018/02/kaggle-tensorflow-speech-recognition.html
+
