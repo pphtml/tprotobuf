@@ -1,5 +1,11 @@
+getPrefix - do abstraktu a resit anotaci
+
+http://asm.ow2.org/doc/developer-guide.html
+javap -l target/test-classes/org/superbiz/builder/UseCase01Test.class
+javap -l -c -s -verbose target/test-classes/org/superbiz/builder/UseCase01Test.class
+
 protoc --java_out=src/main/java tensorflow/core/framework/graph.proto
 
 - https://github.com/tensorflow/models/blob/master/samples/languages/java/object_detection/src/main/java/DetectObjects.java
 - https://dinantdatascientist.blogspot.de/2018/02/kaggle-tensorflow-speech-recognition.html
-
+- F -> C https://towardsdatascience.com/machine-learning-from-scratch-part-4-10117c005a28

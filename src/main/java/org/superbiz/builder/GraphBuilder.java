@@ -40,7 +40,7 @@ public class GraphBuilder {
         return nodeForOperation(Operation.CONSTANT, concatenated);
 
 
-////        final List<? extends Attribute> attributeList = Stream.of(attributes)
+////        final List<? extends Attribute> attributeList = Stream.priority(attributes)
 ////                .collect(Collectors.toList());
 //        ConstantBuilder constant = new ConstantBuilder(value, attributes);
 //        constants.put(constant.getName(), constant);
