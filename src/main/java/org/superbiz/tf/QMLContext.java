@@ -1,12 +1,20 @@
 package org.superbiz.tf;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
+import com.google.protobuf.ExtensionRegistry;
+import com.google.protobuf.Message;
+import com.google.protobuf.TextFormat;
 import org.superbiz.tf.attribute.Attribute;
 import org.superbiz.tf.type.*;
 import org.superbiz.tf.util.NamingService;
+import org.superbiz.util.ClasspathResource;
 import org.tensorflow.Graph;
 import org.tensorflow.Session;
 import org.tensorflow.Tensor;
+import org.tensorflow.framework.GraphDef;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,10 +26,12 @@ public class QMLContext implements AutoCloseable {
     private static final Logger LOGGER = Logger.getLogger(QMLContext.class.getName());
     private static final String DEFAULT_ML_FRAMEWORK = "TensorFlow";
     private final List<AutoCloseable> autoCloseables = new ArrayList<>();
-    private final List<TF<? extends TFType>> nodes = new ArrayList<>();
+    //private final List<TF<? extends TFType>> nodes = new ArrayList<>();
     private Graph graph;
     private NamingService namingService = new NamingService();
     private Session session;
+    private GraphDef.Builder graphBuilder = GraphDef.newBuilder();
+    private ExtensionRegistry registry = ExtensionRegistry.newInstance();
 
     public static QMLContext createSession(String mlFramework) {
         if (!DEFAULT_ML_FRAMEWORK.equals(mlFramework)) {
@@ -39,17 +49,17 @@ public class QMLContext implements AutoCloseable {
         return Collections.singletonList(DEFAULT_ML_FRAMEWORK);
     }
 
-    public <T> TF<Constant> constant(T value, Attribute... attributes) {
-        return register(TF.of(Constant.of(value, attributes), this));
-    }
+//    public <T> TF<Constant> constant(T value, Attribute... attributes) {
+//        return register(TF.of(Constant.of(value, attributes), this));
+//    }
 
     public TF<Variable> variable(InitializingOperation initializingOperation, Attribute... attributes) {
-        return register(TF.of(Variable.of(initializingOperation, attributes), this));
+        return makeFromTemplate(TF.of(Variable.of(initializingOperation, attributes), this));
     }
 
-    public TF<Variable> variable(Attribute... attributes) {
-        return register(TF.of(Variable.of(attributes), this));
-    }
+//    public TF<Variable> variable(Attribute... attributes) {
+//        return register(TF.of(Variable.of(attributes), this));
+//    }
 
     @Override
     public void close() {
@@ -70,17 +80,31 @@ public class QMLContext implements AutoCloseable {
         this.setGraph(graph);
         this.registerAutoCloseable(graph);
 
-        for (TF<? extends TFType> node : this.nodes) {
-            node.build(this);
-        }
-
+//        for (TF<? extends TFType> node : this.nodes) {
+//            node.build(this);
+//        }
+//
         return graph;
     }
 
-    public <T extends TFType> TF<T> register(TF<T> node) {
-        this.nodes.add(node);
-        return node;
+    public <T extends TFType> TF<T> makeFromTemplate(TF<T> node) {
+        String templateName = node.getTemplateName();
+        ClasspathResource resource = ClasspathResource.of(templateName);
+        try {
+            String text = Resources.toString(resource.getUrl(), Charsets.UTF_8);
+            parseFromString(text, registry, graphBuilder);
+            LOGGER.warning("Missing implementation " + node);
+            return node;
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
+
+//    public <T extends TFType> TF<T> register(TF<T> node) {
+//        //this.nodes.add(node);
+//        LOGGER.warning("Missing registration " + node);
+//        return node;
+//    }
 
     public <T extends AutoCloseable> T registerAutoCloseable(T autoCloseableSomething) {
         this.autoCloseables.add(autoCloseableSomething);
@@ -130,4 +154,10 @@ public class QMLContext implements AutoCloseable {
             }
         };
     }
+
+    private static void parseFromString(CharSequence input, ExtensionRegistry extensionRegistry, Message.Builder builder) throws TextFormat.ParseException {
+        builder.clear();
+        TextFormat.merge(input, extensionRegistry, builder);
+    }
+
 }

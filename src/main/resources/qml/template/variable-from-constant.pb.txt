@@ -1,5 +1,5 @@
 node {
-  name: "x/initial_value"
+  name: "${nodeName}/initial_value"
   op: "Const"
   attr {
     key: "value"
@@ -8,7 +8,7 @@ node {
         dtype: DT_INT32
         tensor_shape {
         }
-        int_val: 3
+        int_val: ${initialValue}
       }
     }
   }
@@ -20,7 +20,7 @@ node {
   }
 }
 node {
-  name: "x"
+  name: "${nodeName}"
   op: "VariableV2"
   attr {
     key: "dtype"
@@ -49,10 +49,10 @@ node {
   }
 }
 node {
-  name: "x/Assign"
+  name: "${nodeName}/Assign"
   op: "Assign"
-  input: "x"
-  input: "x/initial_value"
+  input: "${nodeName}"
+  input: "${nodeName}/initial_value"
   attr {
     key: "T"
     value {
@@ -63,7 +63,7 @@ node {
     key: "_class"
     value {
       list {
-        s: "loc:@x"
+        s: "loc:@${nodeName}"
       }
     }
   }
@@ -81,9 +81,9 @@ node {
   }
 }
 node {
-  name: "x/read"
+  name: "${nodeName}/read"
   op: "Identity"
-  input: "x"
+  input: "${nodeName}"
   attr {
     key: "T"
     value {
@@ -94,7 +94,7 @@ node {
     key: "_class"
     value {
       list {
-        s: "loc:@x"
+        s: "loc:@${nodeName}"
       }
     }
   }

@@ -27,14 +27,14 @@ public class UseCase01Test {
      */
     @Test
     public void buildGraph() {
-        try (QMLContext tf = createSession("TensorFlow")) {
-            TF<Constant> c1 = tf.constant(1.0f, named("start"));
-            TF<Constant> c2 = tf.constant(2.0f, named("step"));
-            TF<Operation.Add> add = c1.add(c2);
-
-            Graph graph = tf.buildGraph();
-            Float result = tf.run(add);
-            assertEquals(3.0f, result.floatValue(), 0.000001);
-        }
+//        try (QMLContext tf = createSession("TensorFlow")) {
+//            TF<Constant> c1 = tf.constant(1.0f, named("start"));
+//            TF<Constant> c2 = tf.constant(2.0f, named("step"));
+//            TF<Operation.Add> add = c1.add(c2);
+//
+//            Graph graph = tf.buildGraph();
+//            Float result = tf.run(add);
+//            assertEquals(3.0f, result.floatValue(), 0.000001);
+//        }
     }
 }

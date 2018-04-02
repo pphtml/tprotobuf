@@ -9,7 +9,6 @@ import org.tensorflow.Graph;
 import static org.superbiz.tf.QMLContext.createSession;
 import static org.superbiz.tf.QMLContext.value;
 import static org.superbiz.tf.attribute.Attribute.named;
-import static org.superbiz.tf.type.Shape.shape;
 
 public class Ex01 {
     // x = tf.Variable(3, name="x")
@@ -32,7 +31,7 @@ public class Ex01 {
             TF<Operation.Add> add = x.add(y);
             //TF<Operation.Add> add = c1.add(v1);
 
-            Graph graph = tf.buildGraph();
+            //Graph graph = tf.buildGraph();
             Float result = tf.run(add);
             //assertEquals(3.0f, result.floatValue(), 0.000001);
         }

@@ -9,4 +9,6 @@ public interface TFType {
     Output<?> getOutput();
 
     String getName();
+
+    String getTemplateName();
 }

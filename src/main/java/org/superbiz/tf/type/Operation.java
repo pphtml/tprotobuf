@@ -44,6 +44,11 @@ public class Operation {
         }
 
         @Override
+        public String getTemplateName() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
         public String getPrefix() {
             return "ADD";
         }

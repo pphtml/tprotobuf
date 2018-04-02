@@ -19,7 +19,8 @@ public class TF <T extends TFType> {
     }
 
     public <R extends TFType> TF<Operation.Add> add(TF<R> c2) {
-        return qmlContext.register(of(new Operation.Add(this, c2), qmlContext));
+        throw new UnsupportedOperationException();
+        //return qmlContext.register(of(new Operation.Add(this, c2), qmlContext));
     }
 
     public void build(QMLContext qmlContext) {
@@ -39,5 +40,9 @@ public class TF <T extends TFType> {
             this.build(qmlContext);
         }
         return node.getName();
+    }
+
+    public String getTemplateName() {
+        return node.getTemplateName();
     }
 }
