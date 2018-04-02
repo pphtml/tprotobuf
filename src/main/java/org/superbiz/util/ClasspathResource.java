@@ -19,7 +19,7 @@ public class ClasspathResource {
         return result;
     }
 
-    private URL getUrl() {
+    public URL getUrl() {
         ClassLoader loader = null;
         try {
             loader = Thread.currentThread().getContextClassLoader();

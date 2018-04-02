@@ -1,9 +1,7 @@
 package org.superbiz.tf;
 
 import org.superbiz.tf.attribute.Attribute;
-import org.superbiz.tf.type.Constant;
-import org.superbiz.tf.type.TFType;
-import org.superbiz.tf.type.Variable;
+import org.superbiz.tf.type.*;
 import org.superbiz.tf.util.NamingService;
 import org.tensorflow.Graph;
 import org.tensorflow.Session;
@@ -25,7 +23,7 @@ public class QMLContext implements AutoCloseable {
     private NamingService namingService = new NamingService();
     private Session session;
 
-    public static QMLContext create(String mlFramework) {
+    public static QMLContext createSession(String mlFramework) {
         if (!DEFAULT_ML_FRAMEWORK.equals(mlFramework)) {
             throw new QMLContextException(String.format("ML Framework %s is not registered/supported. " +
                     "Check outcome priority listSupportedFrameworks().", mlFramework));
@@ -33,8 +31,8 @@ public class QMLContext implements AutoCloseable {
         return new QMLContext();
     }
 
-    public static QMLContext create() {
-        return create(DEFAULT_ML_FRAMEWORK);
+    public static QMLContext createSession() {
+        return createSession(DEFAULT_ML_FRAMEWORK);
     }
 
     public static List<String> listSupportedFrameworks() {
@@ -43,6 +41,10 @@ public class QMLContext implements AutoCloseable {
 
     public <T> TF<Constant> constant(T value, Attribute... attributes) {
         return register(TF.of(Constant.of(value, attributes), this));
+    }
+
+    public TF<Variable> variable(InitializingOperation initializingOperation, Attribute... attributes) {
+        return register(TF.of(Variable.of(initializingOperation, attributes), this));
     }
 
     public TF<Variable> variable(Attribute... attributes) {
@@ -109,5 +111,23 @@ public class QMLContext implements AutoCloseable {
             this.session = this.registerAutoCloseable(new Session(getGraph()));
         }
         return this.session;
+    }
+
+    public static InitializingOperation zeros(Object shape) {
+        return new InitializingOperation(){
+            @Override
+            public Shape getShape() {
+                throw new UnsupportedOperationException();
+            }
+        };
+    }
+
+    public static InitializingOperation value(Integer value) {
+        return new InitializingOperation(){
+            @Override
+            public Shape getShape() {
+                throw new UnsupportedOperationException();
+            }
+        };
     }
 }

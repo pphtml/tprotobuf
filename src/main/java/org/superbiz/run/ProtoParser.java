@@ -10,10 +10,10 @@ import java.io.IOException;
 
 public class ProtoParser {
     public static void main(String[] args) throws IOException {
-        //ClasspathResource resource = ClasspathResource.of("model00/helloworld.pb");
-        //ClasspathResource resource = ClasspathResource.priority("model02/graphdef.pb");
+        ClasspathResource resource = ClasspathResource.of("com/qml/usecases/ex01.pb");
 
-        File file = new File("/tmp/graphdef.pb");
+        //File file = new File("/tmp/graphdef.pb");
+        File file = new File("/tmp/ex01.pb");
         ByteSource source = Files.asByteSource(file);
         byte[] bytes = source.read();
 

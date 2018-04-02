@@ -5,38 +5,18 @@ import org.superbiz.tf.QMLContext;
 import org.superbiz.tf.TF;
 import org.superbiz.tf.type.Constant;
 import org.superbiz.tf.type.Operation;
+import org.superbiz.tf.type.Shape;
 import org.superbiz.tf.type.Variable;
 import org.tensorflow.Graph;
 
 import static org.junit.Assert.assertEquals;
-import static org.superbiz.tf.QMLContext.create;
+import static org.superbiz.tf.QMLContext.createSession;
 import static org.superbiz.tf.attribute.Attribute.named;
+import static org.superbiz.tf.type.Shape.shape;
 
 public class UseCase02Test {
     // import tensorflow as tf
     //
-    //zero = tf.constant(0.0)
-    //step = tf.constant(1.0)
-    //xVar = tf.Variable(initial_value=zero, name="x")
-    //x = tf.assign(xVar, zero)
-    //xUpdateOp = tf.assign_add(x, step)
-
-    /**
-     * One constant and one variable are added.
-     */
-    @Test
-    public void buildGraph() {
-        try (QMLContext tf = create("TensorFlow")) {
-            TF<Constant> c1 = tf.constant(1.0f, named("start"));
-            TF<Variable> v1 = tf.variable();
-            TF<Operation.Add> add = c1.add(v1);
-
-            Graph graph = tf.buildGraph();
-            Float result = tf.run(add);
-            assertEquals(3.0f, result.floatValue(), 0.000001);
-        }
-    }
-
     // #v1 = tf.get_variable("v1", shape=[3], initializer=tf.zeros_initializer)
     //v1 = tf.Variable(tf.zeros([3]), name="v1")
     //inc_v1 = v1.assign(v1+1)
@@ -49,6 +29,23 @@ public class UseCase02Test {
     //
     //    graph_def = tf.get_default_graph().as_graph_def()
     //    tf.train.write_graph(graph_def, '/tmp', 'graphdef.pb', False)
+
+    /**
+     * One constant and one variable are added.
+     */
+    @Test
+    public void buildGraph() {
+        try (QMLContext tf = createSession("TensorFlow")) {
+            //TF<Constant> c1 = tf.constant(1.0f, named("start"));
+            TF<Variable> v1 = tf.variable(tf.zeros(shape(3)), named("v1"));
+            //TF<Operation.Add> add = c1.add(v1);
+
+            Graph graph = tf.buildGraph();
+            Float result = tf.run(v1);
+            //assertEquals(3.0f, result.floatValue(), 0.000001);
+        }
+    }
+
 
 
     // node {
