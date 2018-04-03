@@ -2,6 +2,7 @@ package org.superbiz.tf.type;
 
 import org.superbiz.tf.QMLContext;
 import org.superbiz.tf.TF;
+import org.superbiz.tf.annotation.Mapping;
 import org.superbiz.tf.attribute.Attribute;
 import org.tensorflow.Output;
 import org.tensorflow.Tensor;
@@ -35,8 +36,8 @@ public class Variable extends AbstractNode implements TFType, NamingSequence {
 //                        .setAttr("dtype", zero.dataType())
 //                        .setAttr("shape", zero.shape())
 //                        .build().output(0);
+        super.commonBuild(qmlContext);
         this.name = qmlContext.getNamingService().name(attributes, this);
-        throw new UnsupportedOperationException();
 
 //        if (this.initializingOperation != null) {
 //            TF<Constant> zeroConstant = qmlContext.constant(0.0f, named(this.name + "/value"));
@@ -132,4 +133,8 @@ public class Variable extends AbstractNode implements TFType, NamingSequence {
 //        return new Constant(value);
 //    }
 
+    @Mapping("initialValue")
+    public String getInitialValue() {
+        return this.initializingOperation.getInitialValue();
+    }
 }

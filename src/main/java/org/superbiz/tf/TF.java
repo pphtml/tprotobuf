@@ -45,4 +45,11 @@ public class TF <T extends TFType> {
     public String getTemplateName() {
         return node.getTemplateName();
     }
+
+    public String getNodeVariable(String variableName) {
+        if (!built) {
+            this.build(qmlContext);
+        }
+        return node.getVariable(variableName);
+    }
 }

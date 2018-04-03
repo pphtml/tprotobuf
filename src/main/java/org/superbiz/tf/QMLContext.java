@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.superbiz.tf.util.AutoCloseablePriority.priority;
 
@@ -91,14 +93,28 @@ public class QMLContext implements AutoCloseable {
         String templateName = node.getTemplateName();
         ClasspathResource resource = ClasspathResource.of(templateName);
         try {
-            String text = Resources.toString(resource.getUrl(), Charsets.UTF_8);
-            parseFromString(text, registry, graphBuilder);
+            String template = Resources.toString(resource.getUrl(), Charsets.UTF_8);
+            String templateWithValues = fillInVariables(template, node);
+            parseFromString(templateWithValues, registry, graphBuilder);
             LOGGER.warning("Missing implementation " + node);
             return node;
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
+
+    private static final Pattern PATTERN = Pattern.compile("\\$\\{(\\w.+?)\\}");
+    private <T extends TFType> String fillInVariables(String template, TF<T> node) {
+        StringBuffer result = new StringBuffer();
+        Matcher matcher = PATTERN.matcher(template);
+        while (matcher.find()) {
+            String value = node.getNodeVariable(matcher.group(1));
+            matcher.appendReplacement(result, value);
+        }
+        matcher.appendTail(result);
+        return result.toString();
+    }
+
 
 //    public <T extends TFType> TF<T> register(TF<T> node) {
 //        //this.nodes.add(node);
@@ -143,6 +159,11 @@ public class QMLContext implements AutoCloseable {
             public Shape getShape() {
                 throw new UnsupportedOperationException();
             }
+
+            @Override
+            public String getInitialValue() {
+                throw new UnsupportedOperationException();
+            }
         };
     }
 
@@ -152,6 +173,11 @@ public class QMLContext implements AutoCloseable {
             public Shape getShape() {
                 throw new UnsupportedOperationException();
             }
+
+            @Override
+            public String getInitialValue() {
+                return value.toString();
+            }
         };
     }
 
@@ -159,5 +185,4 @@ public class QMLContext implements AutoCloseable {
         builder.clear();
         TextFormat.merge(input, extensionRegistry, builder);
     }
-
 }

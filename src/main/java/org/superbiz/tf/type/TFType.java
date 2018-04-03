@@ -11,4 +11,6 @@ public interface TFType {
     String getName();
 
     String getTemplateName();
+
+    String getVariable(String variableName);
 }
