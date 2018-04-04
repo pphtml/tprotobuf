@@ -41,11 +41,6 @@ public class Constant <T> extends AbstractNode implements TFType, NamingSequence
     }
 
     @Override
-    public String getTemplateName() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public String getPrefix() {
         return "CONST";
     }

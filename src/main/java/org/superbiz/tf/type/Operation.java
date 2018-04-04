@@ -2,6 +2,9 @@ package org.superbiz.tf.type;
 
 import org.superbiz.tf.QMLContext;
 import org.superbiz.tf.TF;
+import org.superbiz.tf.annotation.Mapping;
+import org.superbiz.tf.annotation.NamePrefix;
+import org.superbiz.tf.annotation.TemplateInline;
 import org.superbiz.tf.attribute.Attribute;
 import org.tensorflow.Output;
 
@@ -9,10 +12,37 @@ import static org.superbiz.tf.util.TensorflowConstants.OPERATION_ADD;
 
 public class Operation {
 
+    // node {
+    //  name: "add"
+    //  op: "Add"
+    //  input: "mul_1"
+    //  input: "y/read"
+    //  attr {
+    //    key: "T"
+    //    value {
+    //      type: DT_INT32
+    //    }
+    //  }
+    //}
+    @TemplateInline("node {\n" +
+            "  name: \"${nodeName}\"\n" +
+            "  op: \"Add\"\n" +
+            "  input: \"${operand1}\"\n" +
+            "  input: \"${operand2}\"\n" +
+            "  attr {\n" +
+            "    key: \"T\"\n" +
+            "    value {\n" +
+            "      type: DT_INT32\n" +
+            "    }\n" +
+            "  }\n" +
+            "}\n")
+    @NamePrefix("add")
     public static class Add extends AbstractNode implements TFType, NamingSequence {
-        private final TF<?> operand1;
-        private final TF<?> operand2;
-        private org.tensorflow.Operation operation;
+        @Mapping("operand1")
+        public final TF<?> operand1;
+        @Mapping("operand2")
+        public final TF<?> operand2;
+        //private org.tensorflow.Operation operation;
 
         public <T extends TFType, R extends TFType> Add(TF<T> operand1, TF<R> operand2) {
             super(new Attribute[]{}); // TODO predavat
@@ -30,27 +60,19 @@ public class Operation {
 //                    .setAttr(VALUE, tensor)
 //                    .build().output(0);
 
-            this.name = qmlContext.getNamingService().name(attributes, this);
-            org.tensorflow.Operation add = qmlContext.getGraph().opBuilder(OPERATION_ADD, this.name)
-                    .addInput(operand1.getOutput(qmlContext))
-                    .addInput(operand2.getOutput(qmlContext))
-                    .build();
-            this.operation = add;
+            super.commonBuild(qmlContext);
+
+//            this.name = qmlContext.getNamingService().name(attributes, this);
+//            org.tensorflow.Operation add = qmlContext.getGraph().opBuilder(OPERATION_ADD, this.name)
+//                    .addInput(operand1.getOutput(qmlContext))
+//                    .addInput(operand2.getOutput(qmlContext))
+//                    .build();
+//            this.operation = add;
         }
 
         @Override
         public Output<?> getOutput() {
             throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public String getTemplateName() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public String getPrefix() {
-            return "ADD";
         }
     }
 }

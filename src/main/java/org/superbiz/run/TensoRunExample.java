@@ -11,6 +11,7 @@ import java.io.IOException;
 
 public class TensoRunExample {
     public static void main(String[] args) throws IOException {
+        // System.out.println(System.getProperty("java.library.path"));
         doCounting();
     }
 

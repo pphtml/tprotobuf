@@ -7,7 +7,7 @@ import org.tensorflow.Output;
 public class TF <T extends TFType> {
     private final T node;
     private final QMLContext qmlContext;
-    private boolean built = false;
+    //private boolean built = false;
 
     private TF(T node, QMLContext qmlContext) {
         this.node = node;
@@ -19,37 +19,45 @@ public class TF <T extends TFType> {
     }
 
     public <R extends TFType> TF<Operation.Add> add(TF<R> c2) {
-        throw new UnsupportedOperationException();
-        //return qmlContext.register(of(new Operation.Add(this, c2), qmlContext));
+        //throw new UnsupportedOperationException();
+        return qmlContext.makeFromTemplate(of(new Operation.Add(this, c2), qmlContext), qmlContext);
     }
 
     public void build(QMLContext qmlContext) {
         node.build(qmlContext);
-        built = true;
+        //built = true;
     }
 
-    public Output<?> getOutput(QMLContext qmlContext) {
-        if (!built) {
-            this.build(qmlContext);
-        }
-        return node.getOutput();
-    }
+//    public Output<?> getOutput(QMLContext qmlContext) {
+////        if (!built) {
+////            this.build(qmlContext);
+////        }
+//        return node.getOutput();
+//    }
 
     public String getName() {
-        if (!built) {
-            this.build(qmlContext);
-        }
+//        if (!built) {
+//            this.build(qmlContext);
+//        }
         return node.getName();
     }
 
-    public String getTemplateName() {
-        return node.getTemplateName();
-    }
+//    public String getTemplateName() {
+//        return node.getTemplateName();
+//    }
 
     public String getNodeVariable(String variableName) {
-        if (!built) {
-            this.build(qmlContext);
-        }
+//        if (!built) {
+//            this.build(qmlContext);
+//        }
         return node.getVariable(variableName);
+    }
+
+    public String getTemplateText() {
+        return node.getTemplateText();
+    }
+
+    public String getOutputNodeName() {
+        return node.getOutputNodeName();
     }
 }

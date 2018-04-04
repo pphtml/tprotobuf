@@ -10,7 +10,9 @@ public interface TFType {
 
     String getName();
 
-    String getTemplateName();
-
     String getVariable(String variableName);
+
+    String getTemplateText();
+
+    String getOutputNodeName();
 }

@@ -33,6 +33,7 @@ public class QMLContext implements AutoCloseable {
     private NamingService namingService = new NamingService();
     private Session session;
     private GraphDef.Builder graphBuilder = GraphDef.newBuilder();
+    private boolean graphBuilderOpen = true;
     private ExtensionRegistry registry = ExtensionRegistry.newInstance();
 
     public static QMLContext createSession(String mlFramework) {
@@ -56,7 +57,7 @@ public class QMLContext implements AutoCloseable {
 //    }
 
     public TF<Variable> variable(InitializingOperation initializingOperation, Attribute... attributes) {
-        return makeFromTemplate(TF.of(Variable.of(initializingOperation, attributes), this));
+        return makeFromTemplate(TF.of(Variable.of(initializingOperation, attributes), this), this);
     }
 
 //    public TF<Variable> variable(Attribute... attributes) {
@@ -78,38 +79,47 @@ public class QMLContext implements AutoCloseable {
     }
 
     public Graph buildGraph() {
-        Graph graph = new Graph();
-        this.setGraph(graph);
-        this.registerAutoCloseable(graph);
+        if (graphBuilderOpen) {
+            byte[] bytes = graphBuilder.build().toByteArray();
+            this.graph = new Graph();
+            this.graph.importGraphDef(bytes);
+            this.registerAutoCloseable(graph);
+            this.graphBuilderOpen = false;
+        } else {
+            throw new IllegalStateException("Graph is already built.");
+        }
 
-//        for (TF<? extends TFType> node : this.nodes) {
-//            node.build(this);
-//        }
-//
         return graph;
     }
 
-    public <T extends TFType> TF<T> makeFromTemplate(TF<T> node) {
-        String templateName = node.getTemplateName();
-        ClasspathResource resource = ClasspathResource.of(templateName);
+    public <T extends TFType> TF<T> makeFromTemplate(TF<T> node, QMLContext qmlContext) {
+        node.build(qmlContext);
+        String template = node.getTemplateText();
         try {
-            String template = Resources.toString(resource.getUrl(), Charsets.UTF_8);
             String templateWithValues = fillInVariables(template, node);
             parseFromString(templateWithValues, registry, graphBuilder);
-            LOGGER.warning("Missing implementation " + node);
             return node;
-        } catch (IOException e) {
+        } catch (TextFormat.ParseException e) {
             throw new IllegalStateException(e);
         }
     }
 
-    private static final Pattern PATTERN = Pattern.compile("\\$\\{(\\w.+?)\\}");
+    private static final Pattern REGEX_VARIABLE_REPLACEMENTS = Pattern.compile("\\$\\{(\\w.+?)\\}");
     private <T extends TFType> String fillInVariables(String template, TF<T> node) {
         StringBuffer result = new StringBuffer();
-        Matcher matcher = PATTERN.matcher(template);
+        Matcher matcher = REGEX_VARIABLE_REPLACEMENTS.matcher(template);
         while (matcher.find()) {
-            String value = node.getNodeVariable(matcher.group(1));
-            matcher.appendReplacement(result, value);
+            final String variableName = matcher.group(1);
+            String value = node.getNodeVariable(variableName);
+            if (value == null) {
+                throw new IllegalStateException(String.format("Variable %s not found in class %s", variableName, node.getName()));
+            } else {
+                try {
+                    matcher.appendReplacement(result, Matcher.quoteReplacement(value));
+                } catch (IllegalArgumentException e) {
+                    throw new IllegalStateException(e);
+                }
+            }
         }
         matcher.appendTail(result);
         return result.toString();
@@ -128,7 +138,11 @@ public class QMLContext implements AutoCloseable {
     }
 
     public Graph getGraph() {
-        return graph;
+        if (this.graphBuilderOpen) {
+            return this.buildGraph();
+        } else {
+            return this.graph;
+        }
     }
 
     public void setGraph(Graph graph) {
@@ -182,7 +196,7 @@ public class QMLContext implements AutoCloseable {
     }
 
     private static void parseFromString(CharSequence input, ExtensionRegistry extensionRegistry, Message.Builder builder) throws TextFormat.ParseException {
-        builder.clear();
+        //builder.clear();
         TextFormat.merge(input, extensionRegistry, builder);
     }
 }
