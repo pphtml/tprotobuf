@@ -1,5 +1,8 @@
 TemplateProcessor
-outputNodePostfix
+public Output<?> getOutput() v TFType - je potreba?
+lazy loading pro template telo
+inference - public static InitializingOperation value(Float value)
+            public static InitializingOperation value(Integer value)
 http://www.baeldung.com/convert-input-stream-to-array-of-bytes
 http://www.baeldung.com/java-io-conversions
 https://blog.gdeltproject.org/a-compilation-of-gdelt-bigquery-demos/

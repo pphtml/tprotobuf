@@ -4,7 +4,7 @@ import org.superbiz.tf.type.Operation;
 import org.superbiz.tf.type.TFType;
 import org.tensorflow.Output;
 
-public class TF <T extends TFType> {
+public class TF <T extends TFType, NTType> {
     private final T node;
     private final QMLContext qmlContext;
     //private boolean built = false;
@@ -18,9 +18,10 @@ public class TF <T extends TFType> {
         return new TF(node, qmlContext);
     }
 
-    public <R extends TFType> TF<Operation.Add> add(TF<R> c2) {
+    public <R extends TFType> TF<Operation.Add, NTType> add(TF<R, NTType> c2) {
         //throw new UnsupportedOperationException();
-        return qmlContext.makeFromTemplate(of(new Operation.Add(this, c2), qmlContext), qmlContext);
+        TF of = of(new Operation.Add(this, c2), qmlContext);
+        return qmlContext.makeFromTemplate(of, qmlContext);
     }
 
     public void build(QMLContext qmlContext) {
@@ -46,7 +47,7 @@ public class TF <T extends TFType> {
 //        return node.getTemplateName();
 //    }
 
-    public String getNodeVariable(String variableName) {
+    public Object getNodeVariable(String variableName) {
 //        if (!built) {
 //            this.build(qmlContext);
 //        }
@@ -59,5 +60,9 @@ public class TF <T extends TFType> {
 
     public String getOutputNodeName() {
         return node.getOutputNodeName();
+    }
+
+    public String getFMTemplateName() {
+        return node.getClass().getName();
     }
 }

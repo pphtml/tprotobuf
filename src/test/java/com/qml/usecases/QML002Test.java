@@ -1,30 +1,29 @@
 package com.qml.usecases;
 
+import org.junit.Test;
 import org.superbiz.tf.QMLContext;
 import org.superbiz.tf.TF;
-import org.superbiz.tf.type.Initializer;
 import org.superbiz.tf.type.Operation;
 import org.superbiz.tf.type.Variable;
-import org.tensorflow.Graph;
 
 import static org.superbiz.tf.QMLContext.createSession;
 import static org.superbiz.tf.QMLContext.value;
 import static org.superbiz.tf.attribute.Attribute.named;
 
-public class Ex01 {
-    // x = tf.Variable(3, name="x")
-    //y = tf.Variable(4, name="y")
-    //f = x*x*y + y + 2
+public class QML002Test {
+    // import tensorflow as tf
     //
-    //with tf.Session() as sess:
-    //    # x.initializer.run()
-    //    # y.initializer.run()
-    //    init = tf.global_variables_initializer()
-    //    init.run()
-    //    result = f.eval()
-    //    print(result)
+    //zero = tf.constant(0.0)
+    //step = tf.constant(1.0)
+    //xVar = tf.Variable(initial_value=zero, name="x")
+    //x = tf.assign(xVar, zero)
+    //xUpdateOp = tf.assign_add(x, step)
 
-//    public static void main(String[] args) {
+//    /**
+//     * Two constants are added.
+//     */
+//    @Test
+//    public void buildGraph() {
 //        try (QMLContext tf = createSession("TensorFlow")) {
 //            TF<Variable> x = tf.variable(value(3), named("x"));
 //            TF<Variable> y = tf.variable(value(4), named("y"));
@@ -33,6 +32,5 @@ public class Ex01 {
 //            tf.run(tf.globalVariablesInitializer());
 //            Float result = tf.fetch(add);
 //        }
-//
 //    }
 }

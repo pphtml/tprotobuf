@@ -33,7 +33,7 @@ public abstract class AbstractNode implements TFType, NamingSequence {
     }
 
     @Override
-    public String getVariable(String variableName) {
+    public Object getVariable(String variableName) {
         Map<String, FieldOrMethod> mappings = ANNOTATIONS_CACHE.get(this.getClass()).getMappings();
 
         FieldOrMethod fieldOrMethod = mappings.get(variableName);
@@ -55,11 +55,8 @@ public abstract class AbstractNode implements TFType, NamingSequence {
             if (variable instanceof TF) {
                 TF tf = (TF) variable;
                 return tf.getOutputNodeName();
-            } else if (variable instanceof String) {
-                String resultingString = (String) variable;
-                return resultingString;
             } else {
-                throw new QMLNodeProcessingException(String.format("Cannot get variable value from type %s", variable.getClass()));
+                return variable;
             }
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new QMLNodeProcessingException(e);

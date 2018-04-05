@@ -30,21 +30,21 @@ public class UseCase02Test {
     //    graph_def = tf.get_default_graph().as_graph_def()
     //    tf.train.write_graph(graph_def, '/tmp', 'graphdef.pb', False)
 
-    /**
-     * One constant and one variable are added.
-     */
-    @Test
-    public void buildGraph() {
-        try (QMLContext tf = createSession("TensorFlow")) {
-            //TF<Constant> c1 = tf.constant(1.0f, named("start"));
-            TF<Variable> v1 = tf.variable(tf.zeros(shape(3)), named("v1"));
-            //TF<Operation.Add> add = c1.add(v1);
-
-            Graph graph = tf.buildGraph();
-            Float result = tf.run(v1);
-            //assertEquals(3.0f, result.floatValue(), 0.000001);
-        }
-    }
+//    /**
+//     * One constant and one variable are added.
+//     */
+//    @Test
+//    public void buildGraph() {
+//        try (QMLContext tf = createSession("TensorFlow")) {
+//            //TF<Constant> c1 = tf.constant(1.0f, named("start"));
+//            TF<Variable> v1 = tf.variable(tf.zeros(shape(3)), named("v1"));
+//            //TF<Operation.Add> add = c1.add(v1);
+//
+//            Graph graph = tf.buildGraph();
+//            Float result = tf.fetch(v1);
+//            //assertEquals(3.0f, result.floatValue(), 0.000001);
+//        }
+//    }
 
 
 

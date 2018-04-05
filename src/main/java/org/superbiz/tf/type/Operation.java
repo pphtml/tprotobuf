@@ -39,12 +39,12 @@ public class Operation {
     @NamePrefix("add")
     public static class Add extends AbstractNode implements TFType, NamingSequence {
         @Mapping("operand1")
-        public final TF<?> operand1;
+        public final TF<?, ?> operand1;
         @Mapping("operand2")
-        public final TF<?> operand2;
+        public final TF<?, ?> operand2;
         //private org.tensorflow.Operation operation;
 
-        public <T extends TFType, R extends TFType> Add(TF<T> operand1, TF<R> operand2) {
+        public <T extends TFType, R extends TFType, NTType> Add(TF<T, NTType> operand1, TF<R, NTType> operand2) {
             super(new Attribute[]{}); // TODO predavat
             this.operand1 = operand1;
             this.operand2 = operand2;
