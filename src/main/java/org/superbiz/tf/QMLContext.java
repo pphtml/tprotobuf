@@ -11,6 +11,7 @@ import org.superbiz.tf.attribute.Attribute;
 import org.superbiz.tf.type.*;
 import org.superbiz.tf.util.NamingService;
 import org.superbiz.tf.util.NodeFreemarkerVariableReader;
+import org.tensorflow.DataType;
 import org.tensorflow.Graph;
 import org.tensorflow.Session;
 import org.tensorflow.Tensor;
@@ -81,9 +82,14 @@ public class QMLContext implements AutoCloseable {
 //        return register(TF.of(Constant.of(value, attributes), this));
 //    }
 
-    public <NTType> TF<Variable, NTType> variable(Class<NTType> clazz, InitializingOperation initializingOperation, Attribute... attributes) {
+    public <NTType> TF<Variable, NTType> variable(/*Class<NTType> clazz, */InitializingOperation<NTType> initializingOperation, Attribute... attributes) {
         TF<Variable, NTType> result = makeFromTemplate(TF.of(Variable.of(initializingOperation, attributes), this), this);
         variables.add(result);
+        return result;
+    }
+
+    public <NTType> TF<Constant, NTType> constant(InitializingOperation<NTType> initializingOperation, Attribute... attributes) {
+        TF<Constant, NTType> result = makeFromTemplate(TF.of(Constant.of(initializingOperation, attributes), this), this);
         return result;
     }
 
@@ -195,7 +201,13 @@ public class QMLContext implements AutoCloseable {
     public <NTType> NTType fetch(TF<? extends TFType, NTType> node) {
         Session session = this.getSession();
         try (Tensor<?> result = session.runner().fetch(node.getName(), 0).run().get(0)) {
-            return (NTType) Integer.valueOf(result.intValue());
+            if (result.dataType().equals(DataType.FLOAT)) {
+                return (NTType) Float.valueOf(result.floatValue());
+            } else if (result.dataType().equals(DataType.INT32)) {
+                return (NTType) Integer.valueOf(result.intValue());
+            } else {
+                throw new UnsupportedOperationException(String.format("Result type %s is not supported.", result.dataType()));
+            }
         }
     }
 
@@ -217,11 +229,16 @@ public class QMLContext implements AutoCloseable {
             public String getInitialValue() {
                 throw new UnsupportedOperationException();
             }
+
+            @Override
+            public DType getDType() {
+                throw new UnsupportedOperationException();
+            }
         };
     }
 
-    public static InitializingOperation value(Integer value) {
-        return new InitializingOperation(){
+    public static InitializingOperation<Integer> value(Integer value) {
+        return new InitializingOperation<Integer>(){
             @Override
             public Shape getShape() {
                 throw new UnsupportedOperationException();
@@ -231,11 +248,16 @@ public class QMLContext implements AutoCloseable {
             public String getInitialValue() {
                 return value.toString();
             }
+
+            @Override
+            public DType getDType() {
+                return DType.DT_INT32;
+            }
         };
     }
 
-    public static InitializingOperation value(Float value) {
-        return new InitializingOperation(){
+    public static InitializingOperation<Float> value(Float value) {
+        return new InitializingOperation<Float>(){
             @Override
             public Shape getShape() {
                 throw new UnsupportedOperationException();
@@ -244,6 +266,11 @@ public class QMLContext implements AutoCloseable {
             @Override
             public String getInitialValue() {
                 return value.toString();
+            }
+
+            @Override
+            public DType getDType() {
+                return DType.DT_FLOAT;
             }
         };
     }

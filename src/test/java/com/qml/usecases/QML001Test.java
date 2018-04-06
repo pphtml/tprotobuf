@@ -27,8 +27,8 @@ public class QML001Test {
     @Test
     public void addIntegers() {
         try (QMLContext tf = createSession("TensorFlow")) {
-            TF<Variable, Integer> x = tf.variable(Integer.class, value(3), named("x"));
-            TF<Variable, Integer> y = tf.variable(Integer.class, value(4), named("y"));
+            TF<Variable, Integer> x = tf.variable(value(3), named("x"));
+            TF<Variable, Integer> y = tf.variable(value(4), named("y"));
             TF<Operation.Add, Integer> add = x.add(y);
 
             tf.run(tf.globalVariablesInitializer());
@@ -37,19 +37,28 @@ public class QML001Test {
         }
     }
 
+    // x = tf.Variable(3.1, name="x")
+    // y = tf.Variable(4.2, name="y")
+    // f = x + y
+    //
+    // with tf.Session() as sess:
+    //     init = tf.global_variables_initializer()
+    //     init.run()
+    //     result = f.eval()
+
     /**
      * Two float variables are added.
      */
     @Test
     public void addFloats() {
         try (QMLContext tf = createSession("TensorFlow")) {
-            TF<Variable, Float> x = tf.variable(Float.class, value(3.1f), named("x"));
-            TF<Variable, Float> y = tf.variable(Float.class, value(4.2f), named("y"));
+            TF<Variable, Float> x = tf.variable(value(3.1f), named("x"));
+            TF<Variable, Float> y = tf.variable(value(4.2f), named("y"));
             TF<Operation.Add, Float> add = x.add(y);
 
             tf.run(tf.globalVariablesInitializer());
             Float result = tf.fetch(add);
-            assertEquals(7.3, result.floatValue());
+            assertEquals(7.3, result.floatValue(), 0.001);
         }
     }
 }

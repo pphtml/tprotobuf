@@ -15,4 +15,6 @@ public interface TFType {
     String getTemplateText();
 
     String getOutputNodeName();
+
+    DType getDType();
 }

@@ -15,6 +15,7 @@ import java.util.Map;
 public abstract class AbstractNode implements TFType, NamingSequence {
     final Attribute[] attributes;
     String name;
+    private DType dType;
     private static final Map<Class, ClassMetadata> ANNOTATIONS_CACHE = new HashMap<>();
 
     public AbstractNode(Attribute[] attributes) {
@@ -30,6 +31,28 @@ public abstract class AbstractNode implements TFType, NamingSequence {
     @Mapping("nodeName")
     public String getName() {
         return name;
+    }
+
+    @Mapping("dType")
+    public String getDTypeString() {
+        if (this.dType == null) {
+            throw new IllegalStateException(String.format("%s named %s doesn't have dType.", this.getClass().getName(), this.getName()));
+        }
+        return this.dType.name();
+    }
+
+    @Mapping("dTypeArgumentName")
+    public String getDTypeArgumentNameString() {
+        return this.dType.getArgumentName();
+    }
+
+    public void setDType(DType dType) {
+        this.dType = dType;
+    }
+
+    @Override
+    public DType getDType() {
+        return dType;
     }
 
     @Override
@@ -59,7 +82,7 @@ public abstract class AbstractNode implements TFType, NamingSequence {
                 return variable;
             }
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new QMLNodeProcessingException(e);
+            throw new QMLNodeProcessingException(e.getMessage(), e);
         }
     }
 

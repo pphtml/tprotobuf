@@ -1,8 +1,8 @@
 package org.superbiz.tf;
 
+import org.superbiz.tf.type.DType;
 import org.superbiz.tf.type.Operation;
 import org.superbiz.tf.type.TFType;
-import org.tensorflow.Output;
 
 public class TF <T extends TFType, NTType> {
     private final T node;
@@ -64,5 +64,9 @@ public class TF <T extends TFType, NTType> {
 
     public String getFMTemplateName() {
         return node.getClass().getName();
+    }
+
+    public DType getDType() {
+        return node.getDType();
     }
 }

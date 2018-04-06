@@ -5,17 +5,17 @@ node {
     key: "value"
     value {
       tensor {
-        dtype: DT_INT32
+        dtype: ${dType}
         tensor_shape {
         }
-        int_val: ${initialValue}
+        ${dTypeArgumentName}: ${initialValue}
       }
     }
   }
   attr {
     key: "dtype"
     value {
-      type: DT_INT32
+      type: ${dType}
     }
   }
 }
@@ -25,7 +25,7 @@ node {
   attr {
     key: "dtype"
     value {
-      type: DT_INT32
+      type: ${dType}
     }
   }
   attr {
@@ -56,7 +56,7 @@ node {
   attr {
     key: "T"
     value {
-      type: DT_INT32
+      type: ${dType}
     }
   }
   attr {
@@ -87,7 +87,7 @@ node {
   attr {
     key: "T"
     value {
-      type: DT_INT32
+      type: ${dType}
     }
   }
   attr {

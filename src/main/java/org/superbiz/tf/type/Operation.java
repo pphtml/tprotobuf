@@ -32,7 +32,7 @@ public class Operation {
             "  attr {\n" +
             "    key: \"T\"\n" +
             "    value {\n" +
-            "      type: DT_INT32\n" +
+            "      type: ${dType}\n" +
             "    }\n" +
             "  }\n" +
             "}\n")
@@ -48,6 +48,7 @@ public class Operation {
             super(new Attribute[]{}); // TODO predavat
             this.operand1 = operand1;
             this.operand2 = operand2;
+            this.setDType(this.operand1.getDType());
         }
 
         @Override

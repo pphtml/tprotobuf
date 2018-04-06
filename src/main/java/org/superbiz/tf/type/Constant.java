@@ -1,52 +1,47 @@
 package org.superbiz.tf.type;
 
 import org.superbiz.tf.QMLContext;
+import org.superbiz.tf.annotation.Mapping;
+import org.superbiz.tf.annotation.NamePrefix;
+import org.superbiz.tf.annotation.OutputNodePostfix;
+import org.superbiz.tf.annotation.Template;
 import org.superbiz.tf.attribute.Attribute;
 import org.tensorflow.Output;
-import org.tensorflow.Tensor;
-import org.tensorflow.Tensors;
 
-import static org.superbiz.tf.util.TensorflowConstants.DTYPE;
-import static org.superbiz.tf.util.TensorflowConstants.NODE_CONSTANT;
-import static org.superbiz.tf.util.TensorflowConstants.VALUE;
+@NamePrefix("const")
+@Template("constant-from-constant.pb.ftl")
+//@OutputNodePostfix("/read")
+public class Constant extends AbstractNode implements TFType, NamingSequence {
 
-public class Constant <T> extends AbstractNode implements TFType, NamingSequence {
-    private final T value;
-    private Output<Object> output;
+    private final InitializingOperation initializingOperation;
 
-    public Constant(T value, Attribute[] attributes) {
+    private Constant(InitializingOperation initializingOperation, Attribute[] attributes) {
         super(attributes);
-        this.value = value;
+        this.initializingOperation = initializingOperation;
     }
 
-    public static <T> Constant of(T value, Attribute[] attributes) {
-        return new Constant(value, attributes);
+    public static Constant of(InitializingOperation initializingOperation, Attribute[] attributes) {
+        Constant result = new Constant(initializingOperation, attributes);
+        if (initializingOperation.getDType() != null) {
+            result.setDType(initializingOperation.getDType());
+        } else {
+            throw new UnsupportedOperationException("unable to get DType");
+        }
+        return result;
     }
 
     @Override
     public void build(QMLContext qmlContext) {
-        Tensor tensor = Tensors.create((Float)value);
-        qmlContext.registerAutoCloseable(tensor);
-
-        this.name = qmlContext.getNamingService().name(attributes, this);
-        this.output = qmlContext.getGraph().opBuilder(NODE_CONSTANT, this.name)
-                .setAttr(DTYPE, tensor.dataType())
-                .setAttr(VALUE, tensor)
-                .build().output(0);
+        super.commonBuild(qmlContext);
     }
 
     @Override
     public Output<?> getOutput() {
-        return this.output;
+        throw new UnsupportedOperationException();
     }
 
-    @Override
-    public String getPrefix() {
-        return "CONST";
+    @Mapping("initialValue")
+    public String getInitialValue() {
+        return this.initializingOperation.getInitialValue();
     }
-
-//    public Constant(QMLContext graph, double value) {
-//        super(graph);
-//        this.value = value;
-//    }
 }

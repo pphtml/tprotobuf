@@ -1,4 +1,5 @@
-TemplateProcessor
+multiple
+TemplateProcessor ?
 public Output<?> getOutput() v TFType - je potreba?
 lazy loading pro template telo
 inference - public static InitializingOperation value(Float value)

@@ -1,21 +1,15 @@
 package org.superbiz.tf.type;
 
 import org.superbiz.tf.QMLContext;
-import org.superbiz.tf.TF;
 import org.superbiz.tf.annotation.Mapping;
 import org.superbiz.tf.annotation.NamePrefix;
 import org.superbiz.tf.annotation.OutputNodePostfix;
 import org.superbiz.tf.annotation.Template;
 import org.superbiz.tf.attribute.Attribute;
 import org.tensorflow.Output;
-import org.tensorflow.Tensor;
-import org.tensorflow.Tensors;
-
-import static org.superbiz.tf.attribute.Attribute.named;
-import static org.superbiz.tf.util.TensorflowConstants.*;
 
 @NamePrefix("var")
-@Template("variable-from-constant.pb.txt")
+@Template("variable-from-constant.pb.ftl")
 @OutputNodePostfix("/read")
 public class Variable extends AbstractNode implements TFType, NamingSequence {
 
@@ -27,12 +21,18 @@ public class Variable extends AbstractNode implements TFType, NamingSequence {
     }
 
     public static Variable of(InitializingOperation initializingOperation, Attribute[] attributes) {
-        return new Variable(initializingOperation, attributes);
+        Variable result = new Variable(initializingOperation, attributes);
+        if (initializingOperation.getDType() != null) {
+            result.setDType(initializingOperation.getDType());
+        } else {
+            throw new UnsupportedOperationException("unable to get DType");
+        }
+        return result;
     }
 
-    public static Variable of(Attribute[] attributes) {
-        return new Variable(null, attributes);
-    }
+//    public static Variable of(Attribute[] attributes) {
+//        return new Variable(null, attributes);
+//    }
 
     @Override
     public void build(QMLContext qmlContext) {
