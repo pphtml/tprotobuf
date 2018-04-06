@@ -42,38 +42,12 @@ public class Operation {
         public final TF<?, ?> operand1;
         @Mapping("operand2")
         public final TF<?, ?> operand2;
-        //private org.tensorflow.Operation operation;
 
         public <T extends TFType, R extends TFType, NTType> Add(TF<T, NTType> operand1, TF<R, NTType> operand2) {
             super(new Attribute[]{}); // TODO predavat
             this.operand1 = operand1;
             this.operand2 = operand2;
             this.setDType(this.operand1.getDType());
-        }
-
-        @Override
-        public void build(QMLContext qmlContext) {
-//            Tensor tensor = Tensors.create((Double)value);
-//            qmlContext.registerAutoCloseable(tensor);
-//
-//            this.output = qmlContext.getGraph().opBuilder(NODE_CONSTANT, qmlContext.getNamingService().name(attributes, this))
-//                    .setAttr(DTYPE, tensor.dataType())
-//                    .setAttr(VALUE, tensor)
-//                    .build().output(0);
-
-            super.commonBuild(qmlContext);
-
-//            this.name = qmlContext.getNamingService().name(attributes, this);
-//            org.tensorflow.Operation add = qmlContext.getGraph().opBuilder(OPERATION_ADD, this.name)
-//                    .addInput(operand1.getOutput(qmlContext))
-//                    .addInput(operand2.getOutput(qmlContext))
-//                    .build();
-//            this.operation = add;
-        }
-
-        @Override
-        public Output<?> getOutput() {
-            throw new UnsupportedOperationException();
         }
     }
 }

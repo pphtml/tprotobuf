@@ -6,8 +6,6 @@ import org.tensorflow.Output;
 public interface TFType {
     void build(QMLContext qmlContext);
 
-    Output<?> getOutput();
-
     String getName();
 
     Object getVariable(String variableName);

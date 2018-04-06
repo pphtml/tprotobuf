@@ -30,16 +30,6 @@ public class Constant extends AbstractNode implements TFType, NamingSequence {
         return result;
     }
 
-    @Override
-    public void build(QMLContext qmlContext) {
-        super.commonBuild(qmlContext);
-    }
-
-    @Override
-    public Output<?> getOutput() {
-        throw new UnsupportedOperationException();
-    }
-
     @Mapping("initialValue")
     public String getInitialValue() {
         return this.initializingOperation.getInitialValue();

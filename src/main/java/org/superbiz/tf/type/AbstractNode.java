@@ -86,7 +86,7 @@ public abstract class AbstractNode implements TFType, NamingSequence {
         }
     }
 
-    protected void commonBuild(QMLContext qmlContext) {
+    public void build(QMLContext qmlContext) {
         scanClassAnnotations();
         this.name = qmlContext.getNamingService().name(attributes, this);
     }

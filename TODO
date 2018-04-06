@@ -1,4 +1,6 @@
-multiple
+multiply
+divide
+vyzkouset inicializaci tri promennych
 TemplateProcessor ?
 public Output<?> getOutput() v TFType - je potreba?
 lazy loading pro template telo

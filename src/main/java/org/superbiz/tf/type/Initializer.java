@@ -20,8 +20,6 @@ import java.util.stream.Collectors;
         "  input: \"${variableName}\"\n" +
         "</#list>" +
         "}")
-//        "  input: \"^x/Assign\"\n" +
-//        "  input: \"^y/Assign\"\n" +
 public class Initializer extends AbstractNode implements TFType, NamingSequence {
     private List<String> variableNames;
 
@@ -35,18 +33,13 @@ public class Initializer extends AbstractNode implements TFType, NamingSequence 
 
     @Override
     public void build(QMLContext qmlContext) {
-        super.commonBuild(qmlContext);
+        super.build(qmlContext);
 
         List<String> variableNames = qmlContext.getVariables().stream()
                 .map(variable -> variable.getName())
                 .map(name -> String.format("^%s/Assign", name))
                 .collect(Collectors.toList());
         this.variableNames = variableNames;
-    } // TODO sjednotit jmeno
-
-    @Override
-    public Output<?> getOutput() {
-        return null;
     }
 
     @Mapping("variableList")
