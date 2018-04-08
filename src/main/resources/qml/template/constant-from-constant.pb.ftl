@@ -13,6 +13,7 @@ node {
       tensor {
         dtype: ${dType}
         tensor_shape {
+          ${tensorShape}
         }
         ${dTypeArgumentName}: ${initialValue}
       }

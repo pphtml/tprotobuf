@@ -234,6 +234,11 @@ public class QMLContext implements AutoCloseable {
             public DType getDType() {
                 throw new UnsupportedOperationException();
             }
+
+            @Override
+            public boolean isVector() {
+                return true;
+            }
         };
     }
 
@@ -253,6 +258,36 @@ public class QMLContext implements AutoCloseable {
             public DType getDType() {
                 return DType.DT_INT32;
             }
+
+
+            @Override
+            public boolean isVector() {
+                return false;
+            }
+        };
+    }
+
+    public static InitializingOperation<Integer> values(Integer... values) {
+        return new InitializingOperation<Integer>(){
+            @Override
+            public Shape getShape() {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public String getInitialValue() {
+                throw new UnsupportedOperationException("is not supported for vectors");
+            }
+
+            @Override
+            public DType getDType() {
+                return DType.DT_INT32;
+            }
+
+            @Override
+            public boolean isVector() {
+                return true;
+            }
         };
     }
 
@@ -271,6 +306,11 @@ public class QMLContext implements AutoCloseable {
             @Override
             public DType getDType() {
                 return DType.DT_FLOAT;
+            }
+
+            @Override
+            public boolean isVector() {
+                return false;
             }
         };
     }

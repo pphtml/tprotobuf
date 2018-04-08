@@ -6,4 +6,6 @@ public interface InitializingOperation <NTType> {
     String getInitialValue();
 
     DType getDType();
+
+    boolean isVector();
 }

@@ -28,6 +28,11 @@ public class TF <T extends TFType, NTType> {
         return qmlContext.makeFromTemplate(of, qmlContext);
     }
 
+//    public <R extends TFType> TF<Operation.Multiply, NTType> multiply(TF<R, NTType> operand) {
+//        TF of = of(new Operation.Multiply(this, operand), qmlContext);
+//        return qmlContext.makeFromTemplate(of, qmlContext);
+//    }
+
     public void build(QMLContext qmlContext) {
         node.build(qmlContext);
         //built = true;

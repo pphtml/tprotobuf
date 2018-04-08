@@ -1,3 +1,10 @@
+${tensorShape} ->           dim {
+                              size: 3
+                            }
+${dTypeArgumentName}: ${initialValue}
+        tensor_content: "\001\000\000\000\002\000\000\000\003\000\000\000"
+
+prace s buffery - https://howtodoinjava.com/java-7/nio/java-nio-2-0-working-with-buffers/
 multiply
 divide
 vyzkouset inicializaci tri promennych
