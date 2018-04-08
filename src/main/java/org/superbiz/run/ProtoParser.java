@@ -18,6 +18,7 @@ public class ProtoParser {
 //        byte[] bytes = source.read();
 
         GraphDef graph = GraphDef.parseFrom(resource.getInputStream());
+        String string = graph.toString();
         //GraphDef graph = GraphDef.parseFrom(bytes);
         System.out.println(graph);
     }

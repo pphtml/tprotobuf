@@ -1,7 +1,8 @@
 import tensorflow as tf
 
-w = tf.constant(3)
-x = w + 2
+w = tf.constant(4)
+y = tf.constant([1, 2, 3])
+x = w * y
 # y = x + 5
 # z = x * 3
 

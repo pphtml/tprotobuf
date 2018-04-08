@@ -24,8 +24,8 @@ public class ProtoRun2 {
     //xUpdateOp = tf.assign_add(x, step)
 
     public static void main(String[] args) throws IOException {
-        //ClasspathResource resource = ClasspathResource.priority("model03/tensorun.pb");
-//        ClasspathResource resource = ClasspathResource.priority("model00/helloworld.pb");
+        //CSVClasspathResource resource = CSVClasspathResource.priority("model03/tensorun.pb");
+//        CSVClasspathResource resource = CSVClasspathResource.priority("model00/helloworld.pb");
 //        byte[] bytes = ByteStreams.toByteArray(resource.getInputStream());
 
         File file = new File("tensorun.pb");
