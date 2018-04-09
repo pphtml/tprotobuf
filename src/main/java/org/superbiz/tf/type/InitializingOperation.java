@@ -1,11 +1,13 @@
 package org.superbiz.tf.type;
 
-public interface InitializingOperation <NTType> {
-    Shape getShape();
+public abstract class InitializingOperation <NTType> {
+    public Shape getShape() {
+        return null;
+    }
 
-    String getInitialValue();
+    public abstract String getInitialValue();
 
-    DType getDType();
+    public abstract DType getDType();
 
-    boolean isVector();
+    public abstract boolean isVector();
 }

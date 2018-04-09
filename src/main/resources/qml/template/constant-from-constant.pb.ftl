@@ -12,9 +12,7 @@ node {
     value {
       tensor {
         dtype: ${dType}
-        tensor_shape {
-          ${tensorShape}
-        }
+        tensor_shape ${tensorShape}
         ${dTypeArgumentName}: ${initialValue}
       }
     }

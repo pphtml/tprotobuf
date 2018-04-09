@@ -19,6 +19,8 @@ import org.tensorflow.framework.GraphDef;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,6 +32,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.google.protobuf.TensorContentEncoder.toStringTensorContent;
 import static org.superbiz.tf.util.AutoCloseablePriority.priority;
 
 public class QMLContext implements AutoCloseable {
@@ -211,6 +214,23 @@ public class QMLContext implements AutoCloseable {
         }
     }
 
+    public <NTType> VectorWrapper<NTType> fetchVector(TF<? extends TFType, NTType> node) {
+        Session session = this.getSession();
+        try (Tensor<?> result = session.runner().fetch(node.getName(), 0).run().get(0)) {
+            if (result.dataType().equals(DataType.FLOAT)) {
+                FloatBuffer floatBuffer = FloatBuffer.allocate(result.numElements());
+                result.writeTo(floatBuffer);
+                return new VectorWrapper<NTType>(floatBuffer);
+            } else if (result.dataType().equals(DataType.INT32)) {
+                IntBuffer intBuffer = IntBuffer.allocate(result.numElements());
+                result.writeTo(intBuffer);
+                return new VectorWrapper<NTType>(intBuffer);
+            } else {
+                throw new UnsupportedOperationException(String.format("Result type %s is not supported.", result.dataType()));
+            }
+        }
+    }
+
     public Session getSession() {
         if (this.session == null) {
             this.session = this.registerAutoCloseable(new Session(getGraph()));
@@ -245,11 +265,6 @@ public class QMLContext implements AutoCloseable {
     public static InitializingOperation<Integer> value(Integer value) {
         return new InitializingOperation<Integer>(){
             @Override
-            public Shape getShape() {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
             public String getInitialValue() {
                 return value.toString();
             }
@@ -267,16 +282,16 @@ public class QMLContext implements AutoCloseable {
         };
     }
 
-    public static InitializingOperation<Integer> values(Integer... values) {
+    public static InitializingOperation<Integer> values(int... values) {
         return new InitializingOperation<Integer>(){
             @Override
             public Shape getShape() {
-                throw new UnsupportedOperationException();
+                return Shape.shape(values.length);
             }
 
             @Override
             public String getInitialValue() {
-                throw new UnsupportedOperationException("is not supported for vectors");
+                return toStringTensorContent(values);
             }
 
             @Override
@@ -293,11 +308,6 @@ public class QMLContext implements AutoCloseable {
 
     public static InitializingOperation<Float> value(Float value) {
         return new InitializingOperation<Float>(){
-            @Override
-            public Shape getShape() {
-                throw new UnsupportedOperationException();
-            }
-
             @Override
             public String getInitialValue() {
                 return value.toString();

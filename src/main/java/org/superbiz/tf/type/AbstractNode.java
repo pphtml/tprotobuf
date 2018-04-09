@@ -16,6 +16,7 @@ public abstract class AbstractNode implements TFType, NamingSequence {
     final Attribute[] attributes;
     String name;
     private DType dType;
+    private Shape shape;
     private static final Map<Class, ClassMetadata> ANNOTATIONS_CACHE = new HashMap<>();
 
     public AbstractNode(Attribute[] attributes) {
@@ -41,9 +42,26 @@ public abstract class AbstractNode implements TFType, NamingSequence {
         return this.dType.name();
     }
 
-    @Mapping("dTypeArgumentName")
+    @Mapping("dTypeArgumentName") // TODO spatny nazev
     public String getDTypeArgumentNameString() {
-        return this.dType.getArgumentName();
+        if (shape != null) {
+            return "tensor_content";
+        } else {
+            return this.dType.getArgumentName();
+        }
+    }
+
+    public Shape getShape() {
+        return shape;
+    }
+
+    public void setShape(Shape shape) {
+        this.shape = shape;
+    }
+
+    @Mapping("tensorShape")
+    public String getTensorShapeString() {
+        return Shape.toProtobufString(this.shape);
     }
 
     public void setDType(DType dType) {

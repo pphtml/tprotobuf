@@ -5,6 +5,7 @@ import org.superbiz.tf.QMLContext;
 import org.superbiz.tf.TF;
 import org.superbiz.tf.type.Constant;
 import org.superbiz.tf.type.Operation;
+import org.superbiz.tf.type.VectorWrapper;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.superbiz.tf.QMLContext.*;
@@ -114,9 +115,51 @@ public class QML002Test {
             TF<Constant, Integer> x = tf.constant(value(4), named("x"));
             TF<Constant, Integer> y = tf.constant(values(1, 2, 3), named("y"));
             TF<Operation.Multiply, Integer> multiply = x.multiply(y);
-//
-            Integer result = tf.fetch(multiply);
-            assertEquals(12, result.intValue());
+
+            VectorWrapper<Integer> result = tf.fetchVector(multiply);
+            System.out.println(result.getList1D());
+            // TODO [4, 8, 12]
         }
     }
+
+    // node {
+    //  name: "Const_1"
+    //  op: "Const"
+    //  attr {
+    //    key: "dtype"
+    //    value {
+    //      type: DT_FLOAT
+    //    }
+    //  }
+    //  attr {
+    //    key: "value"
+    //    value {
+    //      tensor {
+    //        dtype: DT_FLOAT
+    //        tensor_shape {
+    //          dim {
+    //            size: 3
+    //          }
+    //        }
+    //        tensor_content: "\315\314\214?\315\314\f@33S@"
+    //      }
+    //    }
+    //  }
+    //}
+
+//    /**
+//     * Scalar constant and vector constant are multiplied.
+//     */
+//    @Test
+//    public void multiplyFloatScalarAndVector() {
+//        try (QMLContext tf = createSession()) {
+//            TF<Constant, Integer> x = tf.constant(value(4.4), named("x"));
+//            TF<Constant, Integer> y = tf.constant(values(1.1, 2.2, 3.3), named("y"));
+//            TF<Operation.Multiply, Integer> multiply = x.multiply(y);
+//
+//            VectorWrapper<Integer> result = tf.fetchVector(multiply);
+//            System.out.println(result.getList1D());
+//            // TODO [ 4.84  9.68 14.52]
+//        }
+//    }
 }

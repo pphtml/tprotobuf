@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class ProtoParser {
     public static void main(String[] args) throws IOException {
-        ClasspathResource resource = ClasspathResource.of("com/qml/usecases/ex02.pb");
+        ClasspathResource resource = ClasspathResource.of("com/qml/usecases/ex03.pb");
 
         //File file = new File("/tmp/graphdef.pb");
 //        File file = new File("/tmp/ex01f.pb");
