@@ -19,6 +19,7 @@ import org.tensorflow.framework.GraphDef;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -206,6 +207,8 @@ public class QMLContext implements AutoCloseable {
         try (Tensor<?> result = session.runner().fetch(node.getName(), 0).run().get(0)) {
             if (result.dataType().equals(DataType.FLOAT)) {
                 return (NTType) Float.valueOf(result.floatValue());
+            } else if (result.dataType().equals(DataType.DOUBLE)) {
+                return (NTType) Double.valueOf(result.doubleValue());
             } else if (result.dataType().equals(DataType.INT32)) {
                 return (NTType) Integer.valueOf(result.intValue());
             } else {
@@ -221,6 +224,10 @@ public class QMLContext implements AutoCloseable {
                 FloatBuffer floatBuffer = FloatBuffer.allocate(result.numElements());
                 result.writeTo(floatBuffer);
                 return new VectorWrapper<NTType>(floatBuffer);
+            } else if (result.dataType().equals(DataType.DOUBLE)) {
+                DoubleBuffer doubleBuffer = DoubleBuffer.allocate(result.numElements());
+                result.writeTo(doubleBuffer);
+                return new VectorWrapper<NTType>(doubleBuffer);
             } else if (result.dataType().equals(DataType.INT32)) {
                 IntBuffer intBuffer = IntBuffer.allocate(result.numElements());
                 result.writeTo(intBuffer);
@@ -262,11 +269,11 @@ public class QMLContext implements AutoCloseable {
         };
     }
 
-    public static InitializingOperation<Integer> value(Integer value) {
+    public static InitializingOperation<Integer> value(int value) {
         return new InitializingOperation<Integer>(){
             @Override
             public String getInitialValue() {
-                return value.toString();
+                return Integer.valueOf(value).toString();
             }
 
             @Override
@@ -306,16 +313,83 @@ public class QMLContext implements AutoCloseable {
         };
     }
 
-    public static InitializingOperation<Float> value(Float value) {
+    public static InitializingOperation<Float> values(float... values) {
         return new InitializingOperation<Float>(){
             @Override
+            public Shape getShape() {
+                return Shape.shape(values.length);
+            }
+
+            @Override
             public String getInitialValue() {
-                return value.toString();
+                return toStringTensorContent(values);
             }
 
             @Override
             public DType getDType() {
                 return DType.DT_FLOAT;
+            }
+
+            @Override
+            public boolean isVector() {
+                return true;
+            }
+        };
+    }
+
+    public static InitializingOperation<Double> values(double... values) {
+        return new InitializingOperation<Double>(){
+            @Override
+            public Shape getShape() {
+                return Shape.shape(values.length);
+            }
+
+            @Override
+            public String getInitialValue() {
+                return toStringTensorContent(values);
+            }
+
+            @Override
+            public DType getDType() {
+                return DType.DT_DOUBLE;
+            }
+
+            @Override
+            public boolean isVector() {
+                return true;
+            }
+        };
+    }
+
+    public static InitializingOperation<Float> value(float value) {
+        return new InitializingOperation<Float>(){
+            @Override
+            public String getInitialValue() {
+                return Float.valueOf(value).toString();
+            }
+
+            @Override
+            public DType getDType() {
+                return DType.DT_FLOAT;
+            }
+
+            @Override
+            public boolean isVector() {
+                return false;
+            }
+        };
+    }
+
+    public static InitializingOperation<Double> value(double value) {
+        return new InitializingOperation<Double>(){
+            @Override
+            public String getInitialValue() {
+                return Double.valueOf(value).toString();
+            }
+
+            @Override
+            public DType getDType() {
+                return DType.DT_DOUBLE;
             }
 
             @Override
@@ -336,5 +410,12 @@ public class QMLContext implements AutoCloseable {
 
     public List<TF<Variable, ?>> getVariables() {
         return variables;
+    }
+
+    // public <R extends TFType> TF<Operation.Subtract, NTType> subtract(TF<R, NTType> operand, Attribute... attributes) {
+    public <R extends TFType, NTType> TF<Operation.Square, NTType> square(TF<R, NTType> operation, Attribute... attributes) {
+        Operation.Square ble = new Operation.Square(operation, attributes);
+        TF of = TF.of(new Operation.Square(operation, attributes), this);
+        return this.makeFromTemplate(of, this);
     }
 }

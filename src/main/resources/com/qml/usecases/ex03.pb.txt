@@ -1,5 +1,5 @@
 node {
-  name: "Variable/initial_value"
+  name: "a/initial_value"
   op: "Const"
   attr {
     key: "value"
@@ -20,8 +20,14 @@ node {
   }
 }
 node {
-  name: "Variable"
+  name: "a"
   op: "VariableV2"
+  attr {
+    key: "shared_name"
+    value {
+      s: ""
+    }
+  }
   attr {
     key: "dtype"
     value {
@@ -41,24 +47,12 @@ node {
       }
     }
   }
-  attr {
-    key: "shared_name"
-    value {
-      s: ""
-    }
-  }
 }
 node {
-  name: "Variable/Assign"
+  name: "a/Assign"
   op: "Assign"
-  input: "Variable"
-  input: "Variable/initial_value"
-  attr {
-    key: "use_locking"
-    value {
-      b: true
-    }
-  }
+  input: "a"
+  input: "a/initial_value"
   attr {
     key: "T"
     value {
@@ -69,7 +63,7 @@ node {
     key: "_class"
     value {
       list {
-        s: "loc:@Variable"
+        s: "loc:@a"
       }
     }
   }
@@ -79,11 +73,17 @@ node {
       b: true
     }
   }
+  attr {
+    key: "use_locking"
+    value {
+      b: true
+    }
+  }
 }
 node {
-  name: "Variable/read"
+  name: "a/read"
   op: "Identity"
-  input: "Variable"
+  input: "a"
   attr {
     key: "T"
     value {
@@ -94,14 +94,20 @@ node {
     key: "_class"
     value {
       list {
-        s: "loc:@Variable"
+        s: "loc:@a"
       }
     }
   }
 }
 node {
-  name: "Variable_1/initial_value"
+  name: "b/initial_value"
   op: "Const"
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
   attr {
     key: "value"
     value {
@@ -113,22 +119,10 @@ node {
       }
     }
   }
-  attr {
-    key: "dtype"
-    value {
-      type: DT_FLOAT
-    }
-  }
 }
 node {
-  name: "Variable_1"
+  name: "b"
   op: "VariableV2"
-  attr {
-    key: "shared_name"
-    value {
-      s: ""
-    }
-  }
   attr {
     key: "dtype"
     value {
@@ -148,12 +142,18 @@ node {
       }
     }
   }
+  attr {
+    key: "shared_name"
+    value {
+      s: ""
+    }
+  }
 }
 node {
-  name: "Variable_1/Assign"
+  name: "b/Assign"
   op: "Assign"
-  input: "Variable_1"
-  input: "Variable_1/initial_value"
+  input: "b"
+  input: "b/initial_value"
   attr {
     key: "validate_shape"
     value {
@@ -176,15 +176,15 @@ node {
     key: "_class"
     value {
       list {
-        s: "loc:@Variable_1"
+        s: "loc:@b"
       }
     }
   }
 }
 node {
-  name: "Variable_1/read"
+  name: "b/read"
   op: "Identity"
-  input: "Variable_1"
+  input: "b"
   attr {
     key: "T"
     value {
@@ -195,7 +195,7 @@ node {
     key: "_class"
     value {
       list {
-        s: "loc:@Variable_1"
+        s: "loc:@b"
       }
     }
   }
@@ -213,7 +213,7 @@ node {
             size: 100
           }
         }
-        tensor_content: "\337\240\b>(\2443?j\253a?\374>o?\205\351\245>(7\004?q\221\204>\376x\336>\305\360]?GtV?^\302\000>,Y\037?(\256}?\253=#?*\000\314>\346a\334=.\240s?WC\017?q\353\234>\376g\303>\036\005\233>H\336\236>*\246\330=\366f0?\375\306\247>\260-\207=\317eP=j~\323>\203f|?C\037\035>\370\372\\?\265\236\030?\304%\335>\235\267&?b\030\226>J\335\360>5\306\003?3\374Y?\306\331o?\236\265\377>\033p\177?=lr?<l;>\335\027V?\202\177Y?\234oH?\026R\021>\317\362\361>\035kY>-\331\240>\354\272\337>\237\2447?\253\216\f?\a\002\303>\373\034\023?A\021v?mR/?\224\362\255>\336\214\r?_\217\020?]\r3?\2179\306>\263z\261>\031!w?\037\335\373>\360\342\275<,\307B>\310V\023?\2627\021>Te\237>>{B?\016\357\316>H\324S?\244J\033?\241D\306>\336(W?RJ!?~ZB?\224\034\304>\324\374B?\360Bv?\247\220\032?\233\003.?\253\005F=\313\336\317=wlO>\374\217i?\232\334\215>\244x\352>jah?9/\024>9E\267>\377\357\214=\f\023N?\vjb?\310\3067<\2459\\>\334\262\026?\316\005b?8\361\234="
+        tensor_content: "\256jw?\000\254d?\376\345F?q\303A?\374Qb>\373\240k?\b/6?\242\245Z??\217\177?y\275`>S\021\005?eOA>\220\274\325>\344B\f?\372\236\204=\317\337\212=\347\241\022?~@\027>\036x\243>t@i?\004\030C?\365\017^=8\231\246>ue8?]<\374=\271}A?\031\302\006?\301\370!?{X5>xR\303>\207\\d?\225\2206?\\\226\\?\307\331\330>\027\303M?\371_\313>\017?\177>\216\2162?\255[\'?\227\362e?,\373h>\340\b&?\356\034 ?\264\250\347>\346\313a?A\222r?A-y?glL?\307N\032>3\017l>T\264@?%\272\221=G\026\224>B\257\366>\320\331\274>x\223\037>M\370q>4!\310=\225\022P=\305\274\356=\006\315\017?&\255\305>2\371\001;N.\342>\027\351\t?pOy?9 w?e\214Y?\235\037|><>\311>\245\213\240>\220\343r?%\273\241>h2\021?\024\250\261>\305 \253>\236\250\344>\360\177\v;|\354H>\207\301\024?\317\221S?\267\337\'?bG8?\177N\276>\245\276w?\276\312\357>.^\022?\037I]?\213?2>cz\350>X\256\374>\222B<?v!o?\310\"\203>\246\370\211><t\266>\025IN?w\354\002?\334e\\>\335\213\372>"
       }
     }
   }
@@ -227,7 +227,7 @@ node {
 node {
   name: "mul"
   op: "Mul"
-  input: "Variable/read"
+  input: "a/read"
   input: "mul/y"
   attr {
     key: "T"
@@ -240,7 +240,7 @@ node {
   name: "add"
   op: "Add"
   input: "mul"
-  input: "Variable_1/read"
+  input: "b/read"
   attr {
     key: "T"
     value {
@@ -261,7 +261,7 @@ node {
             size: 100
           }
         }
-        tensor_content: "/\345\r@\240D\206@a\006\226@\224\337\232@\252\005B@\374][@\374\273+@\000\254T@AS\227@\372\220\216@\222\016&@\025\016}@Ag\232@\346z|@V\222B@\361E\030@N\227\226@\335et@\v\256:@d\303K@\306%6@\334U1@\334j @@\220{@\277\3319@\301\017\v@\344\361\005@\224,R@\035,\242@\324\004\017@qw\222@\233hs@&ST@\362\035x@]\340I@X\314^@\372\367c@\r\276\223@\367\350\227@\022\"`@/-\235@\371\205\234@8\221\032@z#\213@K\360\220@\t\217\220@\272\023\005@\376\244_@\240\311*@;\0349@>7W@\020!\203@\350\317l@\034\201I@\252\ri@\222\'\232@\233\264\201@?\375=@\340ih@\000-e@\305\"\206@J\003O@<\3159@\222m\240@\3079[@KB\006@`\327\036@\235\202w@:\035\026@\361\203@@\246s\207@l\312W@\301[\214@\332\321{@\336-E@)\t\231@\366\274o@\317\'\203@\353NE@\f\345\207@\200D\234@U\306t@\031\002\205@~G\r@Y\331\032@\245D!@\312\330\221@\226\357.@@\267Z@\a\\\224@0\216\030@\310JM@\344\302\016@\"\021\213@Q\366\230@\303=\373?\335//@\262\304n@\0345\225@\352E\030@"
+        tensor_content: "\362(\234@\274\266\225@\204h\216@`\252\215@\244\303\"@Q\200\226@\213i\207@N:\223@[\204\241@\024\004%@a\216R@|\353#@\203\000Z@d\177j@M\257\v@\vT\022@\352\020q@n\347\021@\301[A@\356i\233@\376\250\211@Pc\033@\310\3109@\262!\201@\200\223\024@l\312\206@5`b@\3514w@\210\025%@\033\276P@\215\004\223@\006.~@\004b\220@\226\275L@\310s\217@\260\226N@\212\0035@\276I\202@\235\341\201@\230\200\223@\202\327,@iHw@\205\332p@{tY@\\$\226@\252\367\235@\252\220\233@\320\271\207@GI @\241\2139@\342\325\213@\'\301\021@\217\361)@\264p`@=zL@\353Z\037@2\'*@\374a\023@\315<\v@\252m\034@\350\na@{AH@\340o\000@\032\346S@z\000n@D\233\234@\332\222\236@ O\224@\373\2631@B\360J@\215\245>@)\214\237@\246\302:@\311\362h@<7@@\322\212<@\267\370X@\325\350\325?\272\327/@\220\263v@\255P\213@O\355\200@\312\242\205@\253\023G@V\363\226@3\\_@\266\260z@}\f\220@\216Z*@j\000c@\240\330_@X\335\214@\247D\232@\333\3402@\351o2@.iE@1\320\215@\331*^@\360\f0@\250qb@"
       }
     }
   }
@@ -285,7 +285,7 @@ node {
   }
 }
 node {
-  name: "Square"
+  name: "squareNode"
   op: "Square"
   input: "sub"
   attr {
@@ -320,10 +320,16 @@ node {
   }
 }
 node {
-  name: "Mean"
+  name: "reduceMeanNode"
   op: "Mean"
-  input: "Square"
+  input: "squareNode"
   input: "Const"
+  attr {
+    key: "T"
+    value {
+      type: DT_FLOAT
+    }
+  }
   attr {
     key: "keep_dims"
     value {
@@ -336,16 +342,16 @@ node {
       type: DT_INT32
     }
   }
-  attr {
-    key: "T"
-    value {
-      type: DT_FLOAT
-    }
-  }
 }
 node {
   name: "gradients/Shape"
   op: "Const"
+  attr {
+    key: "dtype"
+    value {
+      type: DT_INT32
+    }
+  }
   attr {
     key: "value"
     value {
@@ -356,12 +362,6 @@ node {
           }
         }
       }
-    }
-  }
-  attr {
-    key: "dtype"
-    value {
-      type: DT_INT32
     }
   }
 }
@@ -405,7 +405,7 @@ node {
   }
 }
 node {
-  name: "gradients/Mean_grad/Reshape/shape"
+  name: "gradients/reduceMeanNode_grad/Reshape/shape"
   op: "Const"
   attr {
     key: "value"
@@ -429,10 +429,10 @@ node {
   }
 }
 node {
-  name: "gradients/Mean_grad/Reshape"
+  name: "gradients/reduceMeanNode_grad/Reshape"
   op: "Reshape"
   input: "gradients/Fill"
-  input: "gradients/Mean_grad/Reshape/shape"
+  input: "gradients/reduceMeanNode_grad/Reshape/shape"
   attr {
     key: "T"
     value {
@@ -447,14 +447,8 @@ node {
   }
 }
 node {
-  name: "gradients/Mean_grad/Const"
+  name: "gradients/reduceMeanNode_grad/Const"
   op: "Const"
-  attr {
-    key: "dtype"
-    value {
-      type: DT_INT32
-    }
-  }
   attr {
     key: "value"
     value {
@@ -469,12 +463,18 @@ node {
       }
     }
   }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_INT32
+    }
+  }
 }
 node {
-  name: "gradients/Mean_grad/Tile"
+  name: "gradients/reduceMeanNode_grad/Tile"
   op: "Tile"
-  input: "gradients/Mean_grad/Reshape"
-  input: "gradients/Mean_grad/Const"
+  input: "gradients/reduceMeanNode_grad/Reshape"
+  input: "gradients/reduceMeanNode_grad/Const"
   attr {
     key: "Tmultiples"
     value {
@@ -489,7 +489,7 @@ node {
   }
 }
 node {
-  name: "gradients/Mean_grad/Const_1"
+  name: "gradients/reduceMeanNode_grad/Const_1"
   op: "Const"
   attr {
     key: "value"
@@ -510,10 +510,10 @@ node {
   }
 }
 node {
-  name: "gradients/Mean_grad/truediv"
+  name: "gradients/reduceMeanNode_grad/truediv"
   op: "RealDiv"
-  input: "gradients/Mean_grad/Tile"
-  input: "gradients/Mean_grad/Const_1"
+  input: "gradients/reduceMeanNode_grad/Tile"
+  input: "gradients/reduceMeanNode_grad/Const_1"
   attr {
     key: "T"
     value {
@@ -522,9 +522,9 @@ node {
   }
 }
 node {
-  name: "gradients/Square_grad/Const"
+  name: "gradients/squareNode_grad/Const"
   op: "Const"
-  input: "^gradients/Mean_grad/truediv"
+  input: "^gradients/reduceMeanNode_grad/truediv"
   attr {
     key: "value"
     value {
@@ -544,10 +544,10 @@ node {
   }
 }
 node {
-  name: "gradients/Square_grad/Mul"
+  name: "gradients/squareNode_grad/Mul"
   op: "Mul"
   input: "sub"
-  input: "gradients/Square_grad/Const"
+  input: "gradients/squareNode_grad/Const"
   attr {
     key: "T"
     value {
@@ -556,10 +556,10 @@ node {
   }
 }
 node {
-  name: "gradients/Square_grad/Mul_1"
+  name: "gradients/squareNode_grad/Mul_1"
   op: "Mul"
-  input: "gradients/Mean_grad/truediv"
-  input: "gradients/Square_grad/Mul"
+  input: "gradients/reduceMeanNode_grad/truediv"
+  input: "gradients/squareNode_grad/Mul"
   attr {
     key: "T"
     value {
@@ -570,7 +570,7 @@ node {
 node {
   name: "gradients/sub_grad/Neg"
   op: "Neg"
-  input: "gradients/Square_grad/Mul_1"
+  input: "gradients/squareNode_grad/Mul_1"
   attr {
     key: "T"
     value {
@@ -581,13 +581,13 @@ node {
 node {
   name: "gradients/sub_grad/tuple/group_deps"
   op: "NoOp"
-  input: "^gradients/Square_grad/Mul_1"
+  input: "^gradients/squareNode_grad/Mul_1"
   input: "^gradients/sub_grad/Neg"
 }
 node {
   name: "gradients/sub_grad/tuple/control_dependency"
   op: "Identity"
-  input: "gradients/Square_grad/Mul_1"
+  input: "gradients/squareNode_grad/Mul_1"
   input: "^gradients/sub_grad/tuple/group_deps"
   attr {
     key: "T"
@@ -599,7 +599,7 @@ node {
     key: "_class"
     value {
       list {
-        s: "loc:@gradients/Square_grad/Mul_1"
+        s: "loc:@gradients/squareNode_grad/Mul_1"
       }
     }
   }
@@ -652,12 +652,6 @@ node {
   name: "gradients/add_grad/Shape_1"
   op: "Const"
   attr {
-    key: "dtype"
-    value {
-      type: DT_INT32
-    }
-  }
-  attr {
     key: "value"
     value {
       tensor {
@@ -667,6 +661,12 @@ node {
           }
         }
       }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_INT32
     }
   }
 }
@@ -730,6 +730,12 @@ node {
   input: "gradients/sub_grad/tuple/control_dependency"
   input: "gradients/add_grad/BroadcastGradientArgs:1"
   attr {
+    key: "T"
+    value {
+      type: DT_FLOAT
+    }
+  }
+  attr {
     key: "keep_dims"
     value {
       b: false
@@ -739,12 +745,6 @@ node {
     key: "Tidx"
     value {
       type: DT_INT32
-    }
-  }
-  attr {
-    key: "T"
-    value {
-      type: DT_FLOAT
     }
   }
 }
@@ -927,7 +927,7 @@ node {
 node {
   name: "gradients/mul_grad/Mul_1"
   op: "Mul"
-  input: "Variable/read"
+  input: "a/read"
   input: "gradients/add_grad/tuple/control_dependency"
   attr {
     key: "T"
@@ -1025,7 +1025,7 @@ node {
   }
 }
 node {
-  name: "GradientDescent/learning_rate"
+  name: "trainNode/learning_rate"
   op: "Const"
   attr {
     key: "value"
@@ -1046,10 +1046,10 @@ node {
   }
 }
 node {
-  name: "GradientDescent/update_Variable/ApplyGradientDescent"
+  name: "trainNode/update_a/ApplyGradientDescent"
   op: "ApplyGradientDescent"
-  input: "Variable"
-  input: "GradientDescent/learning_rate"
+  input: "a"
+  input: "trainNode/learning_rate"
   input: "gradients/mul_grad/tuple/control_dependency"
   attr {
     key: "use_locking"
@@ -1067,16 +1067,16 @@ node {
     key: "_class"
     value {
       list {
-        s: "loc:@Variable"
+        s: "loc:@a"
       }
     }
   }
 }
 node {
-  name: "GradientDescent/update_Variable_1/ApplyGradientDescent"
+  name: "trainNode/update_b/ApplyGradientDescent"
   op: "ApplyGradientDescent"
-  input: "Variable_1"
-  input: "GradientDescent/learning_rate"
+  input: "b"
+  input: "trainNode/learning_rate"
   input: "gradients/add_grad/tuple/control_dependency_1"
   attr {
     key: "use_locking"
@@ -1094,22 +1094,22 @@ node {
     key: "_class"
     value {
       list {
-        s: "loc:@Variable_1"
+        s: "loc:@b"
       }
     }
   }
 }
 node {
-  name: "GradientDescent"
+  name: "trainNode"
   op: "NoOp"
-  input: "^GradientDescent/update_Variable/ApplyGradientDescent"
-  input: "^GradientDescent/update_Variable_1/ApplyGradientDescent"
+  input: "^trainNode/update_a/ApplyGradientDescent"
+  input: "^trainNode/update_b/ApplyGradientDescent"
 }
 node {
   name: "init"
   op: "NoOp"
-  input: "^Variable/Assign"
-  input: "^Variable_1/Assign"
+  input: "^a/Assign"
+  input: "^b/Assign"
 }
 versions {
   producer: 26

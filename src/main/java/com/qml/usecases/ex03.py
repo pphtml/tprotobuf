@@ -10,14 +10,14 @@ print(y_data)
 
 print(zip(x_data, y_data)[0:5])
 
-a = tf.Variable(1.0)
-b = tf.Variable(0.2)
+a = tf.Variable(1.0, name='a')
+b = tf.Variable(0.2, name='b')
 y = a * x_data + b
 
-loss = tf.reduce_mean(tf.square(y - y_data))
+loss = tf.reduce_mean(tf.square(y - y_data, name='squareNode'), name='reduceMeanNode')
 
-optimizer = tf.train.GradientDescentOptimizer(0.5)
-train = optimizer.minimize(loss)
+optimizer = tf.train.GradientDescentOptimizer(0.5, name='gradiDescendNode')
+train = optimizer.minimize(loss, name='trainNode')
 
 init = tf.global_variables_initializer()
 

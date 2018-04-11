@@ -6,6 +6,8 @@ import org.tensorflow.Tensor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 public class TensorContentEncoder {
@@ -34,22 +36,39 @@ public class TensorContentEncoder {
 //        }
 //    }
 
-    public static String toStringTensorContent(int ...values) {
-        //Arrays.stre
+
+    //Arrays.stre
 //        int[] src = new int[values.length];
 //        for (int index = 0; index < values.length; index++) {
 //            src[index] = values[index];
 //        }
 
-        // IntStream.of(unboxed).boxed().toArray();
+    // IntStream.of(unboxed).boxed().toArray();
 
+
+    public static String toStringTensorContent(int ...values) {
         IntBuffer intBuffer = IntBuffer.wrap(values);
-        Tensor<?> tLong = Tensor.create(new long[]{values.length}, intBuffer);
+        Tensor<?> tensor = Tensor.create(new long[]{values.length}, intBuffer);
+        return getEncodedTensorProtobufString(tensor);
+    }
 
+    public static String toStringTensorContent(float ...values) {
+        FloatBuffer floatBuffer = FloatBuffer.wrap(values);
+        Tensor<?> tensor = Tensor.create(new long[]{values.length}, floatBuffer);
+        return getEncodedTensorProtobufString(tensor);
+    }
+
+    public static String toStringTensorContent(double ...values) {
+        DoubleBuffer doubleBuffer = DoubleBuffer.wrap(values);
+        Tensor<?> tensor = Tensor.create(new long[]{values.length}, doubleBuffer);
+        return getEncodedTensorProtobufString(tensor);
+    }
+
+    private static String getEncodedTensorProtobufString(Tensor<?> tensor) {
         try {
-            Method method = tLong.getClass().getDeclaredMethod("buffer");
+            Method method = tensor.getClass().getDeclaredMethod("buffer");
             method.setAccessible(true);
-            ByteBuffer byteBuffer = (ByteBuffer) method.invoke(tLong, new Object[]{});
+            ByteBuffer byteBuffer = (ByteBuffer) method.invoke(tensor, new Object[]{}); // TODO vyzkouset vyhodit
 
             ByteString byteString = ByteString.copyFrom(byteBuffer);
 

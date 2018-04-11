@@ -23,7 +23,7 @@ public class Operation {
     @TemplateInline("node {\n" +
             "  name: \"${nodeName}\"\n" +
             "  op: \"Add\"\n" +
-            "  input: \"${operand1}\"\n" +
+            "  input: \"${operand}\"\n" +
             "  input: \"${operand2}\"\n" +
             "  attr {\n" +
             "    key: \"T\"\n" +
@@ -34,13 +34,40 @@ public class Operation {
             "}\n")
     @NamePrefix("add")
     public static class Add extends AbstractNode implements TFType, NamingSequence {
-        @Mapping("operand1")
+        @Mapping("operand")
         public final TF<?, ?> operand1;
         @Mapping("operand2")
         public final TF<?, ?> operand2;
 
-        public <T extends TFType, R extends TFType, NTType> Add(TF<T, NTType> operand1, TF<R, NTType> operand2) {
-            super(new Attribute[]{}); // TODO predavat
+        public <T extends TFType, R extends TFType, NTType> Add(TF<T, NTType> operand1, TF<R, NTType> operand2, Attribute[] attributes) {
+            super(attributes);
+            this.operand1 = operand1;
+            this.operand2 = operand2;
+            this.setDType(this.operand1.getDType());
+        }
+    }
+
+    @TemplateInline("node {\n" +
+            "  name: \"${nodeName}\"\n" +
+            "  op: \"Sub\"\n" +
+            "  input: \"${operand}\"\n" +
+            "  input: \"${operand2}\"\n" +
+            "  attr {\n" +
+            "    key: \"T\"\n" +
+            "    value {\n" +
+            "      type: ${dType}\n" +
+            "    }\n" +
+            "  }\n" +
+            "}\n")
+    @NamePrefix("subtract")
+    public static class Subtract extends AbstractNode implements TFType, NamingSequence {
+        @Mapping("operand")
+        public final TF<?, ?> operand1;
+        @Mapping("operand2")
+        public final TF<?, ?> operand2;
+
+        public <T extends TFType, R extends TFType, NTType> Subtract(TF<T, NTType> operand1, TF<R, NTType> operand2, Attribute[] attributes) {
+            super(attributes);
             this.operand1 = operand1;
             this.operand2 = operand2;
             this.setDType(this.operand1.getDType());
@@ -50,7 +77,7 @@ public class Operation {
     @TemplateInline("node {\n" +
             "  name: \"${nodeName}\"\n" +
             "  op: \"Mul\"\n" +
-            "  input: \"${operand1}\"\n" +
+            "  input: \"${operand}\"\n" +
             "  input: \"${operand2}\"\n" +
             "  attr {\n" +
             "    key: \"T\"\n" +
@@ -61,16 +88,50 @@ public class Operation {
             "}\n")
     @NamePrefix("multiply")
     public static class Multiply extends AbstractNode implements TFType, NamingSequence {
-        @Mapping("operand1")
+        @Mapping("operand")
         public final TF<?, ?> operand1;
         @Mapping("operand2")
         public final TF<?, ?> operand2;
 
-        public <T extends TFType, R extends TFType, NTType> Multiply(TF<T, NTType> operand1, TF<R, NTType> operand2) {
-            super(new Attribute[]{}); // TODO predavat
+        public <T extends TFType, R extends TFType, NTType> Multiply(TF<T, NTType> operand1, TF<R, NTType> operand2, Attribute[] attributes) {
+            super(attributes);
             this.operand1 = operand1;
             this.operand2 = operand2;
             this.setDType(this.operand1.getDType());
+        }
+    }
+
+    // node {
+    //  name: "Square"
+    //  op: "Square"
+    //  input: "sub"
+    //  attr {
+    //    key: "T"
+    //    value {
+    //      type: DT_FLOAT
+    //    }
+    //  }
+    //}
+    @TemplateInline("node {\n" +
+            "  name: \"${nodeName}\"\n" +
+            "  op: \"Square\"\n" +
+            "  input: \"${operand}\"\n" +
+            "  attr {\n" +
+            "    key: \"T\"\n" +
+            "    value {\n" +
+            "      type: ${dType}\n" +
+            "    }\n" +
+            "  }\n" +
+            "}\n")
+    @NamePrefix("square")
+    public static class Square extends AbstractNode implements TFType, NamingSequence {
+        @Mapping("operand")
+        public final TF<?, ?> operand;
+
+        public <T extends TFType, R extends TFType, NTType> Square(TF<T, NTType> operand, Attribute[] attributes) {
+            super(attributes);
+            this.operand = operand;
+            this.setDType(this.operand.getDType());
         }
     }
 }

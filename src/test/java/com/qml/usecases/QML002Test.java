@@ -52,6 +52,22 @@ public class QML002Test {
     }
 
     /**
+     * Two float constants are added.
+     */
+    @Test
+    public void addDoubles() {
+        try (QMLContext tf = createSession()) {
+            TF<Constant, Double> x = tf.constant(value(3.1), named("x"));
+            TF<Constant, Double> y = tf.constant(value(4.2), named("y"));
+            TF<Operation.Add, Double> add = x.add(y);
+
+            // tf.run(tf.globalVariablesInitializer());
+            Double result = tf.fetch(add);
+            assertEquals(7.3, result.doubleValue(), 0.001);
+        }
+    }
+
+    /**
      * Two integer constants are multiplied.
      */
     @Test
@@ -147,19 +163,19 @@ public class QML002Test {
     //  }
     //}
 
-//    /**
-//     * Scalar constant and vector constant are multiplied.
-//     */
-//    @Test
-//    public void multiplyFloatScalarAndVector() {
-//        try (QMLContext tf = createSession()) {
-//            TF<Constant, Integer> x = tf.constant(value(4.4), named("x"));
-//            TF<Constant, Integer> y = tf.constant(values(1.1, 2.2, 3.3), named("y"));
-//            TF<Operation.Multiply, Integer> multiply = x.multiply(y);
-//
-//            VectorWrapper<Integer> result = tf.fetchVector(multiply);
-//            System.out.println(result.getList1D());
-//            // TODO [ 4.84  9.68 14.52]
-//        }
-//    }
+    /**
+     * Scalar constant and vector constant are multiplied.
+     */
+    @Test
+    public void multiplyFloatScalarAndVector() {
+        try (QMLContext tf = createSession()) {
+            TF<Constant, Float> x = tf.constant(value(4.4f), named("x"));
+            TF<Constant, Float> y = tf.constant(values(1.1f, 2.2f, 3.3f), named("y"));
+            TF<Operation.Multiply, Float> multiply = x.multiply(y);
+
+            VectorWrapper<Float> result = tf.fetchVector(multiply);
+            System.out.println(result.getList1D());
+            // TODO [ 4.84  9.68 14.52]
+        }
+    }
 }
