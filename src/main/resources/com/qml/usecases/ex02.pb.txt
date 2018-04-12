@@ -1,5 +1,26 @@
 node {
-  name: "Const"
+  name: "w"
+  op: "Const"
+  attr {
+    key: "value"
+    value {
+      tensor {
+        dtype: DT_INT32
+        tensor_shape {
+        }
+        int_val: 4
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_INT32
+    }
+  }
+}
+node {
+  name: "y"
   op: "Const"
   attr {
     key: "dtype"
@@ -13,42 +34,58 @@ node {
       tensor {
         dtype: DT_INT32
         tensor_shape {
+          dim {
+            size: 3
+          }
         }
-        int_val: 3
+        tensor_content: "\001\000\000\000\002\000\000\000\003\000\000\000"
       }
     }
   }
 }
 node {
-  name: "add/y"
-  op: "Const"
+  name: "truediv/Cast"
+  op: "Cast"
+  input: "w"
   attr {
-    key: "value"
-    value {
-      tensor {
-        dtype: DT_INT32
-        tensor_shape {
-        }
-        int_val: 2
-      }
-    }
-  }
-  attr {
-    key: "dtype"
+    key: "SrcT"
     value {
       type: DT_INT32
     }
   }
+  attr {
+    key: "DstT"
+    value {
+      type: DT_DOUBLE
+    }
+  }
 }
 node {
-  name: "add"
-  op: "Add"
-  input: "Const"
-  input: "add/y"
+  name: "truediv/Cast_1"
+  op: "Cast"
+  input: "y"
+  attr {
+    key: "SrcT"
+    value {
+      type: DT_INT32
+    }
+  }
+  attr {
+    key: "DstT"
+    value {
+      type: DT_DOUBLE
+    }
+  }
+}
+node {
+  name: "truediv"
+  op: "RealDiv"
+  input: "truediv/Cast"
+  input: "truediv/Cast_1"
   attr {
     key: "T"
     value {
-      type: DT_INT32
+      type: DT_DOUBLE
     }
   }
 }

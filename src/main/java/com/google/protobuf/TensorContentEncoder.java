@@ -9,6 +9,7 @@ import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.LongBuffer;
 
 public class TensorContentEncoder {
 //    public static void main(String[] args) {
@@ -49,6 +50,12 @@ public class TensorContentEncoder {
     public static String toStringTensorContent(int ...values) {
         IntBuffer intBuffer = IntBuffer.wrap(values);
         Tensor<?> tensor = Tensor.create(new long[]{values.length}, intBuffer);
+        return getEncodedTensorProtobufString(tensor);
+    }
+
+    public static String toStringTensorContent(long ...values) {
+        LongBuffer longBuffer = LongBuffer.wrap(values);
+        Tensor<?> tensor = Tensor.create(new long[]{values.length}, longBuffer);
         return getEncodedTensorProtobufString(tensor);
     }
 

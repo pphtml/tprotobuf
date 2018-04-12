@@ -134,4 +134,64 @@ public class Operation {
             this.setDType(this.operand.getDType());
         }
     }
+
+    @TemplateInline("node {\n" +
+            "  name: \"${nodeName}/const\"\n" +
+            "  op: \"Const\"\n" +
+            "  attr {\n" +
+            "    key: \"dtype\"\n" +
+            "    value {\n" +
+            "      type: DT_INT32\n" +
+            "    }\n" +
+            "  }\n" +
+            "  attr {\n" +
+            "    key: \"value\"\n" +
+            "    value {\n" +
+            "      tensor {\n" +
+            "        dtype: DT_INT32\n" +
+            "        tensor_shape {\n" +
+            "          dim {\n" +
+            "            size: 1\n" +
+            "          }\n" +
+            "        }\n" +
+            "        int_val: 0\n" +
+            "      }\n" +
+            "    }\n" +
+            "  }\n" +
+            "}\n" +
+            "node {\n" +
+            "  name: \"${nodeName}\"\n" +
+            "  op: \"Mean\"\n" +
+            "  input: \"${operand}\"\n" +
+            "  input: \"${nodeName}/const\"\n" +
+            "  attr {\n" +
+            "    key: \"T\"\n" +
+            "    value {\n" +
+            "      type: ${dType}\n" +
+            "    }\n" +
+            "  }\n" +
+            "  attr {\n" +
+            "    key: \"keep_dims\"\n" + // TODO change to keepdims
+            "    value {\n" +
+            "      b: false\n" +
+            "    }\n" +
+            "  }\n" +
+            "  attr {\n" +
+            "    key: \"Tidx\"\n" +
+            "    value {\n" +
+            "      type: DT_INT32\n" +
+            "    }\n" +
+            "  }\n" +
+            "}\n")
+    @NamePrefix("square")
+    public static class ReduceMean extends AbstractNode implements TFType, NamingSequence {
+        @Mapping("operand")
+        public final TF<?, ?> operand;
+
+        public <T extends TFType, R extends TFType, NTType> ReduceMean(TF<T, NTType> operand, Attribute[] attributes) {
+            super(attributes);
+            this.operand = operand;
+            this.setDType(this.operand.getDType());
+        }
+    }
 }

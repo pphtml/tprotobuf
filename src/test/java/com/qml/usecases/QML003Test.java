@@ -79,10 +79,10 @@ public class QML003Test {
             // TODO Operation.Square
             TF<Operation.Subtract, Double> difference = y.subtract(yDataTF, named("difference"));
             TF<Operation.Square, Double> square = tf.square(difference);
-            //loss = tf.reduce_mean(tf.square(y.subtract(yDataTF, named("difference"))));
+            TF<Operation.ReduceMean, Double> reduceMean = tf.reduceMean(tf.square(y.subtract(yDataTF, named("difference")), named("square")), named("mean"));
 
             tf.run(tf.globalVariablesInitializer());
-            VectorWrapper<Double> result = tf.fetchVector(square);
+            VectorWrapper<Double> result = tf.fetchVector(reduceMean);
             System.out.println(result.getList1D());
 //            assertEquals(7.3, result.doubleValue(), 0.001);
         }

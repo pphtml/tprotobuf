@@ -7,6 +7,8 @@ import org.superbiz.tf.type.Constant;
 import org.superbiz.tf.type.Operation;
 import org.superbiz.tf.type.VectorWrapper;
 
+import java.util.Arrays;
+
 import static junit.framework.TestCase.assertEquals;
 import static org.superbiz.tf.QMLContext.*;
 import static org.superbiz.tf.attribute.Attribute.named;
@@ -133,8 +135,22 @@ public class QML002Test {
             TF<Operation.Multiply, Integer> multiply = x.multiply(y);
 
             VectorWrapper<Integer> result = tf.fetchVector(multiply);
-            System.out.println(result.getList1D());
-            // TODO [4, 8, 12]
+            assertEquals(Arrays.asList(4, 8, 12), result.getList1D());
+        }
+    }
+
+    /**
+     * Scalar constant and vector constant are multiplied.
+     */
+    @Test
+    public void multiplyLongScalarAndVector() {
+        try (QMLContext tf = createSession()) {
+            TF<Constant, Long> x = tf.constant(value(4L), named("x"));
+            TF<Constant, Long> y = tf.constant(values(1L, 2L, 3L), named("y"));
+            TF<Operation.Multiply, Long> multiply = x.multiply(y);
+
+            VectorWrapper<Long> result = tf.fetchVector(multiply);
+            assertEquals(Arrays.asList(4L, 8L, 12L), result.getList1D());
         }
     }
 
@@ -174,8 +190,22 @@ public class QML002Test {
             TF<Operation.Multiply, Float> multiply = x.multiply(y);
 
             VectorWrapper<Float> result = tf.fetchVector(multiply);
-            System.out.println(result.getList1D());
-            // TODO [ 4.84  9.68 14.52]
+            assertEquals(Arrays.asList(4.84f, 9.68f, 14.52f), result.getList1D());
+        }
+    }
+
+    /**
+     * Scalar constant and vector constant are multiplied.
+     */
+    @Test
+    public void multiplyDoubleScalarAndVector() {
+        try (QMLContext tf = createSession()) {
+            TF<Constant, Double> x = tf.constant(value(4.4), named("x"));
+            TF<Constant, Double> y = tf.constant(values(1.1, 2.2, 3.3), named("y"));
+            TF<Operation.Multiply, Double> multiply = x.multiply(y);
+
+            VectorWrapper<Double> result = tf.fetchVector(multiply);
+            assertEquals(Arrays.asList(4.84, 9.68, 14.52), result.getList1D());
         }
     }
 }

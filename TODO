@@ -1,7 +1,23 @@
 divide
-check [1, 2, 3]
-DT_INT64
+node {
+  name: "div"
+  op: "RealDiv"
+  input: "w"
+  input: "y"
+  attr {
+    key: "T"
+    value {
+      type: DT_FLOAT
+    }
+  }
+}
+
+placeholders
+
+rounding: Expected :[4.84, 9.68, 14.52]
+Actual   :[4.840000000000001, 9.680000000000001, 14.52]
 vyzkouset inicializaci tri promennych
+check driv - java.lang.IllegalArgumentException: Node 'difference' is not unique
 sladit CSVClasspathResource a ClasspathResource
 TemplateProcessor ?
 lazy loading pro template telo
@@ -10,7 +26,8 @@ http://www.baeldung.com/java-io-conversions
 https://blog.gdeltproject.org/a-compilation-of-gdelt-bigquery-demos/
 https://towardsdatascience.com/eager-execution-tensorflow-8042128ca7be - tensorflow 1.7
 
-getPrefix - do abstraktu a resit anotaci
+tensorboard: https://medium.com/@anthony_sarkis/tensorboard-quick-start-in-5-minutes-e3ec69f673af
+  tensorboard --logdir /tmp/ex03tb
 
 http://asm.ow2.org/doc/developer-guide.html
 javap -l target/test-classes/org/superbiz/builder/UseCase01Test.class

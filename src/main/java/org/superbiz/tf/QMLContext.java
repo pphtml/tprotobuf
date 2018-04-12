@@ -22,6 +22,7 @@ import java.io.StringWriter;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -211,6 +212,8 @@ public class QMLContext implements AutoCloseable {
                 return (NTType) Double.valueOf(result.doubleValue());
             } else if (result.dataType().equals(DataType.INT32)) {
                 return (NTType) Integer.valueOf(result.intValue());
+            } else if (result.dataType().equals(DataType.INT64)) {
+                return (NTType) Long.valueOf(result.longValue());
             } else {
                 throw new UnsupportedOperationException(String.format("Result type %s is not supported.", result.dataType()));
             }
@@ -232,6 +235,10 @@ public class QMLContext implements AutoCloseable {
                 IntBuffer intBuffer = IntBuffer.allocate(result.numElements());
                 result.writeTo(intBuffer);
                 return new VectorWrapper<NTType>(intBuffer);
+            } else if (result.dataType().equals(DataType.INT64)) {
+                LongBuffer longBuffer = LongBuffer.allocate(result.numElements());
+                result.writeTo(longBuffer);
+                return new VectorWrapper<NTType>(longBuffer);
             } else {
                 throw new UnsupportedOperationException(String.format("Result type %s is not supported.", result.dataType()));
             }
@@ -289,6 +296,26 @@ public class QMLContext implements AutoCloseable {
         };
     }
 
+    public static InitializingOperation<Long> value(long value) {
+        return new InitializingOperation<Long>(){
+            @Override
+            public String getInitialValue() {
+                return Long.valueOf(value).toString();
+            }
+
+            @Override
+            public DType getDType() {
+                return DType.DT_INT64;
+            }
+
+
+            @Override
+            public boolean isVector() {
+                return false;
+            }
+        };
+    }
+
     public static InitializingOperation<Integer> values(int... values) {
         return new InitializingOperation<Integer>(){
             @Override
@@ -304,6 +331,30 @@ public class QMLContext implements AutoCloseable {
             @Override
             public DType getDType() {
                 return DType.DT_INT32;
+            }
+
+            @Override
+            public boolean isVector() {
+                return true;
+            }
+        };
+    }
+
+    public static InitializingOperation<Long> values(long... values) {
+        return new InitializingOperation<Long>(){
+            @Override
+            public Shape getShape() {
+                return Shape.shape(values.length);
+            }
+
+            @Override
+            public String getInitialValue() {
+                return toStringTensorContent(values);
+            }
+
+            @Override
+            public DType getDType() {
+                return DType.DT_INT64;
             }
 
             @Override
@@ -414,8 +465,12 @@ public class QMLContext implements AutoCloseable {
 
     // public <R extends TFType> TF<Operation.Subtract, NTType> subtract(TF<R, NTType> operand, Attribute... attributes) {
     public <R extends TFType, NTType> TF<Operation.Square, NTType> square(TF<R, NTType> operation, Attribute... attributes) {
-        Operation.Square ble = new Operation.Square(operation, attributes);
         TF of = TF.of(new Operation.Square(operation, attributes), this);
+        return this.makeFromTemplate(of, this);
+    }
+
+    public <R extends TFType, NTType> TF<Operation.ReduceMean, NTType> reduceMean(TF<R, NTType> operation, Attribute... attributes) {
+        TF of = TF.of(new Operation.ReduceMean(operation, attributes), this);
         return this.makeFromTemplate(of, this);
     }
 }

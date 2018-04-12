@@ -13,11 +13,15 @@ print(zip(x_data, y_data)[0:5])
 a = tf.Variable(1.0, name='a')
 b = tf.Variable(0.2, name='b')
 y = a * x_data + b
+#c = tf.cast(b, tf.int64)
+c = tf.constant(123, dtype=tf.int64, name='c')
 
 loss = tf.reduce_mean(tf.square(y - y_data, name='squareNode'), name='reduceMeanNode')
 
+gradients = tf.gradients(loss, [a, b, y])
+
 optimizer = tf.train.GradientDescentOptimizer(0.5, name='gradiDescendNode')
-train = optimizer.minimize(loss, name='trainNode')
+# train = optimizer.minimize(loss, name='trainNode')
 
 init = tf.global_variables_initializer()
 
@@ -27,10 +31,16 @@ tf.train.write_graph(graph_def, '../../../../../../src/main/resources/com/qml/us
 sess = tf.Session()
 sess.run(init)
 
-train_data = []
-for step in range(100):
-    evals = sess.run([train, a, b])[1:]
-    if step % 5 == 0:
-        print(step, evals)
-        train_data.append(evals)
+evals = sess.run([gradients])
+
+
+# train_data = []
+# for step in range(100):
+#     evals = sess.run([train, a, b])[1:]
+#     if step % 5 == 0:
+#         print(step, evals)
+#         train_data.append(evals)
+
+train_writer = tf.summary.FileWriter('/tmp/ex03tb', sess.graph)
+sess.close()
 
