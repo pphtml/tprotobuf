@@ -8,6 +8,10 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.superbiz.tf.attribute.Attribute;
+import org.superbiz.tf.operation.BasicOperations;
+import org.superbiz.tf.operation.Constant;
+import org.superbiz.tf.operation.Gradient;
+import org.superbiz.tf.operation.Variable;
 import org.superbiz.tf.type.*;
 import org.superbiz.tf.util.NamingService;
 import org.superbiz.tf.util.NodeFreemarkerVariableReader;
@@ -24,15 +28,9 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.google.protobuf.TensorContentEncoder.toStringTensorContent;
 import static org.superbiz.tf.util.AutoCloseablePriority.priority;
@@ -130,6 +128,18 @@ public class QMLContext implements AutoCloseable {
         return graph;
     }
 
+//    /**
+//     * don't forget to close
+//     * @return
+//     */
+//    // TODO reduce visibility
+//    public Graph buildGraphTemporarily() {
+//        byte[] bytes = graphBuilder.build().toByteArray();
+//        Graph graph = new Graph();
+//        graph.importGraphDef(bytes);
+//        return graph;
+//    }
+
     public <T extends TFType, NTType> TF<T, NTType> makeFromTemplate(TF<T, NTType> node, QMLContext qmlContext) {
         node.build(qmlContext);
         String templateName = node.getFMTemplateName();
@@ -221,8 +231,34 @@ public class QMLContext implements AutoCloseable {
     }
 
     public <NTType> VectorWrapper<NTType> fetchVector(TF<? extends TFType, NTType> node) {
+        return fetchVector(node.getName());
+//        Session session = this.getSession();
+//        try (Tensor<?> result = session.runner().fetch(node.getName(), 0).run().get(0)) {
+//            if (result.dataType().equals(DataType.FLOAT)) {
+//                FloatBuffer floatBuffer = FloatBuffer.allocate(result.numElements());
+//                result.writeTo(floatBuffer);
+//                return new VectorWrapper<NTType>(floatBuffer);
+//            } else if (result.dataType().equals(DataType.DOUBLE)) {
+//                DoubleBuffer doubleBuffer = DoubleBuffer.allocate(result.numElements());
+//                result.writeTo(doubleBuffer);
+//                return new VectorWrapper<NTType>(doubleBuffer);
+//            } else if (result.dataType().equals(DataType.INT32)) {
+//                IntBuffer intBuffer = IntBuffer.allocate(result.numElements());
+//                result.writeTo(intBuffer);
+//                return new VectorWrapper<NTType>(intBuffer);
+//            } else if (result.dataType().equals(DataType.INT64)) {
+//                LongBuffer longBuffer = LongBuffer.allocate(result.numElements());
+//                result.writeTo(longBuffer);
+//                return new VectorWrapper<NTType>(longBuffer);
+//            } else {
+//                throw new UnsupportedOperationException(String.format("Result type %s is not supported.", result.dataType()));
+//            }
+//        }
+    }
+
+    public <NTType> VectorWrapper<NTType> fetchVector(String nodeName) {
         Session session = this.getSession();
-        try (Tensor<?> result = session.runner().fetch(node.getName(), 0).run().get(0)) {
+        try (Tensor<?> result = session.runner().fetch(nodeName, 0).run().get(0)) {
             if (result.dataType().equals(DataType.FLOAT)) {
                 FloatBuffer floatBuffer = FloatBuffer.allocate(result.numElements());
                 result.writeTo(floatBuffer);
@@ -463,14 +499,25 @@ public class QMLContext implements AutoCloseable {
         return variables;
     }
 
-    // public <R extends TFType> TF<Operation.Subtract, NTType> subtract(TF<R, NTType> operand, Attribute... attributes) {
-    public <R extends TFType, NTType> TF<Operation.Square, NTType> square(TF<R, NTType> operation, Attribute... attributes) {
-        TF of = TF.of(new Operation.Square(operation, attributes), this);
+    // public <R extends TFType> TF<BasicOperations.Subtract, NTType> subtract(TF<R, NTType> operand, Attribute... attributes) {
+    public <R extends TFType, NTType> TF<BasicOperations.Square, NTType> square(TF<R, NTType> operation, Attribute... attributes) {
+        TF of = TF.of(new BasicOperations.Square(operation, attributes), this);
         return this.makeFromTemplate(of, this);
     }
 
-    public <R extends TFType, NTType> TF<Operation.ReduceMean, NTType> reduceMean(TF<R, NTType> operation, Attribute... attributes) {
-        TF of = TF.of(new Operation.ReduceMean(operation, attributes), this);
+    public <R extends TFType, NTType> TF<BasicOperations.ReduceMean, NTType> reduceMean(TF<R, NTType> operation, Attribute... attributes) {
+        TF of = TF.of(new BasicOperations.ReduceMean(operation, attributes), this);
         return this.makeFromTemplate(of, this);
+    }
+
+    public <R extends TFType, NTType> TF<BasicOperations.ReduceMean, NTType> gradients(TF<R, NTType> operation, List<TF<Variable, ?>> variables, Attribute... attributes) {
+        Gradient.Gradients gradients = new Gradient.Gradients(operation, variables, attributes);
+        gradients.collectAllOperations(this);
+        TF of = TF.of(gradients, this);
+        return this.makeFromTemplate(of, this);
+    }
+
+    public GraphDef.Builder getGraphBuilder() {
+        return graphBuilder;
     }
 }

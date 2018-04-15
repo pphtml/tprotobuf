@@ -12,15 +12,16 @@ print(zip(x_data, y_data)[0:5])
 
 a = tf.Variable(1.0, name='a')
 b = tf.Variable(0.2, name='b')
-y = a * x_data + b
+c = tf.Variable(1.234, name='c')
+y = a * x_data + b + c
 #c = tf.cast(b, tf.int64)
-c = tf.constant(123, dtype=tf.int64, name='c')
+#c = tf.constant(123, dtype=tf.int64, name='c')
 
 loss = tf.reduce_mean(tf.square(y - y_data, name='squareNode'), name='reduceMeanNode')
 
-gradients = tf.gradients(loss, [a, b, y])
+gradients = tf.gradients(loss, [a, b, c])
 
-optimizer = tf.train.GradientDescentOptimizer(0.5, name='gradiDescendNode')
+# optimizer = tf.train.GradientDescentOptimizer(0.5, name='gradiDescendNode')
 # train = optimizer.minimize(loss, name='trainNode')
 
 init = tf.global_variables_initializer()
@@ -32,6 +33,7 @@ sess = tf.Session()
 sess.run(init)
 
 evals = sess.run([gradients])
+print(evals)
 
 
 # train_data = []

@@ -1,15 +1,7 @@
 package com.qml.usecases;
 
-import org.superbiz.tf.QMLContext;
-import org.superbiz.tf.TF;
-import org.superbiz.tf.type.Initializer;
-import org.superbiz.tf.type.Operation;
-import org.superbiz.tf.type.Variable;
-import org.tensorflow.Graph;
-
 import static org.superbiz.tf.QMLContext.createSession;
 import static org.superbiz.tf.QMLContext.value;
-import static org.superbiz.tf.attribute.Attribute.named;
 
 public class Ex01 {
     // x = tf.Variable(3, name="x")
@@ -28,7 +20,7 @@ public class Ex01 {
 //        try (QMLContext tf = createSession("TensorFlow")) {
 //            TF<Variable> x = tf.variable(value(3), named("x"));
 //            TF<Variable> y = tf.variable(value(4), named("y"));
-//            TF<Operation.Add> add = x.add(y);
+//            TF<BasicOperations.Add> add = x.add(y);
 //
 //            tf.run(tf.globalVariablesInitializer());
 //            Float result = tf.fetch(add);

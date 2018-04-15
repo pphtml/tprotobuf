@@ -21,8 +21,8 @@ public class ProtoRun {
         graph.importGraphDef(bytes);
         //final Session session = new Session(graph);
 
-//        ArrayList<Operation> operations = Lists.newArrayList(graph.operations());
-//        for (Operation operation : operations) {
+//        ArrayList<BasicOperations> operations = Lists.newArrayList(graph.operations());
+//        for (BasicOperations operation : operations) {
 //            System.out.println(operation);
 //        }
         List<Operation> operations = StreamSupport.stream(Spliterators.spliteratorUnknownSize(graph.operations(), Spliterator.ORDERED), false)

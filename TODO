@@ -1,19 +1,9 @@
-divide
-node {
-  name: "div"
-  op: "RealDiv"
-  input: "w"
-  input: "y"
-  attr {
-    key: "T"
-    value {
-      type: DT_FLOAT
-    }
-  }
-}
-
+divide casts
 placeholders
+gradients_impl.py:600
+TF<BasicOperations.Add, Integer> add = x.add(y);
 
+0.000001 a 0.001 na konstantu
 rounding: Expected :[4.84, 9.68, 14.52]
 Actual   :[4.840000000000001, 9.680000000000001, 14.52]
 vyzkouset inicializaci tri promennych

@@ -1,25 +1,29 @@
-package org.superbiz.tf.type;
+package org.superbiz.tf.operation;
 
 import org.superbiz.tf.annotation.Mapping;
 import org.superbiz.tf.annotation.NamePrefix;
-import org.superbiz.tf.annotation.OutputNodePostfix;
 import org.superbiz.tf.annotation.Template;
 import org.superbiz.tf.attribute.Attribute;
+import org.superbiz.tf.type.AbstractNode;
+import org.superbiz.tf.type.InitializingOperation;
+import org.superbiz.tf.type.NamingSequence;
+import org.superbiz.tf.type.TFType;
 
-@NamePrefix("var")
-@Template("variable-from-constant.pb.ftl")
-@OutputNodePostfix("/read")
-public class Variable extends AbstractNode implements TFType, NamingSequence {
+@NamePrefix("const")
+@Template("constant-from-constant.pb.ftl")
+//@OutputNodePostfix("/read")
+public class Constant extends AbstractNode implements TFType, NamingSequence {
 
     private final InitializingOperation initializingOperation;
 
-    private Variable(InitializingOperation initializingOperation, Attribute[] attributes) {
+    private Constant(InitializingOperation initializingOperation, Attribute[] attributes) {
         super(attributes);
         this.initializingOperation = initializingOperation;
+        this.setShape(this.initializingOperation.getShape());
     }
 
-    public static Variable of(InitializingOperation initializingOperation, Attribute[] attributes) {
-        Variable result = new Variable(initializingOperation, attributes);
+    public static Constant of(InitializingOperation initializingOperation, Attribute[] attributes) {
+        Constant result = new Constant(initializingOperation, attributes);
         if (initializingOperation.getDType() != null) {
             result.setDType(initializingOperation.getDType());
         } else {

@@ -1,8 +1,8 @@
 package org.superbiz.tf;
 
 import org.superbiz.tf.attribute.Attribute;
+import org.superbiz.tf.operation.BasicOperations;
 import org.superbiz.tf.type.DType;
-import org.superbiz.tf.type.Operation;
 import org.superbiz.tf.type.TFType;
 
 public class TF <T extends TFType, NTType> {
@@ -19,26 +19,25 @@ public class TF <T extends TFType, NTType> {
         return new TF(node, qmlContext);
     }
 
-    public <R extends TFType> TF<Operation.Add, NTType> add(TF<R, NTType> operand, Attribute... attributes) {
-        TF of = of(new Operation.Add(this, operand, attributes), qmlContext);
+    public <R extends TFType> TF<BasicOperations.Add, NTType> add(TF<R, NTType> operand, Attribute... attributes) {
+        TF of = of(new BasicOperations.Add(this, operand, attributes), qmlContext);
         return qmlContext.makeFromTemplate(of, qmlContext);
     }
 
-    public <R extends TFType> TF<Operation.Subtract, NTType> subtract(TF<R, NTType> operand, Attribute... attributes) {
-        TF of = of(new Operation.Subtract(this, operand, attributes), qmlContext);
+    public <R extends TFType> TF<BasicOperations.Subtract, NTType> subtract(TF<R, NTType> operand, Attribute... attributes) {
+        TF of = of(new BasicOperations.Subtract(this, operand, attributes), qmlContext);
         return qmlContext.makeFromTemplate(of, qmlContext);
     }
 
-    public <R extends TFType> TF<Operation.Multiply, NTType> multiply(TF<R, NTType> operand, Attribute... attributes) {
-        TF of = of(new Operation.Multiply(this, operand, attributes), qmlContext);
+    public <R extends TFType> TF<BasicOperations.Multiply, NTType> multiply(TF<R, NTType> operand, Attribute... attributes) {
+        TF of = of(new BasicOperations.Multiply(this, operand, attributes), qmlContext);
         return qmlContext.makeFromTemplate(of, qmlContext);
     }
 
-
-//    public <R extends TFType> TF<Operation.Multiply, NTType> multiply(TF<R, NTType> operand) {
-//        TF of = of(new Operation.Multiply(this, operand), qmlContext);
-//        return qmlContext.makeFromTemplate(of, qmlContext);
-//    }
+    public <R extends TFType> TF<BasicOperations.Divide, NTType> divide(TF<R, NTType> operand, Attribute... attributes) {
+        TF of = of(new BasicOperations.Divide(this, operand, attributes), qmlContext);
+        return qmlContext.makeFromTemplate(of, qmlContext);
+    }
 
     public void build(QMLContext qmlContext) {
         node.build(qmlContext);

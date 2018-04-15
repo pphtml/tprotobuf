@@ -1,6 +1,5 @@
 package com.qml.usecases;
 
-import com.google.common.primitives.Doubles;
 import com.google.common.primitives.Floats;
 import org.flexdata.csv.DataReader;
 import org.flexdata.csv.DataRecord;
@@ -9,15 +8,18 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.superbiz.tf.QMLContext;
 import org.superbiz.tf.TF;
-import org.superbiz.tf.type.Constant;
-import org.superbiz.tf.type.Operation;
-import org.superbiz.tf.type.Variable;
+import org.superbiz.tf.operation.BasicOperations;
+import org.superbiz.tf.operation.Constant;
+import org.superbiz.tf.operation.Variable;
 import org.superbiz.tf.type.VectorWrapper;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.flexdata.csv.CSVReader.CSVReaderBuilder.createCSVReader;
@@ -64,27 +66,37 @@ public class QML003Test {
 //        train_data.append(evals)
     @Test
     public void basicLinearRegression() {
-        // TODO predelat na float az bude chodit
         Random random = new Random(42);
-        double[] xData = IntStream.range(0, 100).mapToDouble(index -> random.nextDouble()).toArray();
-        double[] yData = DoubleStream.of(xData).map(x -> x * 3.0 + 2.0 + random.nextGaussian() * 0.1).toArray();
+        //float[] floatValues = Floats.toArray(Doubles.asList(values));
+
+        float[] xData = Floats.toArray(IntStream.range(0, 100).mapToObj(index -> Float.valueOf(random.nextFloat())).collect(Collectors.toList()));
+        float[] yData = Floats.toArray(Floats.asList(xData).stream().map(x -> x * 3.0 + 2.0 + random.nextGaussian() * 0.1).collect(Collectors.toList()));
+        //float[] yData = Stream.of(xData).map(x -> x * 3.0 + 2.0 + random.nextGaussian() * 0.1).toArray();
 
         try (QMLContext tf = createSession()) {
-            TF<Variable, Double> a = tf.variable(value(1.0), named("a"));
-            TF<Variable, Double> b = tf.variable(value(0.2), named("b"));
-            TF<Constant, Double> xDataTF = tf.constant(values(xData), named("xData"));
-            TF<Constant, Double> yDataTF = tf.constant(values(yData), named("yData"));
-            TF<Operation.Add, Double> y = a.multiply(xDataTF).add(b);
+            TF<Variable, Float> a = tf.variable(value(1.0f), named("a"));
+            TF<Variable, Float> b = tf.variable(value(0.2f), named("b"));
+            TF<Variable, Float> c = tf.variable(value(1.234f), named("c"));
 
-            // TODO Operation.Square
-            TF<Operation.Subtract, Double> difference = y.subtract(yDataTF, named("difference"));
-            TF<Operation.Square, Double> square = tf.square(difference);
-            TF<Operation.ReduceMean, Double> reduceMean = tf.reduceMean(tf.square(y.subtract(yDataTF, named("difference")), named("square")), named("mean"));
+            TF<Constant, Float> xDataTF = tf.constant(values(xData), named("xData"));
+            TF<Constant, Float> yDataTF = tf.constant(values(yData), named("yData"));
+            TF<BasicOperations.Add, Float> y = a.multiply(xDataTF).add(b).add(c);
+
+//            // TODO BasicOperations.Square
+            TF<BasicOperations.Subtract, Float> difference = y.subtract(yDataTF, named("difference"));
+            TF<BasicOperations.Square, Float> square = tf.square(difference, named("square"));
+            TF<BasicOperations.ReduceMean, Float> loss = tf.reduceMean(square, named("loss"));
+            //TF<BasicOperations.ReduceMean, Float> loss = tf.reduceMean(tf.square(y.subtract(yDataTF, named("difference")), named("square")), named("loss"));
+
+            TF<BasicOperations.ReduceMean, Float> gradients = tf.gradients(loss, Arrays.asList(a, b, c));
+
+
 
             tf.run(tf.globalVariablesInitializer());
-            VectorWrapper<Double> result = tf.fetchVector(reduceMean);
+            //VectorWrapper<Float> result = tf.fetchVector(gradients);
+            VectorWrapper<Float> result = tf.fetchVector("gradients_0/add_1_grad/BroadcastGradientArgs");
             System.out.println(result.getList1D());
-//            assertEquals(7.3, result.doubleValue(), 0.001);
+//            assertEquals(7.3, result.FloatValue(), 0.001);
         }
 
 

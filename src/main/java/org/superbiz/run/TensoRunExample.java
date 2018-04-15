@@ -41,11 +41,11 @@ public class TensoRunExample {
 //                        .addInput(zero)
 //                        .build().output(0);
 
-//                Operation xUpdateOp = g.opBuilder("AssignAdd", "x_get_x_plus_step")
+//                BasicOperations xUpdateOp = g.opBuilder("AssignAdd", "x_get_x_plus_step")
 //                        .addInput(x)
 //                        .addInput(step)
 //                        .build();
-//                Operation xUpdateOp =
+//                BasicOperations xUpdateOp =
 //                        g.opBuilder("AssignAdd", "x_get_x_plus_step").addInput(xVar).addInput(step).build();
 
                 try(Session s = new Session(g)) {

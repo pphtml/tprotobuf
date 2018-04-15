@@ -1,18 +1,7 @@
 package org.superbiz.builder;
 
-import org.junit.Test;
-import org.superbiz.tf.QMLContext;
-import org.superbiz.tf.TF;
-import org.superbiz.tf.type.Constant;
-import org.superbiz.tf.type.Operation;
-import org.superbiz.tf.type.Shape;
-import org.superbiz.tf.type.Variable;
-import org.tensorflow.Graph;
-
 import static org.junit.Assert.assertEquals;
 import static org.superbiz.tf.QMLContext.createSession;
-import static org.superbiz.tf.attribute.Attribute.named;
-import static org.superbiz.tf.type.Shape.shape;
 
 public class UseCase02Test {
     // import tensorflow as tf
@@ -38,7 +27,7 @@ public class UseCase02Test {
 //        try (QMLContext tf = createSession("TensorFlow")) {
 //            //TF<Constant> c1 = tf.constant(1.0f, named("start"));
 //            TF<Variable> v1 = tf.variable(tf.zeros(shape(3)), named("v1"));
-//            //TF<Operation.Add> add = c1.add(v1);
+//            //TF<BasicOperations.Add> add = c1.add(v1);
 //
 //            Graph graph = tf.buildGraph();
 //            Float result = tf.fetch(v1);

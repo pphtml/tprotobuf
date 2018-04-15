@@ -1,12 +1,18 @@
-package org.superbiz.tf.type;
+package org.superbiz.tf.operation;
 
 import org.superbiz.tf.TF;
 import org.superbiz.tf.annotation.Mapping;
 import org.superbiz.tf.annotation.NamePrefix;
+import org.superbiz.tf.annotation.Template;
 import org.superbiz.tf.annotation.TemplateInline;
 import org.superbiz.tf.attribute.Attribute;
+import org.superbiz.tf.type.AbstractNode;
+import org.superbiz.tf.type.NamingSequence;
+import org.superbiz.tf.type.TFType;
 
-public class Operation {
+import java.util.List;
+
+public class BasicOperations {
 
     // node {
     //  name: "add"
@@ -94,6 +100,46 @@ public class Operation {
         public final TF<?, ?> operand2;
 
         public <T extends TFType, R extends TFType, NTType> Multiply(TF<T, NTType> operand1, TF<R, NTType> operand2, Attribute[] attributes) {
+            super(attributes);
+            this.operand1 = operand1;
+            this.operand2 = operand2;
+            this.setDType(this.operand1.getDType());
+        }
+    }
+
+// divide
+//node {
+//  name: "div"
+//  op: "RealDiv"
+//  input: "w"
+//  input: "y"
+//  attr {
+//    key: "T"
+//    value {
+//      type: DT_FLOAT
+//    }
+//  }
+//}
+    @TemplateInline("node {\n" +
+            "  name: \"${nodeName}\"\n" +
+            "  op: \"RealDiv\"\n" +
+            "  input: \"${operand}\"\n" +
+            "  input: \"${operand2}\"\n" +
+            "  attr {\n" +
+            "    key: \"T\"\n" +
+            "    value {\n" +
+            "      type: ${dType}\n" +
+            "    }\n" +
+            "  }\n" +
+            "}\n")
+    @NamePrefix("divide")
+    public static class Divide extends AbstractNode implements TFType, NamingSequence {
+        @Mapping("operand")
+        public final TF<?, ?> operand1;
+        @Mapping("operand2")
+        public final TF<?, ?> operand2;
+
+        public <T extends TFType, R extends TFType, NTType> Divide(TF<T, NTType> operand1, TF<R, NTType> operand2, Attribute[] attributes) {
             super(attributes);
             this.operand1 = operand1;
             this.operand2 = operand2;
@@ -194,4 +240,5 @@ public class Operation {
             this.setDType(this.operand.getDType());
         }
     }
+
 }
