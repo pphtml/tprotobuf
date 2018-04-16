@@ -104,11 +104,31 @@ public class Gradient {
                     visiciPocty.set(inputNode.index, visiciPocty.get(inputNode.index) + 1);
                 }
             }));
-            //   pending_count = [0] * (graph._last_id + 1)
-            //  for op in between_op_list:
-            //    for x in op.inputs:
-            //      if between_ops[x.op._id]:
-            //        pending_count[x.op._id] += 1
+
+            Set<IndexedNode> doOpsSet = new HashSet<>();
+            doOpsSet.addAll(toOperations);
+            queue.clear(); // zbytecny
+            queue.addAll(toOperations);
+
+            Set<IndexedNode> stopOpsSet = new HashSet<>();
+            //doOpsSet.addAll(toOperations);
+            fromOperations.forEach(operation -> {
+                boolean isStopOperation = true;
+                for (IndexedNode inputOperation : operation.inputs(opFinder)) {
+                    if (visiciPocty.get(inputOperation.index) > 0) {
+                        isStopOperation = true;
+                        break;
+                    }
+                }
+                if (isStopOperation) {
+                    stopOpsSet.add(operation);
+                }
+            });
+
+            while (!queue.isEmpty()) {
+                IndexedNode indexedNode = queue.pop();
+
+            }
 
             System.out.println(pruchoziOperaceList);
 
@@ -166,6 +186,21 @@ public class Gradient {
 
         public List<IndexedNode> inputs(Gradients.OpFinder opFinder) {
             return this.operation.getInputList().stream().map(name -> opFinder.find(name)).collect(Collectors.toList());
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            IndexedNode that = (IndexedNode) o;
+            return index == that.index &&
+                    Objects.equals(operation, that.operation);
+        }
+
+        @Override
+        public int hashCode() {
+
+            return Objects.hash(index, operation);
         }
     }
 }
