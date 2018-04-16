@@ -29,10 +29,12 @@ public class ClassMetadata {
         ClassMetadata result = new ClassMetadata();
 
         NamePrefix namePrefixAnnotation = aClass.getAnnotation(NamePrefix.class);
-        if (namePrefixAnnotation == null) {
-            result.namePrefix = String.format("prefix_%s", aClass.getName());
-        } else {
+        if (namePrefixAnnotation != null) {
             result.namePrefix = namePrefixAnnotation.value();
+        } else if (aClass.getSuperclass().getAnnotation(NamePrefix.class) != null) {
+            result.namePrefix = aClass.getSuperclass().getAnnotation(NamePrefix.class).value();
+        } else {
+            result.namePrefix = String.format("prefix_%s", aClass.getName());
         }
 
         OutputNodePostfix outputNodePostfixAnnotation = aClass.getAnnotation(OutputNodePostfix.class);
@@ -68,6 +70,8 @@ public class ClassMetadata {
 
         } else if (aClass.getAnnotation(TemplateInline.class) != null) {
             result.templateText = aClass.getAnnotation(TemplateInline.class).value();
+        } else if (aClass.getSuperclass().getAnnotation(TemplateInline.class) != null) {
+            result.templateText = aClass.getSuperclass().getAnnotation(TemplateInline.class).value();
         } else {
             throw new IllegalArgumentException(String.format("Template or TemplateInline missing for class %s", aClass.getName()));
         }

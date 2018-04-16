@@ -3,9 +3,11 @@ package com.qml.usecases;
 import org.junit.Test;
 import org.superbiz.tf.QMLContext;
 import org.superbiz.tf.TF;
-import org.superbiz.tf.operation.BasicOperations;
+import org.superbiz.tf.operation.BasicOperation;
 import org.superbiz.tf.operation.Constant;
+import org.superbiz.tf.operation.Operation;
 import org.superbiz.tf.type.VectorWrapper;
+import org.superbiz.util.TestUtil;
 
 import java.util.Arrays;
 
@@ -16,7 +18,7 @@ import static org.superbiz.tf.attribute.Attribute.named;
 /**
  * Basic op operations for scalars and vectors of constants. Operations are add, subtract, multiply and divide.
  */
-public class QML002Test {
+public class QML002Test extends AbstractTestBase {
 
     /**
      * Two integer constants are added.
@@ -26,7 +28,7 @@ public class QML002Test {
         try (QMLContext tf = createSession()) {
             TF<Constant, Integer> x = tf.constant(value(3), named("x"));
             TF<Constant, Integer> y = tf.constant(value(4), named("y"));
-            TF<BasicOperations.Add, Integer> add = x.add(y);
+            TF<Operation.Add, Integer> add = x.add(y);
 
             Integer result = tf.fetch(add);
             assertEquals(7, result.intValue());
@@ -41,10 +43,10 @@ public class QML002Test {
         try (QMLContext tf = createSession()) {
             TF<Constant, Float> x = tf.constant(value(3.1f), named("x"));
             TF<Constant, Float> y = tf.constant(value(4.2f), named("y"));
-            TF<BasicOperations.Add, Float> add = x.add(y);
+            TF<Operation.Add, Float> add = x.add(y);
 
             Float result = tf.fetch(add);
-            assertEquals(7.3, result.floatValue(), 0.001);
+            assertEquals(7.3, result.floatValue(), ROUNDING_ACCEPTABLE_DELTA);
         }
     }
 
@@ -56,10 +58,10 @@ public class QML002Test {
         try (QMLContext tf = createSession()) {
             TF<Constant, Double> x = tf.constant(value(3.1), named("x"));
             TF<Constant, Double> y = tf.constant(value(4.2), named("y"));
-            TF<BasicOperations.Add, Double> add = x.add(y);
+            TF<Operation.Add, Double> add = x.add(y);
 
             Double result = tf.fetch(add);
-            assertEquals(7.3, result.doubleValue(), 0.001);
+            assertEquals(7.3, result.doubleValue(), ROUNDING_ACCEPTABLE_DELTA);
         }
     }
 
@@ -71,7 +73,7 @@ public class QML002Test {
         try (QMLContext tf = createSession()) {
             TF<Constant, Integer> x = tf.constant(value(3), named("x"));
             TF<Constant, Integer> y = tf.constant(value(4), named("y"));
-            TF<BasicOperations.Multiply, Integer> multiply = x.multiply(y);
+            TF<Operation.Multiply, Integer> multiply = x.multiply(y);
 
             Integer result = tf.fetch(multiply);
             assertEquals(12, result.intValue());
@@ -86,10 +88,10 @@ public class QML002Test {
         try (QMLContext tf = createSession()) {
             TF<Constant, Float> x = tf.constant(value(3.1f), named("x"));
             TF<Constant, Float> y = tf.constant(value(4.2f), named("y"));
-            TF<BasicOperations.Multiply, Float> multiply = x.multiply(y);
+            TF<Operation.Multiply, Float> multiply = x.multiply(y);
 
             Float result = tf.fetch(multiply);
-            assertEquals(13.02, result.floatValue(), 0.001);
+            assertEquals(13.02, result.floatValue(), ROUNDING_ACCEPTABLE_DELTA);
         }
     }
 
@@ -126,7 +128,7 @@ public class QML002Test {
         try (QMLContext tf = createSession()) {
             TF<Constant, Integer> x = tf.constant(value(4), named("x"));
             TF<Constant, Integer> y = tf.constant(values(1, 2, 3), named("y"));
-            TF<BasicOperations.Multiply, Integer> multiply = x.multiply(y);
+            TF<Operation.Multiply, Integer> multiply = x.multiply(y);
 
             VectorWrapper<Integer> result = tf.fetchVector(multiply);
             assertEquals(Arrays.asList(4, 8, 12), result.getList1D());
@@ -141,7 +143,7 @@ public class QML002Test {
         try (QMLContext tf = createSession()) {
             TF<Constant, Long> x = tf.constant(value(4L), named("x"));
             TF<Constant, Long> y = tf.constant(values(1L, 2L, 3L), named("y"));
-            TF<BasicOperations.Multiply, Long> multiply = x.multiply(y);
+            TF<Operation.Multiply, Long> multiply = x.multiply(y);
 
             VectorWrapper<Long> result = tf.fetchVector(multiply);
             assertEquals(Arrays.asList(4L, 8L, 12L), result.getList1D());
@@ -181,7 +183,7 @@ public class QML002Test {
         try (QMLContext tf = createSession()) {
             TF<Constant, Float> x = tf.constant(value(4.4f), named("x"));
             TF<Constant, Float> y = tf.constant(values(1.1f, 2.2f, 3.3f), named("y"));
-            TF<BasicOperations.Multiply, Float> multiply = x.multiply(y);
+            TF<Operation.Multiply, Float> multiply = x.multiply(y);
 
             VectorWrapper<Float> result = tf.fetchVector(multiply);
             assertEquals(Arrays.asList(4.84f, 9.68f, 14.52f), result.getList1D());
@@ -196,10 +198,10 @@ public class QML002Test {
         try (QMLContext tf = createSession()) {
             TF<Constant, Double> x = tf.constant(value(4.4), named("x"));
             TF<Constant, Double> y = tf.constant(values(1.1, 2.2, 3.3), named("y"));
-            TF<BasicOperations.Multiply, Double> multiply = x.multiply(y);
+            TF<Operation.Multiply, Double> multiply = x.multiply(y);
 
             VectorWrapper<Double> result = tf.fetchVector(multiply);
-            assertEquals(Arrays.asList(4.84, 9.68, 14.52), result.getList1D());
+            assertEquals(Arrays.asList(4.84, 9.68, 14.52), TestUtil.roundListOfDoubles(result.getList1D(), ROUNDING_ACCEPTABLE_PRECISION));
         }
     }
 
@@ -211,10 +213,10 @@ public class QML002Test {
         try (QMLContext tf = createSession()) {
             TF<Constant, Float> x = tf.constant(value(3.1f), named("x"));
             TF<Constant, Float> y = tf.constant(value(4.2f), named("y"));
-            TF<BasicOperations.Divide, Float> divide = x.divide(y);
+            TF<Operation.Divide, Float> divide = x.divide(y);
 
             Float result = tf.fetch(divide);
-            assertEquals(0.738095223903656, result.floatValue(), 0.000001);
+            assertEquals(0.738095223903656, result.floatValue(), ROUNDING_ACCEPTABLE_DELTA);
         }
     }
 
@@ -226,10 +228,10 @@ public class QML002Test {
         try (QMLContext tf = createSession()) {
             TF<Constant, Double> x = tf.constant(value(3.2), named("x"));
             TF<Constant, Double> y = tf.constant(value(4.2), named("y"));
-            TF<BasicOperations.Divide, Double> divide = x.divide(y);
+            TF<Operation.Divide, Double> divide = x.divide(y);
 
             Double result = tf.fetch(divide);
-            assertEquals(0.761904776096344, result.floatValue(), 0.000001);
+            assertEquals(0.761904776096344, result.floatValue(), ROUNDING_ACCEPTABLE_DELTA);
         }
     }
 
@@ -241,7 +243,7 @@ public class QML002Test {
 //        try (QMLContext tf = createSession()) {
 //            TF<Constant, Integer> x = tf.constant(value(3), named("x"));
 //            TF<Constant, Integer> y = tf.constant(value(4), named("y"));
-//            TF<BasicOperations.Divide, Integer> divide = x.divideWithCastToFloat(y);
+//            TF<BasicOperation.Divide, Integer> divide = x.divideWithCastToFloat(y);
 //            divide.castTo(Float.class);
 //
 //            Double result = tf.fetch(divide);
@@ -259,10 +261,10 @@ public class QML002Test {
         try (QMLContext tf = createSession()) {
             TF<Constant, Float> x = tf.constant(value(18.1f), named("x"));
             TF<Constant, Float> y = tf.constant(value(3.2f), named("y"));
-            TF<BasicOperations.Subtract, Float> subtract = x.subtract(y);
+            TF<Operation.Subtract, Float> subtract = x.subtract(y);
 
             Float result = tf.fetch(subtract);
-            assertEquals(14.9, result.floatValue(), 0.000001);
+            assertEquals(14.9, result.floatValue(), ROUNDING_ACCEPTABLE_DELTA);
         }
     }
 

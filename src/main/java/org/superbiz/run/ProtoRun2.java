@@ -47,8 +47,8 @@ public class ProtoRun2 {
         }
 
 //        //Output<Object> x = graph.operation("init_x").output(0);
-//        BasicOperations x = graph.operation("init_x");
-//        BasicOperations xUpdateOp = graph.operation("x_get_x_plus_step");
+//        BasicOperation x = graph.operation("init_x");
+//        BasicOperation xUpdateOp = graph.operation("x_get_x_plus_step");
 //
 //        try(Session s = new Session(graph)) {
 //            s.runner().addTarget(x).run();

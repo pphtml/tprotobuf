@@ -22,7 +22,7 @@ public class UseCase01Test {
 //        try (QMLContext tf = createSession("TensorFlow")) {
 //            TF<Constant> c1 = tf.constant(1.0f, named("start"));
 //            TF<Constant> c2 = tf.constant(2.0f, named("step"));
-//            TF<BasicOperations.Add> add = c1.add(c2);
+//            TF<BasicOperation.Add> add = c1.add(c2);
 //
 //            Graph graph = tf.buildGraph();
 //            Float result = tf.run(add);

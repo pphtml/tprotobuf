@@ -12,20 +12,8 @@ import org.superbiz.tf.type.TFType;
 
 import java.util.List;
 
-public class BasicOperations {
+public class BasicOperation {
 
-    // node {
-    //  name: "add"
-    //  op: "Add"
-    //  input: "mul_1"
-    //  input: "y/read"
-    //  attr {
-    //    key: "T"
-    //    value {
-    //      type: DT_INT32
-    //    }
-    //  }
-    //}
     @TemplateInline("node {\n" +
             "  name: \"${nodeName}\"\n" +
             "  op: \"Add\"\n" +
@@ -240,5 +228,4 @@ public class BasicOperations {
             this.setDType(this.operand.getDType());
         }
     }
-
 }

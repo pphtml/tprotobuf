@@ -8,8 +8,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.superbiz.tf.QMLContext;
 import org.superbiz.tf.TF;
-import org.superbiz.tf.operation.BasicOperations;
+import org.superbiz.tf.operation.BasicOperation;
 import org.superbiz.tf.operation.Constant;
+import org.superbiz.tf.operation.Operation;
 import org.superbiz.tf.operation.Variable;
 import org.superbiz.tf.type.VectorWrapper;
 
@@ -17,9 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.flexdata.csv.CSVReader.CSVReaderBuilder.createCSVReader;
@@ -28,7 +27,7 @@ import static org.superbiz.tf.QMLContext.value;
 import static org.superbiz.tf.QMLContext.values;
 import static org.superbiz.tf.attribute.Attribute.named;
 
-public class QML003Test {
+public class QML003Test extends AbstractTestBase {
 // import numpy as np
 //import tensorflow as tf
 //
@@ -80,15 +79,15 @@ public class QML003Test {
 
             TF<Constant, Float> xDataTF = tf.constant(values(xData), named("xData"));
             TF<Constant, Float> yDataTF = tf.constant(values(yData), named("yData"));
-            TF<BasicOperations.Add, Float> y = a.multiply(xDataTF).add(b).add(c);
+            TF<Operation.Add, Float> y = a.multiply(xDataTF).add(b).add(c);
 
-//            // TODO BasicOperations.Square
-            TF<BasicOperations.Subtract, Float> difference = y.subtract(yDataTF, named("difference"));
-            TF<BasicOperations.Square, Float> square = tf.square(difference, named("square"));
-            TF<BasicOperations.ReduceMean, Float> loss = tf.reduceMean(square, named("loss"));
-            //TF<BasicOperations.ReduceMean, Float> loss = tf.reduceMean(tf.square(y.subtract(yDataTF, named("difference")), named("square")), named("loss"));
+//            // TODO BasicOperation.Square
+            TF<Operation.Subtract, Float> difference = y.subtract(yDataTF, named("difference"));
+            TF<BasicOperation.Square, Float> square = tf.square(difference, named("square"));
+            TF<BasicOperation.ReduceMean, Float> loss = tf.reduceMean(square, named("loss"));
+            //TF<BasicOperation.ReduceMean, Float> loss = tf.reduceMean(tf.square(y.subtract(yDataTF, named("difference")), named("square")), named("loss"));
 
-            TF<BasicOperations.ReduceMean, Float> gradients = tf.gradients(loss, Arrays.asList(a, b, c));
+            TF<BasicOperation.ReduceMean, Float> gradients = tf.gradients(loss, Arrays.asList(a, b, c));
 
 
 

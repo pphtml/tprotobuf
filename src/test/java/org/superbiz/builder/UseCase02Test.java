@@ -27,7 +27,7 @@ public class UseCase02Test {
 //        try (QMLContext tf = createSession("TensorFlow")) {
 //            //TF<Constant> c1 = tf.constant(1.0f, named("start"));
 //            TF<Variable> v1 = tf.variable(tf.zeros(shape(3)), named("v1"));
-//            //TF<BasicOperations.Add> add = c1.add(v1);
+//            //TF<BasicOperation.Add> add = c1.add(v1);
 //
 //            Graph graph = tf.buildGraph();
 //            Float result = tf.fetch(v1);

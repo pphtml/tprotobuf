@@ -22,7 +22,7 @@ public class ExPb01 {
         graph.importGraphDef(bytes);
 
 
-        //BasicOperations variable = graph.operation("add_1");
+        //BasicOperation variable = graph.operation("add_1");
 
         try (Session s = new Session(graph)) {
 //            try(Tensor<Float> result = s.runner().fetch(out.name(), 0).run().get(0).expect(Float.class)){

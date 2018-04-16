@@ -8,7 +8,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.superbiz.tf.attribute.Attribute;
-import org.superbiz.tf.operation.BasicOperations;
+import org.superbiz.tf.operation.BasicOperation;
 import org.superbiz.tf.operation.Constant;
 import org.superbiz.tf.operation.Gradient;
 import org.superbiz.tf.operation.Variable;
@@ -499,18 +499,18 @@ public class QMLContext implements AutoCloseable {
         return variables;
     }
 
-    // public <R extends TFType> TF<BasicOperations.Subtract, NTType> subtract(TF<R, NTType> operand, Attribute... attributes) {
-    public <R extends TFType, NTType> TF<BasicOperations.Square, NTType> square(TF<R, NTType> operation, Attribute... attributes) {
-        TF of = TF.of(new BasicOperations.Square(operation, attributes), this);
+    // public <R extends TFType> TF<BasicOperation.Subtract, NTType> subtract(TF<R, NTType> operand, Attribute... attributes) {
+    public <R extends TFType, NTType> TF<BasicOperation.Square, NTType> square(TF<R, NTType> operation, Attribute... attributes) {
+        TF of = TF.of(new BasicOperation.Square(operation, attributes), this);
         return this.makeFromTemplate(of, this);
     }
 
-    public <R extends TFType, NTType> TF<BasicOperations.ReduceMean, NTType> reduceMean(TF<R, NTType> operation, Attribute... attributes) {
-        TF of = TF.of(new BasicOperations.ReduceMean(operation, attributes), this);
+    public <R extends TFType, NTType> TF<BasicOperation.ReduceMean, NTType> reduceMean(TF<R, NTType> operation, Attribute... attributes) {
+        TF of = TF.of(new BasicOperation.ReduceMean(operation, attributes), this);
         return this.makeFromTemplate(of, this);
     }
 
-    public <R extends TFType, NTType> TF<BasicOperations.ReduceMean, NTType> gradients(TF<R, NTType> operation, List<TF<Variable, ?>> variables, Attribute... attributes) {
+    public <R extends TFType, NTType> TF<BasicOperation.ReduceMean, NTType> gradients(TF<R, NTType> operation, List<TF<Variable, ?>> variables, Attribute... attributes) {
         Gradient.Gradients gradients = new Gradient.Gradients(operation, variables, attributes);
         gradients.collectAllOperations(this);
         TF of = TF.of(gradients, this);

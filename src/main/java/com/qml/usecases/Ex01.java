@@ -20,7 +20,7 @@ public class Ex01 {
 //        try (QMLContext tf = createSession("TensorFlow")) {
 //            TF<Variable> x = tf.variable(value(3), named("x"));
 //            TF<Variable> y = tf.variable(value(4), named("y"));
-//            TF<BasicOperations.Add> add = x.add(y);
+//            TF<BasicOperation.Add> add = x.add(y);
 //
 //            tf.run(tf.globalVariablesInitializer());
 //            Float result = tf.fetch(add);
