@@ -34,4 +34,17 @@ public class Operation {
             super(operand1, operand2, attributes);
         }
     }
+
+    public static class Square extends BasicOperation.Square {
+        public <T extends TFType, R extends TFType, NTType> Square(TF<T, NTType> operand, Attribute[] attributes) {
+            super(operand, attributes);
+        }
+    }
+
+    public static class ReduceMean extends BasicOperation.ReduceMean {
+        public <T extends TFType, R extends TFType, NTType> ReduceMean(TF<T, NTType> operand, Attribute[] attributes) {
+            super(operand, attributes);
+        }
+    }
+
 }

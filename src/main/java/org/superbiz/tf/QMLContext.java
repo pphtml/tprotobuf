@@ -11,6 +11,7 @@ import org.superbiz.tf.attribute.Attribute;
 import org.superbiz.tf.operation.BasicOperation;
 import org.superbiz.tf.operation.Constant;
 import org.superbiz.tf.operation.Gradient;
+import org.superbiz.tf.operation.Operation;
 import org.superbiz.tf.operation.Variable;
 import org.superbiz.tf.type.*;
 import org.superbiz.tf.util.NamingService;
@@ -500,17 +501,17 @@ public class QMLContext implements AutoCloseable {
     }
 
     // public <R extends TFType> TF<BasicOperation.Subtract, NTType> subtract(TF<R, NTType> operand, Attribute... attributes) {
-    public <R extends TFType, NTType> TF<BasicOperation.Square, NTType> square(TF<R, NTType> operation, Attribute... attributes) {
-        TF of = TF.of(new BasicOperation.Square(operation, attributes), this);
+    public <R extends TFType, NTType> TF<Operation.Square, NTType> square(TF<R, NTType> operation, Attribute... attributes) {
+        TF of = TF.of(new Operation.Square(operation, attributes), this);
         return this.makeFromTemplate(of, this);
     }
 
-    public <R extends TFType, NTType> TF<BasicOperation.ReduceMean, NTType> reduceMean(TF<R, NTType> operation, Attribute... attributes) {
-        TF of = TF.of(new BasicOperation.ReduceMean(operation, attributes), this);
+    public <R extends TFType, NTType> TF<Operation.ReduceMean, NTType> reduceMean(TF<R, NTType> operation, Attribute... attributes) {
+        TF of = TF.of(new Operation.ReduceMean(operation, attributes), this);
         return this.makeFromTemplate(of, this);
     }
 
-    public <R extends TFType, NTType> TF<BasicOperation.ReduceMean, NTType> gradients(TF<R, NTType> operation, List<TF<Variable, ?>> variables, Attribute... attributes) {
+    public <R extends TFType, NTType> TF<Gradient.Gradients, NTType> gradients(TF<R, NTType> operation, List<TF<Variable, ?>> variables, Attribute... attributes) {
         Gradient.Gradients gradients = new Gradient.Gradients(operation, variables, attributes);
         gradients.collectAllOperations(this);
         TF of = TF.of(gradients, this);

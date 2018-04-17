@@ -1,6 +1,6 @@
-testy pro square (ints, floats)
-testy pro reduceMean (ints, floats)
 divide casts
+testy pro square (ints)
+testy pro reduceMean (ints)
 placeholders
 gradients_impl.py:600
 
@@ -13,6 +13,7 @@ http://www.baeldung.com/convert-input-stream-to-array-of-bytes
 http://www.baeldung.com/java-io-conversions
 https://blog.gdeltproject.org/a-compilation-of-gdelt-bigquery-demos/
 https://towardsdatascience.com/eager-execution-tensorflow-8042128ca7be - tensorflow 1.7
+https://dev.to/shamdasani/build-a-flexible-neural-network-with-backpropagation-in-python
 https://codesachin.wordpress.com/2015/12/06/backpropagation-for-dummies/
 
 tensorboard: https://medium.com/@anthony_sarkis/tensorboard-quick-start-in-5-minutes-e3ec69f673af

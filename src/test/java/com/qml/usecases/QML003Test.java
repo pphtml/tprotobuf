@@ -10,6 +10,7 @@ import org.superbiz.tf.QMLContext;
 import org.superbiz.tf.TF;
 import org.superbiz.tf.operation.BasicOperation;
 import org.superbiz.tf.operation.Constant;
+import org.superbiz.tf.operation.Gradient;
 import org.superbiz.tf.operation.Operation;
 import org.superbiz.tf.operation.Variable;
 import org.superbiz.tf.type.VectorWrapper;
@@ -81,13 +82,12 @@ public class QML003Test extends AbstractTestBase {
             TF<Constant, Float> yDataTF = tf.constant(values(yData), named("yData"));
             TF<Operation.Add, Float> y = a.multiply(xDataTF).add(b).add(c);
 
-//            // TODO BasicOperation.Square
             TF<Operation.Subtract, Float> difference = y.subtract(yDataTF, named("difference"));
-            TF<BasicOperation.Square, Float> square = tf.square(difference, named("square"));
-            TF<BasicOperation.ReduceMean, Float> loss = tf.reduceMean(square, named("loss"));
+            TF<Operation.Square, Float> square = tf.square(difference, named("square"));
+            TF<Operation.ReduceMean, Float> loss = tf.reduceMean(square, named("loss"));
             //TF<BasicOperation.ReduceMean, Float> loss = tf.reduceMean(tf.square(y.subtract(yDataTF, named("difference")), named("square")), named("loss"));
 
-            TF<BasicOperation.ReduceMean, Float> gradients = tf.gradients(loss, Arrays.asList(a, b, c));
+            TF<Gradient.Gradients, Float> gradients = tf.gradients(loss, Arrays.asList(a, b, c));
 
 
 

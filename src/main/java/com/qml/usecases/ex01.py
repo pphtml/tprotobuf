@@ -1,8 +1,8 @@
 import tensorflow as tf
 
-x = tf.Variable(3, name="x")
-y = tf.Variable(4, name="y")
-f = x + y
+x = tf.constant(3.1, name="x")
+#y = tf.Variable(4, name="y")
+f = tf.square(x)
 
 with tf.Session() as sess:
     init = tf.global_variables_initializer()
@@ -11,4 +11,6 @@ with tf.Session() as sess:
     print(result)
 
     graph_def = tf.get_default_graph().as_graph_def()
-    tf.train.write_graph(graph_def, '/tmp', 'ex01.pb', False)
+    tf.train.write_graph(graph_def, '../../../../../../src/main/resources/com/qml/usecases', 'ex01.pb', False)
+
+    #tf.train.write_graph(graph_def, '/tmp', 'ex01.pb', False)
