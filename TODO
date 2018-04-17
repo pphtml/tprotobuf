@@ -28,3 +28,20 @@ protoc --java_out=src/main/java tensorflow/core/framework/graph.proto
 - https://github.com/tensorflow/models/blob/master/samples/languages/java/object_detection/src/main/java/DetectObjects.java
 - https://dinantdatascientist.blogspot.de/2018/02/kaggle-tensorflow-speech-recognition.html
 - F -> C https://towardsdatascience.com/machine-learning-from-scratch-part-4-10117c005a28
+
+
+
+reduceMeanNode:  [<tf.Tensor 'gradients/Fill:0' shape=() dtype=float32>]
+squareNode:  [<tf.Tensor 'gradients/reduceMeanNode_grad/truediv:0' shape=(100,) dtype=float32>]
+sub:  [<tf.Tensor 'gradients/squareNode_grad/Mul_1:0' shape=(100,) dtype=float32>]
+add_1:  [<tf.Tensor 'gradients/squareNode_grad/Mul_1:0' shape=(100,) dtype=float32>]
+sub/y:  [[<tf.Tensor 'gradients/sub_grad/Neg:0' shape=(100,) dtype=float32>]]
+add:  [<tf.Tensor 'gradients/add_1_grad/Reshape:0' shape=(100,) dtype=float32>]
+c/read:  [<tf.Tensor 'gradients/add_1_grad/Reshape_1:0' shape=() dtype=float32>]
+mul:  [<tf.Tensor 'gradients/add_grad/Reshape:0' shape=(100,) dtype=float32>]
+b/read:  [<tf.Tensor 'gradients/add_grad/Reshape_1:0' shape=() dtype=float32>]
+c:  [<tf.Tensor 'gradients/add_1_grad/Reshape_1:0' shape=() dtype=float32>]
+a/read:  [<tf.Tensor 'gradients/mul_grad/Reshape:0' shape=() dtype=float32>]
+mul/y:  [[<tf.Tensor 'gradients/mul_grad/Reshape_1:0' shape=(100,) dtype=float32>]]
+b:  [<tf.Tensor 'gradients/add_grad/Reshape_1:0' shape=() dtype=float32>]
+a:  [<tf.Tensor 'gradients/mul_grad/Reshape:0' shape=() dtype=float32>]

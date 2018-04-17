@@ -42,7 +42,7 @@ public class QML004Test extends AbstractTestBase {
      * Mean is calculated from a float vector constant
      */
     @Test
-    public void multiplyFloatScalarAndVector() {
+    public void reduceMeanFloat() {
         try (QMLContext tf = createSession()) {
             TF<Constant, Float> x = tf.constant(values(1.1f, 2.2f, 3.3f), named("y"));
             TF<Operation.ReduceMean, Float> mean = tf.reduceMean(x);
@@ -52,4 +52,65 @@ public class QML004Test extends AbstractTestBase {
         }
     }
 
+    // node {
+    //  name: "Const"
+    //  op: "Const"
+    //  attr {
+    //    key: "dtype"
+    //    value {
+    //      type: DT_FLOAT
+    //    }
+    //  }
+    //  attr {
+    //    key: "value"
+    //    value {
+    //      tensor {
+    //        dtype: DT_FLOAT
+    //        tensor_shape {
+    //          dim {
+    //            size: 2
+    //          }
+    //        }
+    //        tensor_content: "ff\346?\315\314\f@"
+    //      }
+    //    }
+    //  }
+    //}
+    //node {
+    //  name: "Cast"
+    //  op: "Cast"
+    //  input: "Const"
+    //  attr {
+    //    key: "SrcT"
+    //    value {
+    //      type: DT_FLOAT
+    //    }
+    //  }
+    //  attr {
+    //    key: "DstT"
+    //    value {
+    //      type: DT_INT32
+    //    }
+    //  }
+    //}
+    //node {
+    //  name: "init"
+    //  op: "NoOp"
+    //}
+    //versions {
+    //  producer: 26
+    //}
+//    /**
+//     * Cast from float to int
+//     */
+//    @Test
+//    public void castFloatToInt() {
+//        try (QMLContext tf = createSession()) {
+//            TF<Constant, Float> x = tf.constant(values(1.1f, 2.2f, 3.3f), named("y"));
+//            TF<Operation.ReduceMean, Float> mean = tf.reduceMean(x);
+//
+//            Float result = tf.fetch(mean);
+//            assertEquals(2.2f, result.floatValue(), ROUNDING_ACCEPTABLE_DELTA);
+//        }
+//    }
 }

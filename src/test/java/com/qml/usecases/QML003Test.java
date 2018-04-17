@@ -93,7 +93,8 @@ public class QML003Test extends AbstractTestBase {
 
             tf.run(tf.globalVariablesInitializer());
             //VectorWrapper<Float> result = tf.fetchVector(gradients);
-            VectorWrapper<Float> result = tf.fetchVector("gradients_0/add_1_grad/BroadcastGradientArgs");
+            VectorWrapper<Float> result = tf.fetchVector("gradients_0/Fill");
+//            VectorWrapper<Float> result = tf.fetchVector("gradients_0/add_1_grad/BroadcastGradientArgs");
             System.out.println(result.getList1D());
 //            assertEquals(7.3, result.FloatValue(), 0.001);
         }

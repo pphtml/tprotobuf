@@ -1,8 +1,11 @@
 import tensorflow as tf
 
-x = tf.constant(3.1, name="x")
-#y = tf.Variable(4, name="y")
-f = tf.square(x)
+# x = tf.constant(3.1, name="x")
+# #y = tf.Variable(4, name="y")
+# f = tf.square(x)
+
+x = tf.constant([1.8, 2.2], dtype=tf.float32)
+f = tf.cast(x, tf.int32)
 
 with tf.Session() as sess:
     init = tf.global_variables_initializer()
