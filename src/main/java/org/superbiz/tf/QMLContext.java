@@ -511,6 +511,16 @@ public class QMLContext implements AutoCloseable {
         return this.makeFromTemplate(of, this);
     }
 
+//    public <R extends TFType, NTType, S> TF<Operation.ReduceMean, NTType> cast(TF<R, NTType> operation, Attribute... attributes) {
+//        TF of = TF.of(new Operation.Cast(operation, null, attributes), this);
+//        return this.makeFromTemplate(of, this);
+//    }
+
+    public <R extends TFType, NTType, S> TF<Operation.ReduceMean, S> cast(TF<R, NTType> operation, Class<S> type, Attribute... attributes) {
+        TF of = TF.of(new Operation.Cast(operation, type, attributes), this);
+        return this.makeFromTemplate(of, this);
+    }
+
     public <R extends TFType, NTType> TF<Gradient.Gradients, NTType> gradients(TF<R, NTType> operation, List<TF<Variable, ?>> variables, Attribute... attributes) {
         Gradient.Gradients gradients = new Gradient.Gradients(operation, variables, attributes);
         gradients.collectAllOperations(this);

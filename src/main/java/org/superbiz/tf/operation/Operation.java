@@ -36,15 +36,20 @@ public class Operation {
     }
 
     public static class Square extends BasicOperation.Square {
-        public <T extends TFType, R extends TFType, NTType> Square(TF<T, NTType> operand, Attribute[] attributes) {
+        public <T extends TFType, NTType> Square(TF<T, NTType> operand, Attribute[] attributes) {
             super(operand, attributes);
         }
     }
 
     public static class ReduceMean extends BasicOperation.ReduceMean {
-        public <T extends TFType, R extends TFType, NTType> ReduceMean(TF<T, NTType> operand, Attribute[] attributes) {
+        public <T extends TFType, NTType> ReduceMean(TF<T, NTType> operand, Attribute[] attributes) {
             super(operand, attributes);
         }
     }
 
+    public static class Cast extends BasicOperation.Cast {
+        public <T extends TFType, R, NTType> Cast(TF<T, NTType> operand, Class<R> type, Attribute[] attributes) {
+            super(operand, type, attributes);
+        }
+    }
 }

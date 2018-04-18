@@ -7,6 +7,7 @@ import org.superbiz.tf.annotation.Template;
 import org.superbiz.tf.annotation.TemplateInline;
 import org.superbiz.tf.attribute.Attribute;
 import org.superbiz.tf.type.AbstractNode;
+import org.superbiz.tf.type.DType;
 import org.superbiz.tf.type.NamingSequence;
 import org.superbiz.tf.type.TFType;
 
@@ -226,6 +227,43 @@ public class BasicOperation {
             super(attributes);
             this.operand = operand;
             this.setDType(this.operand.getDType());
+        }
+    }
+
+    @TemplateInline("node {\n" +
+            "  name: \"${nodeName}\"\n" +
+            "  op: \"Cast\"\n" +
+            "  input: \"${operand}\"\n" +
+            "  attr {\n" +
+            "    key: \"SrcT\"\n" +
+            "    value {\n" +
+            "      type: ${dType}\n" +
+            "    }\n" +
+            "  }\n" +
+            "  attr {\n" +
+            "    key: \"DstT\"\n" +
+            "    value {\n" +
+            "      type: ${targetDType}\n" +
+            "    }\n" +
+            "  }\n" +
+            "}\n")
+    @NamePrefix("cast")
+    public static class Cast<R> extends AbstractNode implements TFType, NamingSequence {
+        @Mapping("operand")
+        public final TF<?, ?> operand;
+        private final Class<R> targetType;
+
+        public <T extends TFType, NTType> Cast(TF<T, NTType> operand, Class<R> type, Attribute[] attributes) {
+            super(attributes);
+            this.operand = operand;
+            this.setDType(this.operand.getDType());
+            this.targetType = type;
+        }
+
+        @Mapping("targetDType")
+        public String targetDType() {
+            DType dType = DType.dTypeForJavaType(targetType);
+            return dType.name();
         }
     }
 }

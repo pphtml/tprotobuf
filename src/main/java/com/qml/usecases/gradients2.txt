@@ -23,13 +23,6 @@ node {
   name: "a"
   op: "VariableV2"
   attr {
-    key: "shape"
-    value {
-      shape {
-      }
-    }
-  }
-  attr {
     key: "shared_name"
     value {
       s: ""
@@ -45,6 +38,13 @@ node {
     key: "container"
     value {
       s: ""
+    }
+  }
+  attr {
+    key: "shape"
+    value {
+      shape {
+      }
     }
   }
 }
@@ -124,13 +124,6 @@ node {
   name: "b"
   op: "VariableV2"
   attr {
-    key: "shape"
-    value {
-      shape {
-      }
-    }
-  }
-  attr {
     key: "shared_name"
     value {
       s: ""
@@ -146,6 +139,13 @@ node {
     key: "container"
     value {
       s: ""
+    }
+  }
+  attr {
+    key: "shape"
+    value {
+      shape {
+      }
     }
   }
 }
@@ -201,107 +201,6 @@ node {
   }
 }
 node {
-  name: "c/initial_value"
-  op: "Const"
-  attr {
-    key: "value"
-    value {
-      tensor {
-        dtype: DT_FLOAT
-        tensor_shape {
-        }
-        float_val: 1.234
-      }
-    }
-  }
-  attr {
-    key: "dtype"
-    value {
-      type: DT_FLOAT
-    }
-  }
-}
-node {
-  name: "c"
-  op: "VariableV2"
-  attr {
-    key: "dtype"
-    value {
-      type: DT_FLOAT
-    }
-  }
-  attr {
-    key: "container"
-    value {
-      s: ""
-    }
-  }
-  attr {
-    key: "shape"
-    value {
-      shape {
-      }
-    }
-  }
-  attr {
-    key: "shared_name"
-    value {
-      s: ""
-    }
-  }
-}
-node {
-  name: "c/Assign"
-  op: "Assign"
-  input: "c"
-  input: "c/initial_value"
-  attr {
-    key: "T"
-    value {
-      type: DT_FLOAT
-    }
-  }
-  attr {
-    key: "_class"
-    value {
-      list {
-        s: "loc:@c"
-      }
-    }
-  }
-  attr {
-    key: "validate_shape"
-    value {
-      b: true
-    }
-  }
-  attr {
-    key: "use_locking"
-    value {
-      b: true
-    }
-  }
-}
-node {
-  name: "c/read"
-  op: "Identity"
-  input: "c"
-  attr {
-    key: "T"
-    value {
-      type: DT_FLOAT
-    }
-  }
-  attr {
-    key: "_class"
-    value {
-      list {
-        s: "loc:@c"
-      }
-    }
-  }
-}
-node {
   name: "mul/y"
   op: "Const"
   attr {
@@ -314,7 +213,7 @@ node {
             size: 100
           }
         }
-        tensor_content: "z\342\262>t\322R?\271\2407>\300\357Z?d\222\r?\252ZV?\252\330.>i\035r?h\036r=\0171X?\357\215\312=>\351k?\352\273\300>\302pH>\3122o?-\236\226>\247\202\204=!\334V>\f\365z?\371b\004?\310G\335>\212\352\225=\351{l?i\034\331>\346\244\023?~kW?\315\234Y?fV\356>[\212\324=\247\3366>6\337->\310d\242>nl\203>\020\310;?K\022\020?\317\"\301>\357D\033?\323\032\201>\266\270\263>\271q\'?\0039~?\260\215>?\331\325\037?\031RL?\307\342\351>\331 \243=e\370G>\304\332l?\247\317\221>\260\001h>\364\301\274>hOZ?\0004P?\303\377V?,\002\242>\275\023@?\366\233x?&y\a>\251\024\257>=5h?w\347\267>\370\025k>\3454:?\264\271_?\3728g?\242\033\274=K\b]?5\251.?\212\265\344>N\v8=d\301\343>\257\242,?\274\326\004?\006\3614?!>\030>\nU^?ZN\354>Z=r?K~4<\215\252\023?pd!>\336F!?r&d>x\316N?G[L?\300q+>\361\235~>)\2529?\037\004\333>\334t\v??\327\307=s\002{?\022D0?\260\304/?Li\237>\213B\202>\343\337\\?\tR!>\200\a;?\374\020\307>"
+        tensor_content: "\221+\002?\351\250\346>=f\206>\230\230\332>\025\220i?\235\t\206=\323)\254>\355\214S?\361\203\027?\312Uz?\260\271y?HPZ>bo\024>\235\312x?\204\365_?\033\206\'?\275\023\303>T\263K?\267}p?\310\000|?\313\315\306>\346\330m?z\246X?(]&?+@m?\253\352G>\371\301+?f\214\320>\300\374\241=\257\2412?\004\234\032?^\233\001?\024?\315>\330\315\313>\006\327.?\030d\032?\312\233\023?\325\327\254>\335=D?\236w\023?\300`\325>7mo?\206\362\r>\362\351%?<\370\035?\232\225L?\207\001\326>\343E\255>\362\327\033?\325\033j?\361!\200=\221\v\a? U8?\207\350\226>\261\342\001?\357\375\363>\261\037\312>F\304!?\221Z>?\356\0024?AJ2?-\vG?\025C\031?R\307\210>[\211\003?8@??\332\373\032?\371\025A?8\230\023?h+p?Q\355x?\253\233\222>\r\357\206>\b15?\nM\210>\221\311A?n\262\240>v3q?\005\360R?R\264\223>1\"V?9\234\002?\025do?\2429X?g\036\n?\020\274W?h\211x?\216\"\221>\310\224\023;\361\0069?\264\344\020=l\372]?AL\275>q\371c?Q\267\n?\203\025\016>(\024o?\252#\310>\336\242\336>\236\265{>"
       }
     }
   }
@@ -350,18 +249,6 @@ node {
   }
 }
 node {
-  name: "add_1"
-  op: "Add"
-  input: "add"
-  input: "c/read"
-  attr {
-    key: "T"
-    value {
-      type: DT_FLOAT
-    }
-  }
-}
-node {
   name: "sub/y"
   op: "Const"
   attr {
@@ -374,7 +261,7 @@ node {
             size: 100
           }
         }
-        tensor_content: "|\343P@\355\006\211@G\225$@]e\223@<\312o@at\222@~_ @\357\303\232@\262\'\t@\334\267\217@\367C\023@\255\030\227@8\333H@I\327$@\250\004\240@\364\0246@\312\232\v@\017\207 @<\376\234@\240\375a@\034^Z@\365\344\r@\271+\232@R\344Z@\016%i@CK\225@\t\362\217@\356\006U@\347\325\037@\316\276*@l:\034@<\177C@,\333)@\316G\206@\346Mu@C\350>@\342\265\200@\v\245-@\34448@p\351r@\245\316\237@\256H\212@q\177t@\230\024\210@\350\361Z@\366F\t@H\313$@\305\263\230@n\257/@\270\025-@\250\376D@\360K\226@\354*\220@{\243\222@\210\236D@\vu\210@o?\233@\327f\"@\210\260B@7\034\231@\334:P@\356M/@g\233\204@\340\370\217@\241\366\221@\377N\b@*\'\220@>f\200@\314%W@\222\362\004@\212mY@\262\365\202@\247\215_@e#{@#D\031@\344h\226@5\033`@\243\316\232@\307|\376?\315\266o@\r\205#@;<r@y\3440@\356\264\217@\001\207\213@\267\275\031@\232\321%@\214\216\206@=\210S@\311\352x@\365\374\027@x\230\237@oD\201@W\320w@\017L9@\2470*@\326\004\230@\322\276)@\216\256\211@8\237N@"
+        tensor_content: "ahf@q\372Y@[\2578@h`N@\3530\231@\263\346\n@\270!F@\367\252\221@/\037m@\023\233\234@hY\235@ \301<@\202\344 @\207S\244@\313\034\225@/\317z@\2028J@:@\216@\266\006\232@\200.\237@\344\263P@y\330\222@v\002\222@Uks@\034}\230@\275D1@\333M}@nnR@\202\332\016@\346H\207@\256\326o@\370\321c@(\267L@\017A?@\314w\201@/\016|@\034\267r@ZbA@0D\211@]\215v@\361\255^@4\030\230@\311\037\024@\264\272w@\336\177{@\004X\214@\3308K@1AG@Q\323q@/\312\224@\033P\v@*\237h@\315#\202@s#9@\270YR@\367\226R@\241\343L@O\253\202@\373\353\207@\240l\201@\316\372\201@\3408\213@/\360s@\316\3558@\201\001`@&\353\201@\317>j@\313\306\207@N\320m@\346X\231@\261\220\230@\241n4@\251\264:@\256\301\202@R.*@\323\222\213@\'\201>@\343\236\227@Eh\215@.\3646@\n\201\214@\305\277d@B\256\230@1\"\222@\305[i@\324\333\212@\255\300\235@.2<@\276#\357?\340\371\206@cZ\r@@\344\221@l\331:@Q\253\231@\220\353g@\020\274\022@\330h\233@&\372N@\320(Y@7\374!@"
       }
     }
   }
@@ -388,7 +275,7 @@ node {
 node {
   name: "sub"
   op: "Sub"
-  input: "add_1"
+  input: "add"
   input: "sub/y"
   attr {
     key: "T"
@@ -412,12 +299,6 @@ node {
   name: "Const"
   op: "Const"
   attr {
-    key: "dtype"
-    value {
-      type: DT_INT32
-    }
-  }
-  attr {
     key: "value"
     value {
       tensor {
@@ -431,12 +312,24 @@ node {
       }
     }
   }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_INT32
+    }
+  }
 }
 node {
   name: "reduceMeanNode"
   op: "Mean"
   input: "squareNode"
   input: "Const"
+  attr {
+    key: "T"
+    value {
+      type: DT_FLOAT
+    }
+  }
   attr {
     key: "keep_dims"
     value {
@@ -449,22 +342,10 @@ node {
       type: DT_INT32
     }
   }
-  attr {
-    key: "T"
-    value {
-      type: DT_FLOAT
-    }
-  }
 }
 node {
   name: "gradients/Shape"
   op: "Const"
-  attr {
-    key: "dtype"
-    value {
-      type: DT_INT32
-    }
-  }
   attr {
     key: "value"
     value {
@@ -477,10 +358,22 @@ node {
       }
     }
   }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_INT32
+    }
+  }
 }
 node {
   name: "gradients/grad_ys_0"
   op: "Const"
+  attr {
+    key: "dtype"
+    value {
+      type: DT_FLOAT
+    }
+  }
   attr {
     key: "value"
     value {
@@ -490,12 +383,6 @@ node {
         }
         float_val: 1.0
       }
-    }
-  }
-  attr {
-    key: "dtype"
-    value {
-      type: DT_FLOAT
     }
   }
 }
@@ -517,12 +404,15 @@ node {
     }
   }
 }
-
-
-
 node {
   name: "gradients/reduceMeanNode_grad/Reshape/shape"
   op: "Const"
+  attr {
+    key: "dtype"
+    value {
+      type: DT_INT32
+    }
+  }
   attr {
     key: "value"
     value {
@@ -535,12 +425,6 @@ node {
         }
         int_val: 1
       }
-    }
-  }
-  attr {
-    key: "dtype"
-    value {
-      type: DT_INT32
     }
   }
 }
@@ -637,9 +521,6 @@ node {
     }
   }
 }
-
-
-
 node {
   name: "gradients/squareNode_grad/Const"
   op: "Const"
@@ -674,9 +555,6 @@ node {
     }
   }
 }
-
-
-
 node {
   name: "gradients/squareNode_grad/Mul_1"
   op: "Mul"
@@ -701,157 +579,9 @@ node {
   }
 }
 node {
-  name: "gradients/add_1_grad/Shape"
-  op: "Const"
-  attr {
-    key: "value"
-    value {
-      tensor {
-        dtype: DT_INT32
-        tensor_shape {
-          dim {
-            size: 1
-          }
-        }
-        int_val: 100
-      }
-    }
-  }
-  attr {
-    key: "dtype"
-    value {
-      type: DT_INT32
-    }
-  }
-}
-node {
-  name: "gradients/add_1_grad/Shape_1"
-  op: "Const"
-  attr {
-    key: "value"
-    value {
-      tensor {
-        dtype: DT_INT32
-        tensor_shape {
-          dim {
-          }
-        }
-      }
-    }
-  }
-  attr {
-    key: "dtype"
-    value {
-      type: DT_INT32
-    }
-  }
-}
-node {
-  name: "gradients/add_1_grad/BroadcastGradientArgs"
-  op: "BroadcastGradientArgs"
-  input: "gradients/add_1_grad/Shape"
-  input: "gradients/add_1_grad/Shape_1"
-  attr {
-    key: "T"
-    value {
-      type: DT_INT32
-    }
-  }
-}
-node {
-  name: "gradients/add_1_grad/Sum"
-  op: "Sum"
-  input: "gradients/squareNode_grad/Mul_1"
-  input: "gradients/add_1_grad/BroadcastGradientArgs"
-  attr {
-    key: "T"
-    value {
-      type: DT_FLOAT
-    }
-  }
-  attr {
-    key: "keep_dims"
-    value {
-      b: false
-    }
-  }
-  attr {
-    key: "Tidx"
-    value {
-      type: DT_INT32
-    }
-  }
-}
-node {
-  name: "gradients/add_1_grad/Reshape"
-  op: "Reshape"
-  input: "gradients/add_1_grad/Sum"
-  input: "gradients/add_1_grad/Shape"
-  attr {
-    key: "T"
-    value {
-      type: DT_FLOAT
-    }
-  }
-  attr {
-    key: "Tshape"
-    value {
-      type: DT_INT32
-    }
-  }
-}
-node {
-  name: "gradients/add_1_grad/Sum_1"
-  op: "Sum"
-  input: "gradients/squareNode_grad/Mul_1"
-  input: "gradients/add_1_grad/BroadcastGradientArgs:1"
-  attr {
-    key: "T"
-    value {
-      type: DT_FLOAT
-    }
-  }
-  attr {
-    key: "keep_dims"
-    value {
-      b: false
-    }
-  }
-  attr {
-    key: "Tidx"
-    value {
-      type: DT_INT32
-    }
-  }
-}
-node {
-  name: "gradients/add_1_grad/Reshape_1"
-  op: "Reshape"
-  input: "gradients/add_1_grad/Sum_1"
-  input: "gradients/add_1_grad/Shape_1"
-  attr {
-    key: "T"
-    value {
-      type: DT_FLOAT
-    }
-  }
-  attr {
-    key: "Tshape"
-    value {
-      type: DT_INT32
-    }
-  }
-}
-node {
   name: "gradients/add_grad/Shape"
   op: "Const"
   attr {
-    key: "dtype"
-    value {
-      type: DT_INT32
-    }
-  }
-  attr {
     key: "value"
     value {
       tensor {
@@ -863,6 +593,12 @@ node {
         }
         int_val: 100
       }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_INT32
     }
   }
 }
@@ -903,8 +639,14 @@ node {
 node {
   name: "gradients/add_grad/Sum"
   op: "Sum"
-  input: "gradients/add_1_grad/Reshape"
+  input: "gradients/squareNode_grad/Mul_1"
   input: "gradients/add_grad/BroadcastGradientArgs"
+  attr {
+    key: "T"
+    value {
+      type: DT_FLOAT
+    }
+  }
   attr {
     key: "keep_dims"
     value {
@@ -915,12 +657,6 @@ node {
     key: "Tidx"
     value {
       type: DT_INT32
-    }
-  }
-  attr {
-    key: "T"
-    value {
-      type: DT_FLOAT
     }
   }
 }
@@ -945,7 +681,7 @@ node {
 node {
   name: "gradients/add_grad/Sum_1"
   op: "Sum"
-  input: "gradients/add_1_grad/Reshape"
+  input: "gradients/squareNode_grad/Mul_1"
   input: "gradients/add_grad/BroadcastGradientArgs:1"
   attr {
     key: "keep_dims"
@@ -1078,9 +814,6 @@ node {
     }
   }
 }
-
-
-
 node {
   name: "gradients/mul_grad/Reshape"
   op: "Reshape"
@@ -1158,5 +891,7 @@ node {
   op: "NoOp"
   input: "^a/Assign"
   input: "^b/Assign"
-  input: "^c/Assign"
+}
+versions {
+  producer: 26
 }

@@ -9,6 +9,7 @@ import org.superbiz.tf.operation.Operation;
 import org.superbiz.tf.type.VectorWrapper;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.superbiz.tf.QMLContext.createSession;
@@ -21,10 +22,6 @@ import static org.superbiz.tf.attribute.Attribute.named;
  */
 public class QML004Test extends AbstractTestBase {
 
-
-//    TF<BasicOperation.Square, Double> square = tf.square(difference);
-//    TF<BasicOperation.ReduceMean, Double> reduceMean = tf.reduceMean(tf.square(y.subtract(yDataTF, named("difference")), named("square")), named("mean"));
-//
     /**
      * Square is computed from a float constant
      */
@@ -39,12 +36,25 @@ public class QML004Test extends AbstractTestBase {
     }
 
     /**
+     * Square is computed from an integer constant
+     */
+    @Test
+    public void squareInteger() {
+        try (QMLContext tf = createSession()) {
+            TF<Constant, Integer> x = tf.constant(value(3), named("x"));
+            TF<Operation.Square, Integer> square = tf.square(x);
+            Integer result = tf.fetch(square);
+            assertEquals(9, result.intValue());
+        }
+    }
+
+    /**
      * Mean is calculated from a float vector constant
      */
     @Test
     public void reduceMeanFloat() {
         try (QMLContext tf = createSession()) {
-            TF<Constant, Float> x = tf.constant(values(1.1f, 2.2f, 3.3f), named("y"));
+            TF<Constant, Float> x = tf.constant(values(1.1f, 2.2f, 3.3f), named("x"));
             TF<Operation.ReduceMean, Float> mean = tf.reduceMean(x);
 
             Float result = tf.fetch(mean);
@@ -100,17 +110,17 @@ public class QML004Test extends AbstractTestBase {
     //versions {
     //  producer: 26
     //}
-//    /**
-//     * Cast from float to int
-//     */
-//    @Test
-//    public void castFloatToInt() {
-//        try (QMLContext tf = createSession()) {
-//            TF<Constant, Float> x = tf.constant(values(1.1f, 2.2f, 3.3f), named("y"));
-//            TF<Operation.ReduceMean, Float> mean = tf.reduceMean(x);
-//
-//            Float result = tf.fetch(mean);
-//            assertEquals(2.2f, result.floatValue(), ROUNDING_ACCEPTABLE_DELTA);
-//        }
-//    }
+    /**
+     * Cast from float to int
+     */
+    @Test
+    public void castFloatToInt() {
+        try (QMLContext tf = createSession()) {
+            TF<Constant, Float> x = tf.constant(values(1.1f, 2.2f, 3.3f), named("x"));
+            TF<Operation.ReduceMean, Integer> xInt = tf.cast(x, Integer.class);
+
+            VectorWrapper<Integer> result = tf.fetchVector(xInt);
+            assertEquals(Arrays.asList(1, 2, 3), result.getList1D());
+        }
+    }
 }
