@@ -3,7 +3,7 @@ package org.superbiz.builder;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.superbiz.tf.QMLContext.createSession;
+import static org.superbiz.tf.QMLContext.createContext;
 
 public class UseCase01Test {
     // import tensorflow as tf
@@ -19,7 +19,7 @@ public class UseCase01Test {
      */
     @Test
     public void buildGraph() {
-//        try (QMLContext tf = createSession("TensorFlow")) {
+//        try (QMLContext tf = createContext("TensorFlow")) {
 //            TF<Constant> c1 = tf.constant(1.0f, named("start"));
 //            TF<Constant> c2 = tf.constant(2.0f, named("step"));
 //            TF<BasicOperation.Add> add = c1.add(c2);

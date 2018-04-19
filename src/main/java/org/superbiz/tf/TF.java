@@ -9,7 +9,6 @@ import org.superbiz.tf.type.TFType;
 public class TF <T extends TFType, NTType> {
     private final T node;
     private final QMLContext qmlContext;
-    //private boolean built = false;
 
     private TF(T node, QMLContext qmlContext) {
         this.node = node;
@@ -22,22 +21,22 @@ public class TF <T extends TFType, NTType> {
 
     public <R extends TFType> TF<Operation.Add, NTType> add(TF<R, NTType> operand, Attribute... attributes) {
         TF of = of(new Operation.Add(this, operand, attributes), qmlContext);
-        return qmlContext.makeFromTemplate(of, qmlContext);
+        return qmlContext.addToGraph(of, qmlContext);
     }
 
     public <R extends TFType> TF<Operation.Subtract, NTType> subtract(TF<R, NTType> operand, Attribute... attributes) {
         TF of = of(new Operation.Subtract(this, operand, attributes), qmlContext);
-        return qmlContext.makeFromTemplate(of, qmlContext);
+        return qmlContext.addToGraph(of, qmlContext);
     }
 
     public <R extends TFType> TF<Operation.Multiply, NTType> multiply(TF<R, NTType> operand, Attribute... attributes) {
         TF of = of(new Operation.Multiply(this, operand, attributes), qmlContext);
-        return qmlContext.makeFromTemplate(of, qmlContext);
+        return qmlContext.addToGraph(of, qmlContext);
     }
 
     public <R extends TFType> TF<Operation.Divide, NTType> divide(TF<R, NTType> operand, Attribute... attributes) {
         TF of = of(new Operation.Divide(this, operand, attributes), qmlContext);
-        return qmlContext.makeFromTemplate(of, qmlContext);
+        return qmlContext.addToGraph(of, qmlContext);
     }
 
     public void build(QMLContext qmlContext) {

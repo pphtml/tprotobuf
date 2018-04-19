@@ -58,16 +58,17 @@ sess.run(init)
 
 #evals = sess.run([gradients])
 
-tensors = ['gradients/Fill:0', 'gradients/reduceMeanNode_grad/truediv:0',
-  'gradients/squareNode_grad/Mul_1:0', 'gradients/squareNode_grad/Mul_1:0', 'gradients/sub_grad/Neg:0',
-  'gradients/add_grad/Reshape:0', 'gradients/add_grad/Reshape_1:0', 'gradients/mul_grad/Reshape:0',
-  'gradients/mul_grad/Reshape_1:0', 'gradients/add_grad/Reshape_1:0', 'gradients/mul_grad/Reshape:0' ]
+print(sess.run(loss))
+print()
 
-for tensor in tensors:
-    evals = sess.run(tensor)
-#evals = sess.run('squareNode:0')
-#evals = sess.run('reduceMeanNode:0')
-    print('{}: {}\n\n'.format(tensor, evals))
+# tensors = ['gradients/Fill:0', 'gradients/reduceMeanNode_grad/truediv:0',
+#   'gradients/squareNode_grad/Mul_1:0', 'gradients/squareNode_grad/Mul_1:0', 'gradients/sub_grad/Neg:0',
+#   'gradients/add_grad/Reshape:0', 'gradients/add_grad/Reshape_1:0', 'gradients/mul_grad/Reshape:0',
+#   'gradients/mul_grad/Reshape_1:0', 'gradients/add_grad/Reshape_1:0', 'gradients/mul_grad/Reshape:0' ]
+#
+# for tensor in tensors:
+#     evals = sess.run(tensor)
+#     print('{}: {}\n\n'.format(tensor, evals))
 
 
 # train_data = []

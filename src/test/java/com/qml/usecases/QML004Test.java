@@ -3,16 +3,14 @@ package com.qml.usecases;
 import org.junit.Test;
 import org.superbiz.tf.QMLContext;
 import org.superbiz.tf.TF;
-import org.superbiz.tf.operation.BasicOperation;
 import org.superbiz.tf.operation.Constant;
 import org.superbiz.tf.operation.Operation;
 import org.superbiz.tf.type.VectorWrapper;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
-import static org.superbiz.tf.QMLContext.createSession;
+import static org.superbiz.tf.QMLContext.createContext;
 import static org.superbiz.tf.QMLContext.value;
 import static org.superbiz.tf.QMLContext.values;
 import static org.superbiz.tf.attribute.Attribute.named;
@@ -27,7 +25,7 @@ public class QML004Test extends AbstractTestBase {
      */
     @Test
     public void squareFloat() {
-        try (QMLContext tf = createSession()) {
+        try (QMLContext tf = QMLContext.createContext()) {
             TF<Constant, Float> x = tf.constant(value(3.1f), named("x"));
             TF<Operation.Square, Float> square = tf.square(x);
             Float result = tf.fetch(square);
@@ -40,7 +38,7 @@ public class QML004Test extends AbstractTestBase {
      */
     @Test
     public void squareInteger() {
-        try (QMLContext tf = createSession()) {
+        try (QMLContext tf = QMLContext.createContext()) {
             TF<Constant, Integer> x = tf.constant(value(3), named("x"));
             TF<Operation.Square, Integer> square = tf.square(x);
             Integer result = tf.fetch(square);
@@ -53,7 +51,7 @@ public class QML004Test extends AbstractTestBase {
      */
     @Test
     public void reduceMeanFloat() {
-        try (QMLContext tf = createSession()) {
+        try (QMLContext tf = QMLContext.createContext()) {
             TF<Constant, Float> x = tf.constant(values(1.1f, 2.2f, 3.3f), named("x"));
             TF<Operation.ReduceMean, Float> mean = tf.reduceMean(x);
 
@@ -115,7 +113,7 @@ public class QML004Test extends AbstractTestBase {
      */
     @Test
     public void castFloatToInt() {
-        try (QMLContext tf = createSession()) {
+        try (QMLContext tf = QMLContext.createContext()) {
             TF<Constant, Float> x = tf.constant(values(1.1f, 2.2f, 3.3f), named("x"));
             TF<Operation.ReduceMean, Integer> xInt = tf.cast(x, Integer.class);
 

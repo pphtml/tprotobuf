@@ -3,7 +3,6 @@ package com.qml.usecases;
 import org.junit.Test;
 import org.superbiz.tf.QMLContext;
 import org.superbiz.tf.TF;
-import org.superbiz.tf.operation.BasicOperation;
 import org.superbiz.tf.operation.Constant;
 import org.superbiz.tf.operation.Operation;
 import org.superbiz.tf.type.VectorWrapper;
@@ -25,7 +24,7 @@ public class QML002Test extends AbstractTestBase {
      */
     @Test
     public void addIntegers() {
-        try (QMLContext tf = createSession()) {
+        try (QMLContext tf = createContext()) {
             TF<Constant, Integer> x = tf.constant(value(3), named("x"));
             TF<Constant, Integer> y = tf.constant(value(4), named("y"));
             TF<Operation.Add, Integer> add = x.add(y);
@@ -40,7 +39,7 @@ public class QML002Test extends AbstractTestBase {
      */
     @Test
     public void addFloats() {
-        try (QMLContext tf = createSession()) {
+        try (QMLContext tf = createContext()) {
             TF<Constant, Float> x = tf.constant(value(3.1f), named("x"));
             TF<Constant, Float> y = tf.constant(value(4.2f), named("y"));
             TF<Operation.Add, Float> add = x.add(y);
@@ -55,7 +54,7 @@ public class QML002Test extends AbstractTestBase {
      */
     @Test
     public void addDoubles() {
-        try (QMLContext tf = createSession()) {
+        try (QMLContext tf = createContext()) {
             TF<Constant, Double> x = tf.constant(value(3.1), named("x"));
             TF<Constant, Double> y = tf.constant(value(4.2), named("y"));
             TF<Operation.Add, Double> add = x.add(y);
@@ -70,7 +69,7 @@ public class QML002Test extends AbstractTestBase {
      */
     @Test
     public void multiplyIntegers() {
-        try (QMLContext tf = createSession()) {
+        try (QMLContext tf = createContext()) {
             TF<Constant, Integer> x = tf.constant(value(3), named("x"));
             TF<Constant, Integer> y = tf.constant(value(4), named("y"));
             TF<Operation.Multiply, Integer> multiply = x.multiply(y);
@@ -85,7 +84,7 @@ public class QML002Test extends AbstractTestBase {
      */
     @Test
     public void multiplyFloats() {
-        try (QMLContext tf = createSession()) {
+        try (QMLContext tf = createContext()) {
             TF<Constant, Float> x = tf.constant(value(3.1f), named("x"));
             TF<Constant, Float> y = tf.constant(value(4.2f), named("y"));
             TF<Operation.Multiply, Float> multiply = x.multiply(y);
@@ -125,7 +124,7 @@ public class QML002Test extends AbstractTestBase {
      */
     @Test
     public void multiplyIntegersScalarAndVector() {
-        try (QMLContext tf = createSession()) {
+        try (QMLContext tf = createContext()) {
             TF<Constant, Integer> x = tf.constant(value(4), named("x"));
             TF<Constant, Integer> y = tf.constant(values(1, 2, 3), named("y"));
             TF<Operation.Multiply, Integer> multiply = x.multiply(y);
@@ -140,7 +139,7 @@ public class QML002Test extends AbstractTestBase {
      */
     @Test
     public void multiplyLongScalarAndVector() {
-        try (QMLContext tf = createSession()) {
+        try (QMLContext tf = createContext()) {
             TF<Constant, Long> x = tf.constant(value(4L), named("x"));
             TF<Constant, Long> y = tf.constant(values(1L, 2L, 3L), named("y"));
             TF<Operation.Multiply, Long> multiply = x.multiply(y);
@@ -180,7 +179,7 @@ public class QML002Test extends AbstractTestBase {
      */
     @Test
     public void multiplyFloatScalarAndVector() {
-        try (QMLContext tf = createSession()) {
+        try (QMLContext tf = createContext()) {
             TF<Constant, Float> x = tf.constant(value(4.4f), named("x"));
             TF<Constant, Float> y = tf.constant(values(1.1f, 2.2f, 3.3f), named("y"));
             TF<Operation.Multiply, Float> multiply = x.multiply(y);
@@ -195,7 +194,7 @@ public class QML002Test extends AbstractTestBase {
      */
     @Test
     public void multiplyDoubleScalarAndVector() {
-        try (QMLContext tf = createSession()) {
+        try (QMLContext tf = createContext()) {
             TF<Constant, Double> x = tf.constant(value(4.4), named("x"));
             TF<Constant, Double> y = tf.constant(values(1.1, 2.2, 3.3), named("y"));
             TF<Operation.Multiply, Double> multiply = x.multiply(y);
@@ -210,7 +209,7 @@ public class QML002Test extends AbstractTestBase {
      */
     @Test
     public void divideFloats() {
-        try (QMLContext tf = createSession()) {
+        try (QMLContext tf = createContext()) {
             TF<Constant, Float> x = tf.constant(value(3.1f), named("x"));
             TF<Constant, Float> y = tf.constant(value(4.2f), named("y"));
             TF<Operation.Divide, Float> divide = x.divide(y);
@@ -225,7 +224,7 @@ public class QML002Test extends AbstractTestBase {
      */
     @Test
     public void divideDouble() {
-        try (QMLContext tf = createSession()) {
+        try (QMLContext tf = createContext()) {
             TF<Constant, Double> x = tf.constant(value(3.2), named("x"));
             TF<Constant, Double> y = tf.constant(value(4.2), named("y"));
             TF<Operation.Divide, Double> divide = x.divide(y);
@@ -240,7 +239,7 @@ public class QML002Test extends AbstractTestBase {
 //     */
 //    @Test
 //    public void divideIntegers() {
-//        try (QMLContext tf = createSession()) {
+//        try (QMLContext tf = createContext()) {
 //            TF<Constant, Integer> x = tf.constant(value(3), named("x"));
 //            TF<Constant, Integer> y = tf.constant(value(4), named("y"));
 //            TF<BasicOperation.Divide, Integer> divide = x.divideWithCastToFloat(y);
@@ -258,7 +257,7 @@ public class QML002Test extends AbstractTestBase {
      */
     @Test
     public void subtractFloats() {
-        try (QMLContext tf = createSession()) {
+        try (QMLContext tf = createContext()) {
             TF<Constant, Float> x = tf.constant(value(18.1f), named("x"));
             TF<Constant, Float> y = tf.constant(value(3.2f), named("y"));
             TF<Operation.Subtract, Float> subtract = x.subtract(y);

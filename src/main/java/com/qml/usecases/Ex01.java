@@ -1,6 +1,6 @@
 package com.qml.usecases;
 
-import static org.superbiz.tf.QMLContext.createSession;
+import static org.superbiz.tf.QMLContext.createContext;
 import static org.superbiz.tf.QMLContext.value;
 
 public class Ex01 {
@@ -17,7 +17,7 @@ public class Ex01 {
     //    print(result)
 
 //    public static void main(String[] args) {
-//        try (QMLContext tf = createSession("TensorFlow")) {
+//        try (QMLContext tf = createContext("TensorFlow")) {
 //            TF<Variable> x = tf.variable(value(3), named("x"));
 //            TF<Variable> y = tf.variable(value(4), named("y"));
 //            TF<BasicOperation.Add> add = x.add(y);
