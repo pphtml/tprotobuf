@@ -27,4 +27,6 @@ public interface Engine extends AutoCloseable {
     <NTType> NTType fetch(TF<? extends TFType, NTType> node);
 
     <NTType> VectorWrapper<NTType> fetchVector(String nodeName);
+
+    List<TF<?,?>> getNodes();
 }

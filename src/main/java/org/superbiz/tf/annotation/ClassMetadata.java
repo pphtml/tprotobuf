@@ -13,6 +13,7 @@ import java.util.Map;
 
 public class ClassMetadata {
     private Map<String, FieldOrMethod> mappings = new HashMap<>();
+    private Map<String, Field> tfInputs = new HashMap<>();
     private String namePrefix;
     private String templateText;
     private String outputNodePostfix;
@@ -55,6 +56,11 @@ public class ClassMetadata {
             Mapping mapping = field.getAnnotation(Mapping.class);
             if (mapping != null) {
                 result.mappings.put(mapping.value(), FieldOrMethod.field(field));
+            }
+
+            TFInput tfInput = field.getAnnotation(TFInput.class);
+            if (tfInput != null) {
+                result.tfInputs.put(field.getName(), field);
             }
         }
 

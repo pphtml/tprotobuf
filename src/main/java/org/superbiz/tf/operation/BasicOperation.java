@@ -1,10 +1,7 @@
 package org.superbiz.tf.operation;
 
 import org.superbiz.tf.TF;
-import org.superbiz.tf.annotation.Mapping;
-import org.superbiz.tf.annotation.NamePrefix;
-import org.superbiz.tf.annotation.Template;
-import org.superbiz.tf.annotation.TemplateInline;
+import org.superbiz.tf.annotation.*;
 import org.superbiz.tf.attribute.Attribute;
 import org.superbiz.tf.type.AbstractNode;
 import org.superbiz.tf.type.DType;
@@ -29,8 +26,10 @@ public class BasicOperation {
             "}\n")
     @NamePrefix("add")
     public static class Add extends AbstractNode implements TFType, NamingSequence {
+        @TFInput
         @Mapping("operand")
         public final TF<?, ?> operand1;
+        @TFInput
         @Mapping("operand2")
         public final TF<?, ?> operand2;
 
@@ -56,8 +55,10 @@ public class BasicOperation {
             "}\n")
     @NamePrefix("subtract")
     public static class Subtract extends AbstractNode implements TFType, NamingSequence {
+        @TFInput
         @Mapping("operand")
         public final TF<?, ?> operand1;
+        @TFInput
         @Mapping("operand2")
         public final TF<?, ?> operand2;
 
@@ -83,8 +84,10 @@ public class BasicOperation {
             "}\n")
     @NamePrefix("multiply")
     public static class Multiply extends AbstractNode implements TFType, NamingSequence {
+        @TFInput
         @Mapping("operand")
         public final TF<?, ?> operand1;
+        @TFInput
         @Mapping("operand2")
         public final TF<?, ?> operand2;
 
@@ -123,8 +126,10 @@ public class BasicOperation {
             "}\n")
     @NamePrefix("divide")
     public static class Divide extends AbstractNode implements TFType, NamingSequence {
+        @TFInput
         @Mapping("operand")
         public final TF<?, ?> operand1;
+        @TFInput
         @Mapping("operand2")
         public final TF<?, ?> operand2;
 
@@ -160,6 +165,7 @@ public class BasicOperation {
             "}\n")
     @NamePrefix("square")
     public static class Square extends AbstractNode implements TFType, NamingSequence {
+        @TFInput
         @Mapping("operand")
         public final TF<?, ?> operand;
 
@@ -220,6 +226,7 @@ public class BasicOperation {
             "}\n")
     @NamePrefix("square")
     public static class ReduceMean extends AbstractNode implements TFType, NamingSequence {
+        @TFInput
         @Mapping("operand")
         public final TF<?, ?> operand;
 
@@ -249,6 +256,7 @@ public class BasicOperation {
             "}\n")
     @NamePrefix("cast")
     public static class Cast<R> extends AbstractNode implements TFType, NamingSequence {
+        @TFInput
         @Mapping("operand")
         public final TF<?, ?> operand;
         private final Class<R> targetType;

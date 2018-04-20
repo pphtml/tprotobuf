@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.google.protobuf.TensorContentEncoder.toStringTensorContent; // TODO prehodit
+//import static com.google.protobuf.TensorContentEncoder.toStringTensorContent; // TODO prehodit
 import static org.superbiz.engine.Engine.DEFAULT_ML_FRAMEWORK;
 import static org.superbiz.engine.Engine.findEngine;
 import static org.superbiz.tf.util.AutoCloseablePriority.priority;
@@ -98,6 +98,11 @@ public class QMLContext implements AutoCloseable {
         }
     }
 
+    public List<TF<?, ?>> getNodes() {
+        return this.engine.getNodes();
+    }
+
+
 
 
 //    public <T extends TFType, NTType> TF<T, NTType> makeFromTemplate(TF<T, NTType> node, QMLContext qmlContext) {
@@ -148,7 +153,7 @@ public class QMLContext implements AutoCloseable {
             }
 
             @Override
-            public String getInitialValue() {
+            public Object getInitialValue() {
                 throw new UnsupportedOperationException();
             }
 
@@ -167,7 +172,7 @@ public class QMLContext implements AutoCloseable {
     public static InitializingOperation<Integer> value(int value) {
         return new InitializingOperation<Integer>(){
             @Override
-            public String getInitialValue() {
+            public Object getInitialValue() {
                 return Integer.valueOf(value).toString();
             }
 
@@ -187,7 +192,7 @@ public class QMLContext implements AutoCloseable {
     public static InitializingOperation<Long> value(long value) {
         return new InitializingOperation<Long>(){
             @Override
-            public String getInitialValue() {
+            public Object getInitialValue() {
                 return Long.valueOf(value).toString();
             }
 
@@ -212,8 +217,8 @@ public class QMLContext implements AutoCloseable {
             }
 
             @Override
-            public String getInitialValue() {
-                return toStringTensorContent(values);
+            public Object getInitialValue() {
+                return values;
             }
 
             @Override
@@ -236,8 +241,8 @@ public class QMLContext implements AutoCloseable {
             }
 
             @Override
-            public String getInitialValue() {
-                return toStringTensorContent(values);
+            public Object getInitialValue() {
+                return values;
             }
 
             @Override
@@ -260,8 +265,8 @@ public class QMLContext implements AutoCloseable {
             }
 
             @Override
-            public String getInitialValue() {
-                return toStringTensorContent(values);
+            public Object getInitialValue() {
+                return values;
             }
 
             @Override
@@ -284,8 +289,8 @@ public class QMLContext implements AutoCloseable {
             }
 
             @Override
-            public String getInitialValue() {
-                return toStringTensorContent(values);
+            public Object getInitialValue() {
+                return values;
             }
 
             @Override
@@ -369,7 +374,7 @@ public class QMLContext implements AutoCloseable {
 
     public <R extends TFType, NTType> TF<Gradient.Gradients, NTType> gradients(TF<R, NTType> operation, List<TF<Variable, ?>> variables, Attribute... attributes) {
         Gradient.Gradients gradients = new Gradient.Gradients(operation, variables, attributes);
-        //gradients.collectAllOperations(this);
+        gradients.analyzeOperations(this);
         TF of = TF.of(gradients, this);
         return this.addToGraph(of, this);
     }

@@ -9,6 +9,7 @@ import org.superbiz.tf.type.AbstractNode;
 import org.superbiz.tf.type.InitializingOperation;
 import org.superbiz.tf.type.NamingSequence;
 import org.superbiz.tf.type.TFType;
+import org.superbiz.tf.util.TFInitialValueConverter;
 
 @NamePrefix("var")
 @Template("variable-from-constant.pb.ftl")
@@ -34,6 +35,6 @@ public class Variable extends AbstractNode implements TFType, NamingSequence {
 
     @Mapping("initialValue")
     public String getInitialValue() {
-        return this.initializingOperation.getInitialValue();
+        return TFInitialValueConverter.getValue(this.initializingOperation);
     }
 }

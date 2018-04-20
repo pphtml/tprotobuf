@@ -3,6 +3,8 @@ package org.superbiz.tf.type;
 import org.superbiz.tf.QMLContext;
 import org.tensorflow.Output;
 
+import java.util.List;
+
 public interface TFType {
     void build(QMLContext qmlContext);
 
@@ -15,4 +17,6 @@ public interface TFType {
     String getOutputNodeName();
 
     DType getDType();
+
+    List<TFType> getInputs();
 }

@@ -5,7 +5,7 @@ public abstract class InitializingOperation <NTType> {
         return null;
     }
 
-    public abstract String getInitialValue();
+    public abstract Object getInitialValue();
 
     public abstract DType getDType();
 

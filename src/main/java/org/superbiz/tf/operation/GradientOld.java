@@ -37,42 +37,42 @@ public class GradientOld {
 
 //        @FunctionalInterface
 //        public interface OpFinder {
-//            IndexedNode find(String nodeName);
+//            WrappedNode find(String nodeName);
 //        }
 
 //        public void collectAllOperations(QMLContext qmlContext) {
 //            GraphDef.Builder graphBuilder = qmlContext.getGraphBuilder();
 //            List<NodeDef> nodes = graphBuilder.getNodeList();
-//            final List<IndexedNode> indexedOperations = IntStream.range(0, nodes.size())
-//                    .mapToObj(index -> IndexedNode.of(nodes.get(index), index)).collect(Collectors.toList());
+//            final List<WrappedNode> indexedOperations = IntStream.range(0, nodes.size())
+//                    .mapToObj(index -> WrappedNode.of(nodes.get(index), index)).collect(Collectors.toList());
 //            List<OutputMapping> mappings = indexedOperations
 //                    .stream()
 //                    .map(node -> node.operation.getInputList().stream().map(input -> OutputMapping.of(node.operation.getName(), input)))
 //                    .flatMap(stream -> stream)
 //                    .collect(Collectors.toList());
-//            Map<String, IndexedNode> nodeMap = indexedOperations.stream()
+//            Map<String, WrappedNode> nodeMap = indexedOperations.stream()
 //                    .collect(Collectors.toMap(node -> node.operation.getName(), Function.identity()));
 //            for (OutputMapping mapping : mappings) {
-//                IndexedNode inputNode = nodeMap.get(mapping.inputName);
-//                IndexedNode outputNode = nodeMap.get(mapping.nodeName);
+//                WrappedNode inputNode = nodeMap.get(mapping.inputName);
+//                WrappedNode outputNode = nodeMap.get(mapping.nodeName);
 //                if (outputNode == null) {
 //                    throw new IllegalStateException();
 //                }
 //                inputNode.outputs.add(outputNode);
 //            }
 //
-//            List<IndexedNode> toOperations = Collections.singletonList(nodeMap.get(sourceOperation.getName()));
-//            List<IndexedNode> fromOperations = qmlContext.getVariables().stream().map(v -> nodeMap.get(v.getName())).collect(Collectors.toList());
+//            List<WrappedNode> toOperations = Collections.singletonList(nodeMap.get(sourceOperation.getName()));
+//            List<WrappedNode> fromOperations = qmlContext.getVariables().stream().map(v -> nodeMap.get(v.getName())).collect(Collectors.toList());
 //
 //            // collect nodes from inputs to outputs
 //            final List<Boolean> dosazenyOperace = IntStream.range(0, nodes.size()).mapToObj(index -> false).collect(Collectors.toList());
 //
-////            List<IndexedNode> indexedToOperations = toOperations.stream().map(operation -> opFinder.find(operation)).collect(Collectors.toList());
-////            List<IndexedNode> indexedFromOperations = fromOperations.stream().map(operation -> opFinder.find(operation)).collect(Collectors.toList());
+////            List<WrappedNode> indexedToOperations = toOperations.stream().map(operation -> opFinder.find(operation)).collect(Collectors.toList());
+////            List<WrappedNode> indexedFromOperations = fromOperations.stream().map(operation -> opFinder.find(operation)).collect(Collectors.toList());
 //            toOperations.stream().forEach(operation -> dosazenyOperace.set(operation.index, true));
-//            Deque<IndexedNode> queue = new ArrayDeque<>(fromOperations);
+//            Deque<WrappedNode> queue = new ArrayDeque<>(fromOperations);
 //            while (!queue.isEmpty()) {
-//                IndexedNode indexedNode = queue.pop();
+//                WrappedNode indexedNode = queue.pop();
 //                if (!dosazenyOperace.get(indexedNode.index)) {
 //                    dosazenyOperace.set(indexedNode.index, true);
 //                    queue.addAll(indexedNode.outputs);
@@ -83,15 +83,15 @@ public class GradientOld {
 //
 //            // collect nodes from outputs to inputs
 //            final List<Boolean> pruchoziOperace = IntStream.range(0, nodes.size()).mapToObj(index -> false).collect(Collectors.toList());
-//            List<IndexedNode> pruchoziOperaceList = new ArrayList<>();
+//            List<WrappedNode> pruchoziOperaceList = new ArrayList<>();
 //            queue = new ArrayDeque<>(toOperations);
 //            while (!queue.isEmpty()) {
-//                IndexedNode indexedNode = queue.pop();
+//                WrappedNode indexedNode = queue.pop();
 //                if (dosazenyOperace.get(indexedNode.index)) {
 //                    pruchoziOperace.set(indexedNode.index, true);
 //                    pruchoziOperaceList.add(indexedNode);
 //                    dosazenyOperace.set(indexedNode.index, false); // aby se nepocitalo znovu
-//                    List<IndexedNode> inputs = indexedNode.operation.getInputList().stream().map(name -> opFinder.find(name)).collect(Collectors.toList());
+//                    List<WrappedNode> inputs = indexedNode.operation.getInputList().stream().map(name -> opFinder.find(name)).collect(Collectors.toList());
 //                    queue.addAll(inputs);
 //                }
 //            }
@@ -105,16 +105,16 @@ public class GradientOld {
 //                }
 //            }));
 //
-//            Set<IndexedNode> doOpsSet = new HashSet<>();
+//            Set<WrappedNode> doOpsSet = new HashSet<>();
 //            doOpsSet.addAll(toOperations);
 //            queue.clear(); // zbytecny
 //            queue.addAll(toOperations);
 //
-//            Set<IndexedNode> stopOpsSet = new HashSet<>();
+//            Set<WrappedNode> stopOpsSet = new HashSet<>();
 //            //doOpsSet.addAll(toOperations);
 //            fromOperations.forEach(operation -> {
 //                boolean isStopOperation = true;
-//                for (IndexedNode inputOperation : operation.inputs(opFinder)) {
+//                for (WrappedNode inputOperation : operation.inputs(opFinder)) {
 //                    if (visiciPocty.get(inputOperation.index) > 0) {
 //                        isStopOperation = true;
 //                        break;
@@ -126,7 +126,7 @@ public class GradientOld {
 //            });
 //
 //            while (!queue.isEmpty()) {
-//                IndexedNode indexedNode = queue.pop();
+//                WrappedNode indexedNode = queue.pop();
 //
 //            }
 //
@@ -160,23 +160,23 @@ public class GradientOld {
         }
     }
 
-//    static class IndexedNode {
+//    static class WrappedNode {
 //        private final int index;
 //        private final NodeDef operation;
-//        private final List<IndexedNode> outputs = new ArrayList<>();
+//        private final List<WrappedNode> outputs = new ArrayList<>();
 //
-//        IndexedNode(NodeDef operation, int index) {
+//        WrappedNode(NodeDef operation, int index) {
 //            this.operation = operation;
 //            this.index = index;
 //        }
 //
-//        static IndexedNode of(NodeDef operation, int index) {
-//            return new IndexedNode(operation, index);
+//        static WrappedNode of(NodeDef operation, int index) {
+//            return new WrappedNode(operation, index);
 //        }
 //
 //        @Override
 //        public String toString() {
-//            final StringBuilder sb = new StringBuilder("IndexedNode{");
+//            final StringBuilder sb = new StringBuilder("WrappedNode{");
 //            sb.append("index=").append(index);
 //            sb.append(", operation=").append(operation);
 //            sb.append(", outputs=").append(outputs);
@@ -184,7 +184,7 @@ public class GradientOld {
 //            return sb.toString();
 //        }
 //
-//        public List<IndexedNode> inputs(Gradients.OpFinder opFinder) {
+//        public List<WrappedNode> inputs(Gradients.OpFinder opFinder) {
 //            return this.operation.getInputList().stream().map(name -> opFinder.find(name)).collect(Collectors.toList());
 //        }
 //
@@ -192,7 +192,7 @@ public class GradientOld {
 //        public boolean equals(Object o) {
 //            if (this == o) return true;
 //            if (o == null || getClass() != o.getClass()) return false;
-//            IndexedNode that = (IndexedNode) o;
+//            WrappedNode that = (WrappedNode) o;
 //            return index == that.index &&
 //                    Objects.equals(operation, that.operation);
 //        }

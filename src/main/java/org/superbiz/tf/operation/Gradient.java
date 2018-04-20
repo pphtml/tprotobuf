@@ -1,5 +1,6 @@
 package org.superbiz.tf.operation;
 
+import org.superbiz.tf.QMLContext;
 import org.superbiz.tf.TF;
 import org.superbiz.tf.annotation.Mapping;
 import org.superbiz.tf.annotation.NamePrefix;
@@ -10,6 +11,9 @@ import org.superbiz.tf.type.NamingSequence;
 import org.superbiz.tf.type.TFType;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Gradient {
     @Template("gradients.pb.ftl")
@@ -22,6 +26,78 @@ public class Gradient {
             super(attributes);
             this.sourceOperation = sourceOperation;
             //this.setDType(this.operand.getDType());
+        }
+
+        public void analyzeOperations(QMLContext qmlContext) {
+            List<TF<?, ?>> nodes = qmlContext.getNodes();
+            final List<WrappedNode> wrappedNodes = IntStream.range(0, nodes.size())
+                    .mapToObj(index -> WrappedNode.of(nodes.get(index), index)).collect(Collectors.toList());
+//            List<OutputMapping> mappings = wrappedNodes
+//                    .stream()
+//                    .map(node -> node.operation.getInputList().stream().map(input -> OutputMapping.of(node.operation.getName(), input)))
+//                    .flatMap(stream -> stream)
+//                    .collect(Collectors.toList());
+//            Map<String, WrappedNode> nodeMap = wrappedNodes.stream()
+//                    .collect(Collectors.toMap(node -> node.operation.getName(), Function.identity()));
+//            for (OutputMapping mapping : mappings) {
+//                WrappedNode inputNode = nodeMap.get(mapping.inputName);
+//                WrappedNode outputNode = nodeMap.get(mapping.nodeName);
+//                if (outputNode == null) {
+//                    throw new IllegalStateException();
+//                }
+//                inputNode.outputs.add(outputNode);
+//            }
+//
+//            List<WrappedNode> toOperations = Collections.singletonList(nodeMap.get(sourceOperation.getName()));
+//            List<WrappedNode> fromOperations = qmlContext.getVariables().stream().map(v -> nodeMap.get(v.getName())).collect(Collectors.toList());
+//
+//            // collect nodes from inputs to outputs
+//            final List<Boolean> dosazenyOperace = IntStream.range(0, nodes.size()).mapToObj(index -> false).collect(Collectors.toList());
+
+        }
+    }
+
+    private static class WrappedNode {
+        private final int index;
+        private final TF<?, ?> node;
+        //private final List<WrappedNode> outputs = new ArrayList<>();
+
+        WrappedNode(TF<?, ?> node, int index) {
+            this.node = node;
+            this.index = index;
+        }
+
+        static WrappedNode of(TF<?, ?> node, int index) {
+            return new WrappedNode(node, index);
+        }
+
+        @Override
+        public String toString() {
+            final StringBuilder sb = new StringBuilder("WrappedNode{");
+            sb.append("index=").append(index);
+            sb.append(", node=").append(node);
+            sb.append('}');
+            return sb.toString();
+        }
+
+//        public List<WrappedNode> inputs(Gradients.OpFinder opFinder) {
+//            return this.operation.getInputList().stream().map(name -> opFinder.find(name)).collect(Collectors.toList());
+//        }
+
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            WrappedNode that = (WrappedNode) o;
+            return index == that.index &&
+                    Objects.equals(node, that.node);
+        }
+
+        @Override
+        public int hashCode() {
+
+            return Objects.hash(index, node);
         }
     }
 }

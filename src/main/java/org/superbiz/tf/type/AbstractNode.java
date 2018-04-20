@@ -10,6 +10,7 @@ import org.superbiz.tf.attribute.Attribute;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractNode implements TFType, NamingSequence {
@@ -138,5 +139,10 @@ public abstract class AbstractNode implements TFType, NamingSequence {
         } else {
             return getName();
         }
+    }
+
+    @Override
+    public List<TFType> getInputs() {
+        return null;
     }
 }
