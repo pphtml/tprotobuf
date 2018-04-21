@@ -10,17 +10,21 @@ import org.superbiz.tf.type.AbstractNode;
 import org.superbiz.tf.type.NamingSequence;
 import org.superbiz.tf.type.TFType;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static java.util.function.Function.identity;
 
 public class Gradient {
     @Template("gradients.pb.ftl")
     @NamePrefix("gradients")
     public static class Gradients extends AbstractNode implements TFType, NamingSequence {
         @Mapping("sourceOperation")
-        public final TF<?, ?> sourceOperation;
+        public final TF<? extends TFType, ?> sourceOperation;
 
         public <T extends TFType, R extends TFType, NTType> Gradients(TF<T, NTType> sourceOperation, List<TF<Variable, ?>> variables, Attribute[] attributes) {
             super(attributes);
@@ -29,9 +33,19 @@ public class Gradient {
         }
 
         public void analyzeOperations(QMLContext qmlContext) {
-            List<TF<?, ?>> nodes = qmlContext.getNodes();
-            final List<WrappedNode> wrappedNodes = IntStream.range(0, nodes.size())
-                    .mapToObj(index -> WrappedNode.of(nodes.get(index), index)).collect(Collectors.toList());
+            List<TF<? extends TFType, ?>> nodes = qmlContext.getNodes();
+            Map<String, WrappedNode> mapWrappedNodes = IntStream.range(0, nodes.size())
+                    .mapToObj(index -> WrappedNode.of(nodes.get(index), index))
+                    .collect(Collectors.toMap(wrapper -> wrapper.node.getName(), identity()));
+
+            for (WrappedNode wrappedNode : mapWrappedNodes.values()) {
+                List<TFType> inputs = wrappedNode.getInputs();
+                for (TFType input : inputs) {
+                    String name = input.getName();
+                    WrappedNode inputWrappedNode = mapWrappedNodes.get(name);
+                    inputWrappedNode.getOututs().add(wrappedNode.node.getNode());
+                }
+            }
 //            List<OutputMapping> mappings = wrappedNodes
 //                    .stream()
 //                    .map(node -> node.operation.getInputList().stream().map(input -> OutputMapping.of(node.operation.getName(), input)))
@@ -60,6 +74,7 @@ public class Gradient {
     private static class WrappedNode {
         private final int index;
         private final TF<?, ?> node;
+        private final List<TFType> outputs = new ArrayList<>();
         //private final List<WrappedNode> outputs = new ArrayList<>();
 
         WrappedNode(TF<?, ?> node, int index) {
@@ -98,6 +113,14 @@ public class Gradient {
         public int hashCode() {
 
             return Objects.hash(index, node);
+        }
+
+        public List<TFType> getInputs() {
+            return node.getInputs();
+        }
+
+        public List<TFType> getOututs() {
+            return this.outputs;
         }
     }
 }

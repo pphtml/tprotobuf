@@ -1,10 +1,11 @@
 ResNet50ff
-import static com.google.protobuf.TensorContentEncoder.toStringTensorContent; // TODO prehodit
+WrappedNode - vylepsit toString()
 
     // TODO vyhodit qmlContext
     public <T extends TFType, NTType> TF<T, NTType> makeFromTemplate(TF<T, NTType> node, QMLContext qmlContext) {
 
 Engine musi byt closeable
+ClassMetadata -> ClassMetadataBase & engine specific ClassMetadata
 
 TensorflowEngine -> TFEngine
 
@@ -40,8 +41,8 @@ protoc --java_out=src/main/java tensorflow/core/framework/graph.proto
 - https://github.com/tensorflow/models/blob/master/samples/languages/java/object_detection/src/main/java/DetectObjects.java
 - https://dinantdatascientist.blogspot.de/2018/02/kaggle-tensorflow-speech-recognition.html
 - F -> C https://towardsdatascience.com/machine-learning-from-scratch-part-4-10117c005a28
-
-
+https://colab.research.google.com/github/tensorflow/models/blob/master/samples/outreach/demos/eager_execution.ipynb#scrollTo=SRCTcyCocvBq
+https://github.com/tensorflow/tensorflow/blob/master/tensorflow/contrib/eager/python/examples/notebooks/2_gradients.ipynb
 
 reduceMeanNode:  [<tf.Tensor 'gradients/Fill:0' shape=() dtype=float32>]
 squareNode:  [<tf.Tensor 'gradients/reduceMeanNode_grad/truediv:0' shape=(100,) dtype=float32>]

@@ -12,8 +12,8 @@ public abstract class BaseEngine implements Engine {
 
     @Override
     public <T extends TFType, NTType> void addToGraph(TF<T, NTType> node, QMLContext qmlContext) {
-        nodes.add(node);
         node.build(qmlContext);
+        nodes.add(node);
     }
 
     public List<TF<?, ?>> getNodes() {

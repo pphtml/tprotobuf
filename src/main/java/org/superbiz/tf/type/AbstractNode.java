@@ -8,14 +8,17 @@ import org.superbiz.tf.annotation.FieldOrMethod;
 import org.superbiz.tf.annotation.Mapping;
 import org.superbiz.tf.attribute.Attribute;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public abstract class AbstractNode implements TFType, NamingSequence {
-    final Attribute[] attributes;
     String name;
+    final Attribute[] attributes;
     private DType dType;
     private Shape shape;
     private static final Map<Class, ClassMetadata> ANNOTATIONS_CACHE = new HashMap<>();
@@ -143,6 +146,29 @@ public abstract class AbstractNode implements TFType, NamingSequence {
 
     @Override
     public List<TFType> getInputs() {
-        return null;
+        Map<String, Field> tfInputs = ANNOTATIONS_CACHE.get(this.getClass()).getTfInputs();
+        List<TFType> result = tfInputs.values().stream()
+                .map(field -> {
+                    try {
+                        TF<? extends TFType, ?> tf = (TF<? extends TFType, ?>)field.get(this);
+                        return tf.getNode();
+                    } catch (IllegalAccessException e) {
+                        throw new IllegalStateException(e);
+                    }
+                })
+                .collect(Collectors.toList());
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder(this.getClass().getSimpleName());
+        sb.append("{");
+        sb.append("name='").append(name).append('\'');
+        sb.append(", attributes=").append(Arrays.toString(attributes));
+        sb.append(", dType=").append(dType);
+        sb.append(", shape=").append(shape);
+        sb.append('}');
+        return sb.toString();
     }
 }

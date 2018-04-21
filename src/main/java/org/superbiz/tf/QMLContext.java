@@ -98,7 +98,7 @@ public class QMLContext implements AutoCloseable {
         }
     }
 
-    public List<TF<?, ?>> getNodes() {
+    public List<TF<? extends TFType, ?>> getNodes() {
         return this.engine.getNodes();
     }
 

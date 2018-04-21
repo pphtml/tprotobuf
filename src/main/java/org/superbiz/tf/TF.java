@@ -6,6 +6,8 @@ import org.superbiz.tf.operation.Operation;
 import org.superbiz.tf.type.DType;
 import org.superbiz.tf.type.TFType;
 
+import java.util.List;
+
 public class TF <T extends TFType, NTType> {
     private final T node;
     private final QMLContext qmlContext;
@@ -83,5 +85,21 @@ public class TF <T extends TFType, NTType> {
 
     public DType getDType() {
         return node.getDType();
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("TF{");
+        sb.append(node);
+        sb.append('}');
+        return sb.toString();
+    }
+
+    public List<TFType> getInputs() {
+        return node.getInputs();
+    }
+
+    public T getNode() {
+        return node;
     }
 }

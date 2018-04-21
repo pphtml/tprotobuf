@@ -9,17 +9,22 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ClassMetadata {
     private Map<String, FieldOrMethod> mappings = new HashMap<>();
-    private Map<String, Field> tfInputs = new HashMap<>();
+    private Map<String, Field> tfInputs = new LinkedHashMap<>();
     private String namePrefix;
     private String templateText;
     private String outputNodePostfix;
 
     public Map<String, FieldOrMethod> getMappings() {
         return mappings;
+    }
+
+    public Map<String, Field> getTfInputs() {
+        return tfInputs;
     }
 
     public String getNamePrefix() {
