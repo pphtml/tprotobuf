@@ -374,7 +374,7 @@ public class QMLContext implements AutoCloseable {
 
     public <R extends TFType, NTType> TF<Gradient.Gradients, NTType> gradients(TF<R, NTType> operation, List<TF<Variable, ?>> variables, Attribute... attributes) {
         Gradient.Gradients gradients = new Gradient.Gradients(operation, variables, attributes);
-        gradients.analyzeOperations(this);
+        gradients.computeGradients(this);
         TF of = TF.of(gradients, this);
         return this.addToGraph(of, this);
     }

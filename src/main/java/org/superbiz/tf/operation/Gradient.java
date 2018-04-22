@@ -10,10 +10,7 @@ import org.superbiz.tf.type.AbstractNode;
 import org.superbiz.tf.type.NamingSequence;
 import org.superbiz.tf.type.TFType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -32,7 +29,20 @@ public class Gradient {
             //this.setDType(this.operand.getDType());
         }
 
-        public void analyzeOperations(QMLContext qmlContext) {
+        public void computeGradients(QMLContext qmlContext) {
+            Map<String, WrappedNode> mapOfNodes = analyzeOperations(qmlContext);
+
+            List<WrappedNode> toOperations = Collections.singletonList(mapOfNodes.get(sourceOperation.getName()));
+            List<WrappedNode> fromOperations = qmlContext.getVariables().stream().map(v -> mapOfNodes.get(v.getName())).collect(Collectors.toList());
+
+            Deque<WrappedNode> queue = new ArrayDeque<>(toOperations);
+            if (!queue.isEmpty()) { // TODO spocitat vsechny gradienty
+                WrappedNode wrappedNode = queue.pop();
+                System.out.println(wrappedNode);
+            }
+        }
+
+        public Map<String, WrappedNode> analyzeOperations(QMLContext qmlContext) {
             List<TF<? extends TFType, ?>> nodes = qmlContext.getNodes();
             Map<String, WrappedNode> mapWrappedNodes = IntStream.range(0, nodes.size())
                     .mapToObj(index -> WrappedNode.of(nodes.get(index), index))
@@ -46,6 +56,8 @@ public class Gradient {
                     inputWrappedNode.getOututs().add(wrappedNode.node.getNode());
                 }
             }
+
+            return mapWrappedNodes;
 //            List<OutputMapping> mappings = wrappedNodes
 //                    .stream()
 //                    .map(node -> node.operation.getInputList().stream().map(input -> OutputMapping.of(node.operation.getName(), input)))

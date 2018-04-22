@@ -41,6 +41,8 @@ protoc --java_out=src/main/java tensorflow/core/framework/graph.proto
 - https://github.com/tensorflow/models/blob/master/samples/languages/java/object_detection/src/main/java/DetectObjects.java
 - https://dinantdatascientist.blogspot.de/2018/02/kaggle-tensorflow-speech-recognition.html
 - F -> C https://towardsdatascience.com/machine-learning-from-scratch-part-4-10117c005a28
+https://www.datacamp.com/community/tutorials/tensorflow-tutorial
+https://cognitiveclass.ai/courses/deep-learning-tensorflow/
 https://colab.research.google.com/github/tensorflow/models/blob/master/samples/outreach/demos/eager_execution.ipynb#scrollTo=SRCTcyCocvBq
 https://github.com/tensorflow/tensorflow/blob/master/tensorflow/contrib/eager/python/examples/notebooks/2_gradients.ipynb
 
