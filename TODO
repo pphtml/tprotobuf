@@ -1,4 +1,11 @@
-ResNet50ff
+- prenaseni shape
+- vypocet gradientu pro mean
+- vypocet gradientu pro square
+- vypocet gradientu pro promenny
+- oddeleni TF a neTF
+
+
+ResNet50
 WrappedNode - vylepsit toString()
 
     // TODO vyhodit qmlContext
@@ -44,6 +51,9 @@ protoc --java_out=src/main/java tensorflow/core/framework/graph.proto
 https://www.datacamp.com/community/tutorials/tensorflow-tutorial
 https://cognitiveclass.ai/courses/deep-learning-tensorflow/
 https://colab.research.google.com/github/tensorflow/models/blob/master/samples/outreach/demos/eager_execution.ipynb#scrollTo=SRCTcyCocvBq
+https://hub.mybinder.org/user/ipython-ipython-in-depth-gmzdx72n/notebooks/binder/Index.ipynb#
+https://mybinder.org/v2/gh/ageron/handson-ml/master
+  https://anaconda.org, https://paiza.cloud/en/jupyter-notebook-online, https://notebooks.azure.com/
 https://github.com/tensorflow/tensorflow/blob/master/tensorflow/contrib/eager/python/examples/notebooks/2_gradients.ipynb
 
 reduceMeanNode:  [<tf.Tensor 'gradients/Fill:0' shape=() dtype=float32>]

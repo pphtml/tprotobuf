@@ -25,6 +25,7 @@ public class BasicOperation {
             "  }\n" +
             "}\n")
     @NamePrefix("add")
+    @ShapeTransformations({@ShapeTransformation("1,N->N"), @ShapeTransformation("N,1->N"), @ShapeTransformation("N,N->N")})
     public static class Add extends AbstractNode implements TFType, NamingSequence {
         @TFInput
         @Mapping("operand")
@@ -96,6 +97,7 @@ public class BasicOperation {
             this.operand1 = operand1;
             this.operand2 = operand2;
             this.setDType(this.operand1.getDType());
+            super.postInit();
         }
     }
 

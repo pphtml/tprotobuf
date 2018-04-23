@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BaseEngine implements Engine {
-    private List<TF<?, ?>> nodes = new ArrayList<>();
+    private List<TF<? extends TFType, ?>> nodes = new ArrayList<>();
 
     @Override
     public <T extends TFType, NTType> void addToGraph(TF<T, NTType> node, QMLContext qmlContext) {
@@ -16,7 +16,8 @@ public abstract class BaseEngine implements Engine {
         nodes.add(node);
     }
 
-    public List<TF<?, ?>> getNodes() {
+    @Override
+    public List<TF<? extends TFType, ?>> getNodes() {
         return nodes;
     }
 }

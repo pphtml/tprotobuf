@@ -102,6 +102,10 @@ public class TensorflowEngine extends BaseEngine{
 
     public Graph buildGraph() {
         if (tfGraphOpen) {
+            for (TF<?, ?> node : this.getNodes()) {
+                makeFromTemplate(node);
+            }
+
             byte[] bytes = graphBuilder.build().toByteArray();
             this.graph = new Graph();
             this.graph.importGraphDef(bytes);
@@ -129,7 +133,7 @@ public class TensorflowEngine extends BaseEngine{
     @Override
     public <T extends TFType, NTType> void addToGraph(TF<T, NTType> node, QMLContext qmlContext) {
         super.addToGraph(node, qmlContext);
-        makeFromTemplate(node);
+        //makeFromTemplate(node);
     }
 
     @Override
@@ -200,5 +204,4 @@ public class TensorflowEngine extends BaseEngine{
                     }
                 });
     }
-
 }

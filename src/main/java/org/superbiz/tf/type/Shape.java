@@ -1,6 +1,9 @@
 package org.superbiz.tf.type;
 
+import java.util.Arrays;
+
 public class Shape {
+    public static final Shape EMPTY = new Shape(new Integer[]{});
     private final Integer[] sizes;
 
     private Shape(Integer[] sizes) {
@@ -30,11 +33,11 @@ public class Shape {
         }
     }
 
-//    public Integer tfValue() { // TODO docasne, po odladeni vyhodit
-//        if (sizes.length == 1) {
-//            return sizes[0];
-//        } else {
-//            throw new UnsupportedOperationException();
-//        }
-//    }
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Shape{");
+        sb.append(Arrays.toString(sizes));
+        sb.append('}');
+        return sb.toString();
+    }
 }

@@ -19,4 +19,6 @@ public interface TFType {
     DType getDType();
 
     List<TFType> getInputs();
+
+    Shape getShape();
 }

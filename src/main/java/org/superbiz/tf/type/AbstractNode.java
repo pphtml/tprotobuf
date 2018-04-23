@@ -56,7 +56,7 @@ public abstract class AbstractNode implements TFType, NamingSequence {
     }
 
     public Shape getShape() {
-        return shape;
+        return shape != null ? shape : Shape.EMPTY;
     }
 
     public void setShape(Shape shape) {
@@ -109,34 +109,37 @@ public abstract class AbstractNode implements TFType, NamingSequence {
     }
 
     public void build(QMLContext qmlContext) {
-        scanClassAnnotations();
+        // scanClassAnnotations();
         this.name = qmlContext.getNamingService().name(attributes, this);
     }
 
-    private void scanClassAnnotations() {
-        if (!ANNOTATIONS_CACHE.containsKey(this.getClass())) {
+    private ClassMetadata scanClassAnnotations() {
+        ClassMetadata classMetadata = ANNOTATIONS_CACHE.get(this.getClass());
+        if (classMetadata == null) {
             synchronized (AbstractNode.class) {
-                if (!ANNOTATIONS_CACHE.containsKey(this.getClass())) {
-                    ClassMetadata classMetadata = ClassMetadata.scan(this.getClass());
+                classMetadata = ANNOTATIONS_CACHE.get(this.getClass());
+                if (classMetadata == null) {
+                    classMetadata = ClassMetadata.scan(this.getClass());
                     ANNOTATIONS_CACHE.put(this.getClass(), classMetadata);
                 }
             }
         }
+        return classMetadata;
     }
 
     @Override
     public String getPrefix() {
-        return ANNOTATIONS_CACHE.get(this.getClass()).getNamePrefix();
+        return getClassMetadata().getNamePrefix();
     }
 
     @Override
     public String getTemplateText() {
-        return ANNOTATIONS_CACHE.get(this.getClass()).getTemplateText();
+        return getClassMetadata().getTemplateText();
     }
 
     @Override
     public String getOutputNodeName() {
-        String outputNodePostfix = ANNOTATIONS_CACHE.get(this.getClass()).getOutputNodePostfix();
+        String outputNodePostfix = getClassMetadata().getOutputNodePostfix();
         if (outputNodePostfix != null) {
             return String.format("%s%s", getName(), outputNodePostfix);
         } else {
@@ -146,7 +149,7 @@ public abstract class AbstractNode implements TFType, NamingSequence {
 
     @Override
     public List<TFType> getInputs() {
-        Map<String, Field> tfInputs = ANNOTATIONS_CACHE.get(this.getClass()).getTfInputs();
+        Map<String, Field> tfInputs = getClassMetadata().getTfInputs();
         List<TFType> result = tfInputs.values().stream()
                 .map(field -> {
                     try {
@@ -170,5 +173,32 @@ public abstract class AbstractNode implements TFType, NamingSequence {
         sb.append(", shape=").append(shape);
         sb.append('}');
         return sb.toString();
+    }
+
+    protected void postInit() {
+        List<TFType> inputs = getInputs();
+        checkAndSetShape(inputs);
+    }
+
+    private void checkAndSetShape(List<TFType> inputs) {
+        if (shape != null && inputs.size() > 0) {
+            throw new IllegalStateException("Inputs > 0 & shape already set.");
+        }
+
+        if (inputs.size() > 0) {
+            List<Shape> shapes = inputs.stream()
+                    .map(op -> op.getShape())
+                    .collect(Collectors.toList());
+
+            System.out.println();
+        }
+    }
+
+    protected ClassMetadata getClassMetadata() {
+        ClassMetadata result = ANNOTATIONS_CACHE.get(this.getClass());
+        if (result == null) {
+            result = scanClassAnnotations();
+        }
+        return result;
     }
 }

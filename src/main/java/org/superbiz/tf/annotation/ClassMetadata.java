@@ -8,9 +8,13 @@ import org.superbiz.util.ClasspathResource;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ClassMetadata {
     private Map<String, FieldOrMethod> mappings = new HashMap<>();
@@ -18,6 +22,7 @@ public class ClassMetadata {
     private String namePrefix;
     private String templateText;
     private String outputNodePostfix;
+    private List<AllowedShapeTransformation> allowedShapeTransformations = new ArrayList<>();
 
     public Map<String, FieldOrMethod> getMappings() {
         return mappings;
@@ -85,6 +90,17 @@ public class ClassMetadata {
             result.templateText = aClass.getSuperclass().getAnnotation(TemplateInline.class).value();
         } else {
             throw new IllegalArgumentException(String.format("Template or TemplateInline missing for class %s", aClass.getName()));
+        }
+
+        if (aClass.getAnnotation(ShapeTransformations.class) != null) {
+            List<AllowedShapeTransformation> transformations = Stream.of(aClass.getAnnotation(ShapeTransformations.class).value())
+                    .map(shapeTransformation -> AllowedShapeTransformation.parse(shapeTransformation.value()))
+                    .collect(Collectors.toList());
+            result.allowedShapeTransformations.addAll(transformations);
+        }
+        if (aClass.getAnnotation(ShapeTransformation.class) != null) {
+            result.allowedShapeTransformations.add(AllowedShapeTransformation.parse(
+                    aClass.getAnnotation(ShapeTransformation.class).value()));
         }
 
         return result;
