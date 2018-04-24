@@ -3,10 +3,13 @@ package org.superbiz.tf.type;
 import org.superbiz.tf.QMLContext;
 import org.superbiz.tf.QMLNodeProcessingException;
 import org.superbiz.tf.TF;
+import org.superbiz.tf.annotation.AllowedShapeTransformation;
 import org.superbiz.tf.annotation.ClassMetadata;
 import org.superbiz.tf.annotation.FieldOrMethod;
 import org.superbiz.tf.annotation.Mapping;
 import org.superbiz.tf.attribute.Attribute;
+import org.superbiz.tf.shape.ShapeOperation;
+import org.superbiz.tf.shape.TransformationFinder;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -14,6 +17,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public abstract class AbstractNode implements TFType, NamingSequence {
@@ -22,6 +26,7 @@ public abstract class AbstractNode implements TFType, NamingSequence {
     private DType dType;
     private Shape shape;
     private static final Map<Class, ClassMetadata> ANNOTATIONS_CACHE = new HashMap<>();
+    private ShapeOperation shapeOperation;
 
     public AbstractNode(Attribute[] attributes) {
         this.attributes = attributes;
@@ -56,7 +61,7 @@ public abstract class AbstractNode implements TFType, NamingSequence {
     }
 
     public Shape getShape() {
-        return shape != null ? shape : Shape.EMPTY;
+        return shape != null ? shape : Shape.SCALAR;
     }
 
     public void setShape(Shape shape) {
@@ -185,12 +190,19 @@ public abstract class AbstractNode implements TFType, NamingSequence {
             throw new IllegalStateException("Inputs > 0 & shape already set.");
         }
 
+        final List<AllowedShapeTransformation> allowedShapeTransformations = getClassMetadata().getAllowedShapeTransformations();
+
         if (inputs.size() > 0) {
             List<Shape> shapes = inputs.stream()
                     .map(op -> op.getShape())
                     .collect(Collectors.toList());
-
-            System.out.println();
+            Optional<ShapeOperation> shapeOperation = TransformationFinder.findMatching(allowedShapeTransformations, shapes);
+            if (!shapeOperation.isPresent()) {
+                throw new IllegalStateException("Missing shape");
+            } else {
+                this.shape = shapeOperation.get().getToShape();
+                this.shapeOperation = shapeOperation.get();
+            }
         }
     }
 
@@ -200,5 +212,10 @@ public abstract class AbstractNode implements TFType, NamingSequence {
             result = scanClassAnnotations();
         }
         return result;
+    }
+
+    @Override
+    public ShapeOperation getShapeOperation() {
+        return shapeOperation;
     }
 }

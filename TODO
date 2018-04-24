@@ -1,4 +1,5 @@
 - prenaseni shape
+- kontrola velikosti shape
 - vypocet gradientu pro mean
 - vypocet gradientu pro square
 - vypocet gradientu pro promenny

@@ -3,6 +3,7 @@ package org.superbiz.tf.annotation;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import org.superbiz.tf.type.AbstractNode;
+import org.superbiz.tf.type.Shape;
 import org.superbiz.util.ClasspathResource;
 
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -92,6 +94,11 @@ public class ClassMetadata {
             throw new IllegalArgumentException(String.format("Template or TemplateInline missing for class %s", aClass.getName()));
         }
 
+//        ShapeTransformations transformationsSpecialized = aClass.getAnnotation(ShapeTransformations.class);
+//        ShapeTransformations transformationsBase = aClass.getSuperclass().getAnnotation(ShapeTransformations.class);
+//        ShapeTransformation transformationSpecialized = aClass.getAnnotation(ShapeTransformation.class);
+//        ShapeTransformation transformationBase = aClass.getAnnotatedSuperclass().getAnnotation(ShapeTransformation.class);
+//
         if (aClass.getAnnotation(ShapeTransformations.class) != null) {
             List<AllowedShapeTransformation> transformations = Stream.of(aClass.getAnnotation(ShapeTransformations.class).value())
                     .map(shapeTransformation -> AllowedShapeTransformation.parse(shapeTransformation.value()))
@@ -113,4 +120,9 @@ public class ClassMetadata {
     public String getOutputNodePostfix() {
         return outputNodePostfix;
     }
+
+    public List<AllowedShapeTransformation> getAllowedShapeTransformations() {
+        return allowedShapeTransformations;
+    }
+
 }

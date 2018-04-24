@@ -6,6 +6,7 @@ import org.superbiz.tf.annotation.Mapping;
 import org.superbiz.tf.annotation.NamePrefix;
 import org.superbiz.tf.annotation.Template;
 import org.superbiz.tf.attribute.Attribute;
+import org.superbiz.tf.shape.ShapeOperation;
 import org.superbiz.tf.type.AbstractNode;
 import org.superbiz.tf.type.NamingSequence;
 import org.superbiz.tf.type.TFType;
@@ -15,6 +16,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.util.function.Function.identity;
+import static org.superbiz.tf.QMLContext.value;
+import static org.superbiz.tf.attribute.Attribute.named;
 
 public class Gradient {
     @Template("gradients.pb.ftl")
@@ -35,11 +38,21 @@ public class Gradient {
             List<WrappedNode> toOperations = Collections.singletonList(mapOfNodes.get(sourceOperation.getName()));
             List<WrappedNode> fromOperations = qmlContext.getVariables().stream().map(v -> mapOfNodes.get(v.getName())).collect(Collectors.toList());
 
+            // TODO nejspis delit 1.0f podle poctu output nodes
+            TF<Constant, Float> gradientStart = qmlContext.constant(value(1.0f), named("gradientStart"));
+            for (WrappedNode fromOperation : fromOperations) {
+                fromOperation.getOutputs().add(gradientStart.getNode());
+            }
+
             Deque<WrappedNode> queue = new ArrayDeque<>(toOperations);
             if (!queue.isEmpty()) { // TODO spocitat vsechny gradienty
                 WrappedNode wrappedNode = queue.pop();
-                System.out.println(wrappedNode);
+                computeNodeGradients(wrappedNode, qmlContext);
             }
+        }
+
+        private void computeNodeGradients(WrappedNode wrappedNode, QMLContext qmlContext) {
+            ShapeOperation shapeOperation = wrappedNode.node.getShapeOperation();
         }
 
         public Map<String, WrappedNode> analyzeOperations(QMLContext qmlContext) {
@@ -53,7 +66,7 @@ public class Gradient {
                 for (TFType input : inputs) {
                     String name = input.getName();
                     WrappedNode inputWrappedNode = mapWrappedNodes.get(name);
-                    inputWrappedNode.getOututs().add(wrappedNode.node.getNode());
+                    inputWrappedNode.getOutputs().add(wrappedNode.node.getNode());
                 }
             }
 
@@ -131,7 +144,7 @@ public class Gradient {
             return node.getInputs();
         }
 
-        public List<TFType> getOututs() {
+        public List<TFType> getOutputs() {
             return this.outputs;
         }
     }

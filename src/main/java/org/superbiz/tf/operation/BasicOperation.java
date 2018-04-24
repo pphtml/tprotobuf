@@ -25,7 +25,7 @@ public class BasicOperation {
             "  }\n" +
             "}\n")
     @NamePrefix("add")
-    @ShapeTransformations({@ShapeTransformation("1,N->N"), @ShapeTransformation("N,1->N"), @ShapeTransformation("N,N->N")})
+    @ShapeTransformations({@ShapeTransformation("1,1->1"), @ShapeTransformation("1,N->N"), @ShapeTransformation("N,1->N"), @ShapeTransformation("N,N->N")})
     public static class Add extends AbstractNode implements TFType, NamingSequence {
         @TFInput
         @Mapping("operand")
@@ -39,6 +39,7 @@ public class BasicOperation {
             this.operand1 = operand1;
             this.operand2 = operand2;
             this.setDType(this.operand1.getDType());
+            super.postInit();
         }
     }
 
@@ -55,6 +56,7 @@ public class BasicOperation {
             "  }\n" +
             "}\n")
     @NamePrefix("subtract")
+    @ShapeTransformations({@ShapeTransformation("1,1->1"), @ShapeTransformation("1,N->N"), @ShapeTransformation("N,1->N"), @ShapeTransformation("N,N->N")})
     public static class Subtract extends AbstractNode implements TFType, NamingSequence {
         @TFInput
         @Mapping("operand")
@@ -68,6 +70,7 @@ public class BasicOperation {
             this.operand1 = operand1;
             this.operand2 = operand2;
             this.setDType(this.operand1.getDType());
+            super.postInit();
         }
     }
 
@@ -84,6 +87,7 @@ public class BasicOperation {
             "  }\n" +
             "}\n")
     @NamePrefix("multiply")
+    @ShapeTransformations({@ShapeTransformation("1,1->1"), @ShapeTransformation("1,N->N"), @ShapeTransformation("N,1->N"), @ShapeTransformation("N,N->N")})
     public static class Multiply extends AbstractNode implements TFType, NamingSequence {
         @TFInput
         @Mapping("operand")
@@ -127,6 +131,7 @@ public class BasicOperation {
             "  }\n" +
             "}\n")
     @NamePrefix("divide")
+    @ShapeTransformations({@ShapeTransformation("1,1->1"), @ShapeTransformation("1,N->N"), @ShapeTransformation("N,1->N"), @ShapeTransformation("N,N->N")})
     public static class Divide extends AbstractNode implements TFType, NamingSequence {
         @TFInput
         @Mapping("operand")
@@ -140,6 +145,7 @@ public class BasicOperation {
             this.operand1 = operand1;
             this.operand2 = operand2;
             this.setDType(this.operand1.getDType());
+            super.postInit();
         }
     }
 
@@ -166,6 +172,7 @@ public class BasicOperation {
             "  }\n" +
             "}\n")
     @NamePrefix("square")
+    @ShapeTransformations({@ShapeTransformation("N->N"), @ShapeTransformation("1->1")})
     public static class Square extends AbstractNode implements TFType, NamingSequence {
         @TFInput
         @Mapping("operand")
@@ -175,6 +182,7 @@ public class BasicOperation {
             super(attributes);
             this.operand = operand;
             this.setDType(this.operand.getDType());
+            super.postInit();
         }
     }
 
@@ -227,6 +235,7 @@ public class BasicOperation {
             "  }\n" +
             "}\n")
     @NamePrefix("square")
+    @ShapeTransformation("N->1")
     public static class ReduceMean extends AbstractNode implements TFType, NamingSequence {
         @TFInput
         @Mapping("operand")
@@ -236,6 +245,7 @@ public class BasicOperation {
             super(attributes);
             this.operand = operand;
             this.setDType(this.operand.getDType());
+            super.postInit();
         }
     }
 
@@ -257,6 +267,7 @@ public class BasicOperation {
             "  }\n" +
             "}\n")
     @NamePrefix("cast")
+    @ShapeTransformations({@ShapeTransformation("N->N"), @ShapeTransformation("1->1")})
     public static class Cast<R> extends AbstractNode implements TFType, NamingSequence {
         @TFInput
         @Mapping("operand")
@@ -268,6 +279,7 @@ public class BasicOperation {
             this.operand = operand;
             this.setDType(this.operand.getDType());
             this.targetType = type;
+            super.postInit();
         }
 
         @Mapping("targetDType")

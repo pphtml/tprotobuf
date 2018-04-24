@@ -3,7 +3,7 @@ package org.superbiz.tf.type;
 import java.util.Arrays;
 
 public class Shape {
-    public static final Shape EMPTY = new Shape(new Integer[]{});
+    public static final Shape SCALAR = new Shape(new Integer[]{});
     private final Integer[] sizes;
 
     private Shape(Integer[] sizes) {
@@ -39,5 +39,13 @@ public class Shape {
         sb.append(Arrays.toString(sizes));
         sb.append('}');
         return sb.toString();
+    }
+
+    public boolean isEmpty() {
+        return sizes.length == 0;
+    }
+
+    public int dimensions() {
+        return sizes.length;
     }
 }

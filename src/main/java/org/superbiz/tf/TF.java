@@ -3,6 +3,7 @@ package org.superbiz.tf;
 import org.superbiz.tf.attribute.Attribute;
 import org.superbiz.tf.operation.BasicOperation;
 import org.superbiz.tf.operation.Operation;
+import org.superbiz.tf.shape.ShapeOperation;
 import org.superbiz.tf.type.DType;
 import org.superbiz.tf.type.TFType;
 
@@ -101,5 +102,9 @@ public class TF <T extends TFType, NTType> {
 
     public T getNode() {
         return node;
+    }
+
+    public ShapeOperation getShapeOperation() {
+        return node.getShapeOperation();
     }
 }

@@ -1,6 +1,7 @@
 package org.superbiz.tf.type;
 
 import org.superbiz.tf.QMLContext;
+import org.superbiz.tf.shape.ShapeOperation;
 import org.tensorflow.Output;
 
 import java.util.List;
@@ -21,4 +22,6 @@ public interface TFType {
     List<TFType> getInputs();
 
     Shape getShape();
+
+    ShapeOperation getShapeOperation();
 }

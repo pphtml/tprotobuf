@@ -4,6 +4,7 @@ import tensorflow as tf
 # #y = tf.Variable(4, name="y")
 # f = tf.square(x)
 
+one = tf.constant(1.0, shape=[1], name='one')
 x = tf.constant([1.8, 2.2], dtype=tf.float32)
 f = tf.cast(x, tf.int32)
 
