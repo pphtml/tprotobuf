@@ -218,4 +218,14 @@ public abstract class AbstractNode implements TFType, NamingSequence {
     public ShapeOperation getShapeOperation() {
         return shapeOperation;
     }
+
+    @Override
+    public TF<? extends TFType, ?> createGradientOp(QMLContext qmlContext, TF<? extends TFType, ?> output) {
+        return throwUnsupportedGradientException();
+    }
+
+    protected TF<? extends TFType, ?> throwUnsupportedGradientException() {
+        throw new UnsupportedOperationException(String.format(
+                "Computation of gradients for %s operation is not supported.", this.getClass().getName()));
+    }
 }

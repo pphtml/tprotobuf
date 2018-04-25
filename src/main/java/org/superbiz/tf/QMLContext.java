@@ -5,6 +5,7 @@ import org.superbiz.tf.attribute.Attribute;
 import org.superbiz.tf.operation.Constant;
 import org.superbiz.tf.operation.Gradient;
 import org.superbiz.tf.operation.Operation;
+import org.superbiz.tf.operation.TileAndShapeOperation;
 import org.superbiz.tf.operation.Variable;
 import org.superbiz.tf.type.*;
 import org.superbiz.tf.util.NamingService;
@@ -362,10 +363,16 @@ public class QMLContext implements AutoCloseable {
         return this.addToGraph(of, this);
     }
 
-//    public <R extends TFType, NTType, S> TF<Operation.ReduceMean, NTType> cast(TF<R, NTType> operation, Attribute... attributes) {
-//        TF of = TF.of(new Operation.Cast(operation, null, attributes), this);
-//        return this.makeFromTemplate(of, this);
+    public <R extends TFType, S extends TFType, NTTypeSource, NTTypeMultiples> TF<Operation.Tile, NTTypeSource> tile(TF<R, NTTypeSource> source, TF<S, NTTypeMultiples> multiples, Attribute... attributes) {
+        TF of = TF.of(new TileAndShapeOperation.Tile(source, multiples, attributes), this);
+        return this.addToGraph(of, this);
+    }
+
+//     public <R extends TFType> TF<Operation.Add, NTType> add(TF<R, NTType> operand, Attribute... attributes) {
+//        TF of = of(new Operation.Add(this, operand, attributes), qmlContext);
+//        return qmlContext.addToGraph(of, qmlContext);
 //    }
+
 
     public <R extends TFType, NTType, S> TF<Operation.ReduceMean, S> cast(TF<R, NTType> operation, Class<S> type, Attribute... attributes) {
         TF of = TF.of(new Operation.Cast(operation, type, attributes), this);
@@ -374,9 +381,10 @@ public class QMLContext implements AutoCloseable {
 
     public <R extends TFType, NTType> TF<Gradient.Gradients, NTType> gradients(TF<R, NTType> operation, List<TF<Variable, ?>> variables, Attribute... attributes) {
         Gradient.Gradients gradients = new Gradient.Gradients(operation, variables, attributes);
-        gradients.computeGradients(this);
-        TF of = TF.of(gradients, this);
-        return this.addToGraph(of, this);
+        TF<? extends TFType, ?> value = gradients.computeGradients(this);
+        return (TF<Gradient.Gradients, NTType>) value;
+//        TF of = TF.of(gradients, this);
+//        return this.addToGraph(of, this);
     }
 
 //    public GraphDef.Builder getGraphBuilder() {

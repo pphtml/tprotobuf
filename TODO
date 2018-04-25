@@ -1,6 +1,6 @@
 - prenaseni shape
-- kontrola velikosti shape
-- vypocet gradientu pro mean
+- kontrola velikosti shape - testy
+- nastaveni druheho type v Tile DT_INT32
 - vypocet gradientu pro square
 - vypocet gradientu pro promenny
 - oddeleni TF a neTF

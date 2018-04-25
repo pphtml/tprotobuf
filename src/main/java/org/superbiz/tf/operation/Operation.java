@@ -52,4 +52,10 @@ public class Operation {
             super(operand, type, attributes);
         }
     }
+
+    public static class Tile extends TileAndShapeOperation.Tile {
+        public <T extends TFType, R extends TFType, NTType> Tile(TF<T, NTType> source, TF<R, NTType> multiples, Attribute[] attributes) {
+            super(source, multiples, attributes);
+        }
+    }
 }

@@ -1,6 +1,7 @@
 package org.superbiz.tf.type;
 
 import org.superbiz.tf.QMLContext;
+import org.superbiz.tf.TF;
 import org.superbiz.tf.shape.ShapeOperation;
 import org.tensorflow.Output;
 
@@ -24,4 +25,6 @@ public interface TFType {
     Shape getShape();
 
     ShapeOperation getShapeOperation();
+
+    TF<? extends TFType, ?> createGradientOp(QMLContext qmlContext, TF<? extends TFType, ?> output);
 }

@@ -33,4 +33,11 @@ public class ShapeOperation {
         sb.append('}');
         return sb.toString();
     }
+
+    public Shape getTheOnlyFromShape() {
+        if (fromShapes.size() != 1) {
+            throw new IllegalStateException("It is expected, that there's only one shape.");
+        }
+        return fromShapes.get(0);
+    }
 }

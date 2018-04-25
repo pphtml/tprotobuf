@@ -1,14 +1,15 @@
 package org.superbiz.tf.operation;
 
+import org.superbiz.tf.QMLContext;
 import org.superbiz.tf.TF;
 import org.superbiz.tf.annotation.*;
 import org.superbiz.tf.attribute.Attribute;
-import org.superbiz.tf.type.AbstractNode;
-import org.superbiz.tf.type.DType;
-import org.superbiz.tf.type.NamingSequence;
-import org.superbiz.tf.type.TFType;
+import org.superbiz.tf.shape.ShapeOperation;
+import org.superbiz.tf.type.*;
 
-import java.util.List;
+import static org.superbiz.tf.QMLContext.value;
+import static org.superbiz.tf.QMLContext.values;
+import static org.superbiz.tf.attribute.Attribute.named;
 
 public class BasicOperation {
 
@@ -246,6 +247,21 @@ public class BasicOperation {
             this.operand = operand;
             this.setDType(this.operand.getDType());
             super.postInit();
+        }
+
+        @Override
+        public TF<? extends TFType, ?> createGradientOp(QMLContext qmlContext, TF<? extends TFType, ?> output) {
+            ShapeOperation shapeOperation = this.getShapeOperation();
+            Shape shape = shapeOperation.getTheOnlyFromShape();
+            if (shape.dimensions() != 1) {
+                throw new UnsupportedOperationException("Gradient for ReduceMean is not supported for bigger dimensions than 1D.");
+            }
+            TF<? extends TFType, Float> floatOutput = (TF<? extends TFType, Float>) output;
+            TF<Constant, Integer> repeatsCount = qmlContext.constant(values(shape.asInts()));
+            TF<Operation.Tile, Float> tiles = qmlContext.tile(floatOutput, repeatsCount);
+
+            TF<Operation.Divide, Float> result = tiles.divide(qmlContext.constant(value(shape.getSize0().floatValue())));
+            return result;
         }
     }
 

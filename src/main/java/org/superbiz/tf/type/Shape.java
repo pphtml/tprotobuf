@@ -1,6 +1,10 @@
 package org.superbiz.tf.type;
 
+import com.google.common.primitives.Ints;
+
 import java.util.Arrays;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Shape {
     public static final Shape SCALAR = new Shape(new Integer[]{});
@@ -47,5 +51,13 @@ public class Shape {
 
     public int dimensions() {
         return sizes.length;
+    }
+
+    public int[] asInts() {
+        return Stream.of(sizes).mapToInt(i -> i).toArray();
+    }
+
+    public Integer getSize0() {
+        return sizes[0];
     }
 }
