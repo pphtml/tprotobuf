@@ -73,6 +73,19 @@ public class BasicOperation {
             this.setDType(this.operand1.getDType());
             super.postInit();
         }
+
+        @Override
+        public TF<? extends TFType, ?> createGradientOp(QMLContext qmlContext, TF<? extends TFType, ?> output) {
+//            ShapeOperation shapeOperation = this.getShapeOperation();
+//            Shape shape = shapeOperation.getTheOnlyFromShape();
+//            TF<Constant, Float> squareDerivative = qmlContext.constant(value(2.0f));
+//            TF input = TF.of(this.getInputs().get(0), qmlContext);
+//            TF multiplied = input.multiply(squareDerivative, named("squareGrad/Mul"));
+//            TF result = multiplied.multiply(output, named("squareGrad/Mul2"));
+//            return result;
+
+            return super.createGradientOp(qmlContext, output);
+        }
     }
 
     @TemplateInline("node {\n" +
@@ -184,6 +197,28 @@ public class BasicOperation {
             this.operand = operand;
             this.setDType(this.operand.getDType());
             super.postInit();
+        }
+
+        @Override
+        public TF<? extends TFType, ?> createGradientOp(QMLContext qmlContext, TF<? extends TFType, ?> output) {
+            ShapeOperation shapeOperation = this.getShapeOperation();
+            Shape shape = shapeOperation.getTheOnlyFromShape();
+            TF<Constant, Float> squareDerivative = qmlContext.constant(value(2.0f));
+            TF input = TF.of(this.getInputs().get(0), qmlContext);
+            TF multiplied = input.multiply(squareDerivative, named("squareGrad/Mul"));
+            TF result = multiplied.multiply(output, named("squareGrad/Mul2"));
+            return result;
+
+
+//            if (shape.dimensions() != 1) {
+//                throw new UnsupportedOperationException("Gradient for ReduceMean is not supported for bigger dimensions than 1D.");
+//            }
+//            TF<? extends TFType, Float> floatOutput = (TF<? extends TFType, Float>) output;
+//            TF<Constant, Integer> repeatsCount = qmlContext.constant(values(shape.asInts()));
+//            TF<Operation.Tile, Float> tiles = qmlContext.tile(floatOutput, repeatsCount);
+//
+//            TF<Operation.Divide, Float> result = tiles.divide(qmlContext.constant(value(shape.getSize0().floatValue())));
+//            return result;
         }
     }
 

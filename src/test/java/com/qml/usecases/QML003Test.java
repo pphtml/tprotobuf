@@ -151,15 +151,15 @@ public class QML003Test extends AbstractTestBase {
         //        train_data.append(evals)
     }
 
-    @Test
-    @Ignore
-    public void lifeSatisfactionLinearRegression() {
-        try (DataReader dataReader = createCSVReader()
-                .withSkipLines(1)
-                .withResource(Resource.fromClasspath("linear_regression.csv"))
-                .build()) {
-            List<DataRecord> dataRecords = dataReader.readAllRecords();
-            System.out.println(dataRecords);
-        }
-    }
+//    @Test
+//    @Ignore
+//    public void lifeSatisfactionLinearRegression() {
+//        try (DataReader dataReader = createCSVReader()
+//                .withSkipLines(1)
+//                .withResource(Resource.fromClasspath("linear_regression.csv"))
+//                .build()) {
+//            List<DataRecord> dataRecords = dataReader.readAllRecords();
+//            System.out.println(dataRecords);
+//        }
+//    }
 }

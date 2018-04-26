@@ -31,28 +31,53 @@ public class Gradient {
             //this.setDType(this.operand.getDType());
         }
 
+        @FunctionalInterface
+        public interface OpFinder {
+            WrappedNode find(String nodeName);
+        }
+
         public TF<? extends TFType, ?> computeGradients(QMLContext qmlContext) {
+            // TODO nejspis delit 1.0f podle poctu output nodes // TODO muze byt vic instanci - konflikt name
+            TF<Constant, Float> gradientStart = qmlContext.constant(values(1.0f), named("gradientStart"));
+
             Map<String, WrappedNode> mapOfNodes = analyzeOperations(qmlContext);
+            OpFinder opFinder = nodeName -> mapOfNodes.get(nodeName);
+            WrappedNode wrappedGradientStart = opFinder.find(gradientStart.getName());
+            wrappedGradientStart.setGradientOperation(gradientStart);
 
             List<WrappedNode> toOperations = Collections.singletonList(mapOfNodes.get(sourceOperation.getName()));
             List<WrappedNode> fromOperations = qmlContext.getVariables().stream().map(v -> mapOfNodes.get(v.getName())).collect(Collectors.toList());
+            final Set<String> fromOperationsSet = fromOperations.stream().map(wn -> wn.node.getName()).collect(Collectors.toSet());
 
-            // TODO nejspis delit 1.0f podle poctu output nodes
-            TF<Constant, Float> gradientStart = qmlContext.constant(values(1.0f), named("gradientStart"));
             for (WrappedNode toOperation : toOperations) {
                 toOperation.getOutputs().add(gradientStart);
             }
 
             Deque<WrappedNode> queue = new ArrayDeque<>(toOperations);
-            if (!queue.isEmpty()) { // TODO spocitat vsechny gradienty
+            while (!queue.isEmpty()) {
                 WrappedNode wrappedNode = queue.pop();
-                return computeNodeGradients(wrappedNode, qmlContext);
+                TF<? extends TFType, ?> gradientOperation = computeNodeGradient(wrappedNode, opFinder, qmlContext);
+                wrappedNode.setGradientOperation(gradientOperation);
+
+                wrappedNode.getInputs().stream().map(input -> mapOfNodes.get(input.getName())).forEach(
+                    wrappedInput -> {
+                        if (fromOperationsSet.contains(wrappedInput.node.getName())) {
+                            throw new RuntimeException("Uz sem tady");
+                        } else {
+                            queue.add(wrappedInput);
+                        }
+                    }
+                );
+
+                if ("difference".equals(wrappedNode.node.getName())) {
+                    return gradientOperation;
+                }
             }
 
             throw new UnsupportedOperationException(); // musi se dodelat
         }
 
-        private TF<? extends TFType, ?> computeNodeGradients(WrappedNode wrappedNode, QMLContext qmlContext) {
+        private TF<? extends TFType, ?> computeNodeGradient(WrappedNode wrappedNode, OpFinder opFinder, QMLContext qmlContext) {
             //ShapeOperation shapeOperation = wrappedNode.node.getShapeOperation();
             List<TF<? extends TFType, ?>> outputs = wrappedNode.getOutputs();
             if (outputs == null || outputs.size() == 0) {
@@ -60,9 +85,11 @@ public class Gradient {
             } else if (outputs.size() > 1) {
                 throw new UnsupportedOperationException("Computation of gradients for multiple outputs is not supported.");
             }
-            TF<? extends TFType, ?> output = outputs.get(0);
+            //TF<? extends TFType, ?> output = outputs.get(0);
+            WrappedNode outputGradientOperationWrapped = opFinder.find(outputs.get(0).getName());
 
-            TF<? extends TFType, ?> result = wrappedNode.node.getNode().createGradientOp(qmlContext, output);
+            final TF<? extends TFType, ?> outputGradientOperation = outputGradientOperationWrapped.getGradientOperation();
+            TF<? extends TFType, ?> result = wrappedNode.node.getNode().createGradientOp(qmlContext, outputGradientOperation);
             return result;
         }
 
@@ -116,6 +143,7 @@ public class Gradient {
         private final int index;
         private final TF<? extends TFType, ?> node;
         private final List<TF<? extends TFType, ?>> outputs = new ArrayList<>();
+        private TF<? extends TFType, ?> gradientOperation;
         //private final List<WrappedNode> outputs = new ArrayList<>();
 
         WrappedNode(TF<? extends TFType, ?> node, int index) {
@@ -162,6 +190,14 @@ public class Gradient {
 
         public List<TF<? extends TFType, ?>> getOutputs() {
             return this.outputs;
+        }
+
+        public void setGradientOperation(TF<? extends TFType,?> gradientOperation) {
+            this.gradientOperation = gradientOperation;
+        }
+
+        public TF<? extends TFType,?> getGradientOperation() {
+            return gradientOperation;
         }
     }
 }
