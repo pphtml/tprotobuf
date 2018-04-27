@@ -69,9 +69,9 @@ public class Gradient {
                     }
                 );
 
-                if ("difference".equals(wrappedNode.node.getName())) {
-                    return gradientOperation;
-                }
+//                if ("difference".equals(wrappedNode.node.getName())) {
+//                    return gradientOperation;
+//                }
             }
 
             throw new UnsupportedOperationException(); // musi se dodelat

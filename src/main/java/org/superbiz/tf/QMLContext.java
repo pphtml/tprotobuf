@@ -134,8 +134,12 @@ public class QMLContext implements AutoCloseable {
         engine.run(node);
     }
 
+    public <NTType> NTType fetch(String nodeName) {
+        return engine.fetch(nodeName);
+    }
+
     public <NTType> NTType fetch(TF<? extends TFType, NTType> node) {
-        return engine.fetch(node);
+        return engine.fetch(node.getName());
     }
 
     public <NTType> VectorWrapper<NTType> fetchVector(String nodeName) {
@@ -352,7 +356,11 @@ public class QMLContext implements AutoCloseable {
         return variables;
     }
 
-    // public <R extends TFType> TF<BasicOperation.Subtract, NTType> subtract(TF<R, NTType> operand, Attribute... attributes) {
+    public <R extends TFType, NTType> TF<Operation.Negative, NTType> negative(TF<R, NTType> operation, Attribute... attributes) {
+        TF of = TF.of(new Operation.Negative(operation, attributes), this);
+        return this.addToGraph(of, this);
+    }
+
     public <R extends TFType, NTType> TF<Operation.Square, NTType> square(TF<R, NTType> operation, Attribute... attributes) {
         TF of = TF.of(new Operation.Square(operation, attributes), this);
         return this.addToGraph(of, this);
@@ -365,6 +373,31 @@ public class QMLContext implements AutoCloseable {
 
     public <R extends TFType, S extends TFType, NTTypeSource, NTTypeMultiples> TF<Operation.Tile, NTTypeSource> tile(TF<R, NTTypeSource> source, TF<S, NTTypeMultiples> multiples, Attribute... attributes) {
         TF of = TF.of(new TileAndShapeOperation.Tile(source, multiples, attributes), this);
+        return this.addToGraph(of, this);
+    }
+
+
+//     public <R extends TFType> TF<Operation.Multiply, NTType> multiply(TF<R, NTType> operand, Attribute... attributes) {
+//        TF node = of(new Operation.Multiply(this, operand, attributes), qmlContext);
+//        return qmlContext.addToGraph(node, qmlContext);
+//    }
+    public <R extends TFType, S extends TFType, NTType> TF<Operation.Add, NTType> add(TF<R, NTType> operand1, TF<S, NTType> operand2, Attribute... attributes) {
+        TF of = TF.of(new Operation.Add(operand1, operand2, attributes), this);
+        return this.addToGraph(of, this);
+    }
+
+    public <R extends TFType, S extends TFType, NTType> TF<Operation.Subtract, NTType> subtract(TF<R, NTType> operand1, TF<S, NTType> operand2, Attribute... attributes) {
+        TF of = TF.of(new Operation.Subtract(operand1, operand2, attributes), this);
+        return this.addToGraph(of, this);
+    }
+
+    public <R extends TFType, S extends TFType, NTType> TF<Operation.Multiply, NTType> multiply(TF<R, NTType> operand1, TF<S, NTType> operand2, Attribute... attributes) {
+        TF of = TF.of(new Operation.Multiply(operand1, operand2, attributes), this);
+        return this.addToGraph(of, this);
+    }
+
+    public <R extends TFType, S extends TFType, NTType> TF<Operation.Divide, NTType> divide(TF<R, NTType> operand1, TF<S, NTType> operand2, Attribute... attributes) {
+        TF of = TF.of(new Operation.Divide(operand1, operand2, attributes), this);
         return this.addToGraph(of, this);
     }
 

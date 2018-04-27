@@ -267,4 +267,32 @@ public class QML002Test extends AbstractTestBase {
         }
     }
 
+    /**
+     * Scalar float constant made negative
+     */
+    @Test
+    public void negativeScalarFloat() {
+        try (QMLContext tf = createContext()) {
+            TF<Constant, Float> x = tf.constant(value(18.1f), named("x"));
+            TF<Operation.Negative, Float> negative = x.negative();
+            //TF<Operation.Negative, Float> negativeTF = tf.negative(x);
+
+            Float result = tf.fetch(negative);
+            assertEquals(-18.1f, result);
+        }
+    }
+
+    /**
+     * Vector float constant made negative
+     */
+    @Test
+    public void negativeVectorFloat() {
+        try (QMLContext tf = createContext()) {
+            TF<Constant, Float> x = tf.constant(values(1.0f, 2.0f, 3.0f), named("x"));
+            TF<Operation.Negative, Float> negative = x.negative();
+
+            VectorWrapper<Float> result = tf.fetchVector(negative);
+            assertEquals(Arrays.asList(-1.0f, -2.0f, -3.0f), result.getList1D());
+        }
+    }
 }

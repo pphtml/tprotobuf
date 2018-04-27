@@ -22,7 +22,7 @@ public class LocalJDKEngine extends BaseEngine {
     }
 
     @Override
-    public <NTType> NTType fetch(TF<? extends TFType, NTType> node) {
+    public <NTType> NTType fetch(String node) {
         throw new UnsupportedOperationException();
     }
 

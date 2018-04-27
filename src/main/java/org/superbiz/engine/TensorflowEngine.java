@@ -105,6 +105,7 @@ public class TensorflowEngine extends BaseEngine{
             for (TF<?, ?> node : this.getNodes()) {
                 makeFromTemplate(node);
             }
+            System.out.println(graphBuilder);
 
             byte[] bytes = graphBuilder.build().toByteArray();
             this.graph = new Graph();
@@ -143,9 +144,9 @@ public class TensorflowEngine extends BaseEngine{
     }
 
     @Override
-    public <NTType> NTType fetch(TF<? extends TFType, NTType> node) {
+    public <NTType> NTType fetch(String nodeName) {
         Session session = this.getSession();
-        try (Tensor<?> result = session.runner().fetch(node.getName(), 0).run().get(0)) {
+        try (Tensor<?> result = session.runner().fetch(nodeName, 0).run().get(0)) {
             if (result.dataType().equals(DataType.FLOAT)) {
                 return (NTType) Float.valueOf(result.floatValue());
             } else if (result.dataType().equals(DataType.DOUBLE)) {

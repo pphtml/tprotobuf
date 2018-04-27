@@ -35,6 +35,12 @@ public class Operation {
         }
     }
 
+    public static class Negative extends BasicOperation.Negative {
+        public <T extends TFType, NTType> Negative(TF<T, NTType> operand, Attribute[] attributes) {
+            super(operand, attributes);
+        }
+    }
+
     public static class Square extends BasicOperation.Square {
         public <T extends TFType, NTType> Square(TF<T, NTType> operand, Attribute[] attributes) {
             super(operand, attributes);

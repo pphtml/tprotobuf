@@ -23,23 +23,28 @@ public class TF <T extends TFType, NTType> {
     }
 
     public <R extends TFType> TF<Operation.Add, NTType> add(TF<R, NTType> operand, Attribute... attributes) {
-        TF of = of(new Operation.Add(this, operand, attributes), qmlContext);
-        return qmlContext.addToGraph(of, qmlContext);
+        TF node = of(new Operation.Add(this, operand, attributes), qmlContext);
+        return qmlContext.addToGraph(node, qmlContext);
     }
 
     public <R extends TFType> TF<Operation.Subtract, NTType> subtract(TF<R, NTType> operand, Attribute... attributes) {
-        TF of = of(new Operation.Subtract(this, operand, attributes), qmlContext);
-        return qmlContext.addToGraph(of, qmlContext);
+        TF node = of(new Operation.Subtract(this, operand, attributes), qmlContext);
+        return qmlContext.addToGraph(node, qmlContext);
     }
 
     public <R extends TFType> TF<Operation.Multiply, NTType> multiply(TF<R, NTType> operand, Attribute... attributes) {
-        TF of = of(new Operation.Multiply(this, operand, attributes), qmlContext);
-        return qmlContext.addToGraph(of, qmlContext);
+        TF node = of(new Operation.Multiply(this, operand, attributes), qmlContext);
+        return qmlContext.addToGraph(node, qmlContext);
     }
 
     public <R extends TFType> TF<Operation.Divide, NTType> divide(TF<R, NTType> operand, Attribute... attributes) {
-        TF of = of(new Operation.Divide(this, operand, attributes), qmlContext);
-        return qmlContext.addToGraph(of, qmlContext);
+        TF node = of(new Operation.Divide(this, operand, attributes), qmlContext);
+        return qmlContext.addToGraph(node, qmlContext);
+    }
+
+    public <R extends TFType> TF<Operation.Negative, NTType> negative(Attribute... attributes) {
+        TF node = of(new Operation.Negative(this, attributes), qmlContext);
+        return qmlContext.addToGraph(node, qmlContext);
     }
 
     public void build(QMLContext qmlContext) {

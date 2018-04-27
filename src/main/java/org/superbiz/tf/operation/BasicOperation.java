@@ -78,13 +78,8 @@ public class BasicOperation {
         public TF<? extends TFType, ?> createGradientOp(QMLContext qmlContext, TF<? extends TFType, ?> output) {
 //            ShapeOperation shapeOperation = this.getShapeOperation();
 //            Shape shape = shapeOperation.getTheOnlyFromShape();
-//            TF<Constant, Float> squareDerivative = qmlContext.constant(value(2.0f));
-//            TF input = TF.of(this.getInputs().get(0), qmlContext);
-//            TF multiplied = input.multiply(squareDerivative, named("squareGrad/Mul"));
-//            TF result = multiplied.multiply(output, named("squareGrad/Mul2"));
-//            return result;
 
-            return super.createGradientOp(qmlContext, output);
+            return output.negative();
         }
     }
 
@@ -116,6 +111,11 @@ public class BasicOperation {
             this.operand2 = operand2;
             this.setDType(this.operand1.getDType());
             super.postInit();
+        }
+
+        @Override
+        public TF<? extends TFType, ?> createGradientOp(QMLContext qmlContext, TF<? extends TFType, ?> output) {
+            return super.createGradientOp(qmlContext, output);
         }
     }
 
@@ -219,6 +219,32 @@ public class BasicOperation {
 //
 //            TF<Operation.Divide, Float> result = tiles.divide(qmlContext.constant(value(shape.getSize0().floatValue())));
 //            return result;
+        }
+    }
+
+    @TemplateInline("node {\n" +
+            "  name: \"${nodeName}\"\n" +
+            "  op: \"Neg\"\n" +
+            "  input: \"${operand}\"\n" +
+            "  attr {\n" +
+            "    key: \"T\"\n" +
+            "    value {\n" +
+            "      type: ${dType}\n" +
+            "    }\n" +
+            "  }\n" +
+            "}\n")
+    @NamePrefix("neg")
+    @ShapeTransformations({@ShapeTransformation("N->N"), @ShapeTransformation("1->1")})
+    public static class Negative extends AbstractNode implements TFType, NamingSequence {
+        @TFInput
+        @Mapping("operand")
+        public final TF<?, ?> operand;
+
+        public <T extends TFType, R extends TFType, NTType> Negative(TF<T, NTType> operand, Attribute[] attributes) {
+            super(attributes);
+            this.operand = operand;
+            this.setDType(this.operand.getDType());
+            super.postInit();
         }
     }
 

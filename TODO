@@ -1,10 +1,18 @@
-- @NotNull parametry
-- prenaseni shape
-- kontrola velikosti shape - testy
-- nastaveni druheho type v Tile DT_INT32
+- je derivace rozdilu 1 nebo -1?
+- testcase na vypocet derivace rozdilu
 - vypocet gradientu pro difference
 - vypocet gradientu pro promenny
+
+- nastaveni druheho type v Tile DT_INT32
+- kontrola velikosti shape - testy
+- @NotNull parametry
+- prenaseni shape
 - oddeleni TF a neTF
+
+http://www.wolframalpha.com/input/?i=derivative+of+x%5E2
+https://www.symbolab.com/solver/derivative-calculator/%5Cfrac%7Bd%7D%7Bdx%7D%5Cleft(x%5E%7B2%7D%5Cright)
+https://www.symbolab.com/solver/partial-derivative-calculator
+https://www.edx.org/course/calculus-1a-differentiation-mitx-18-01-1x-0
 
 
 ResNet50
