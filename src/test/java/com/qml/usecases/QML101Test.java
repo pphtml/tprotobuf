@@ -17,6 +17,55 @@ import static org.superbiz.tf.QMLContext.values;
 import static org.superbiz.tf.attribute.Attribute.named;
 
 public class QML101Test extends AbstractTestBase {
+    @Test
+    public void basicGradientComputation10() {
+        try (QMLContext tf = QMLContext.createContext()) {
+            TF<Variable, Float> a = tf.variable(value(2.0f), named("a"));
+            TF<Constant, Float> b = tf.constant(value(3.5f), named("b"));
+
+            TF<Operation.Multiply, Float> c = tf.multiply(a, b, named("c"));
+
+            TF<Gradient.Gradients, Float> gradients = tf.gradients(c, Arrays.asList(a));
+
+            tf.run(tf.globalVariablesInitializer());
+            VectorWrapper<Float> result = tf.fetchVector(gradients);
+            System.out.println(result.getList1D());
+        }
+    }
+
+    @Test
+    public void basicGradientComputation11() {
+        try (QMLContext tf = QMLContext.createContext()) {
+            TF<Variable, Float> a = tf.variable(value(2.0f), named("a"));
+            TF<Constant, Float> b = tf.constant(value(3.5f), named("b"));
+
+            TF<Operation.Multiply, Float> c = tf.multiply(b, a, named("c"));
+
+            TF<Gradient.Gradients, Float> gradients = tf.gradients(c, Arrays.asList(a));
+
+            tf.run(tf.globalVariablesInitializer());
+            VectorWrapper<Float> result = tf.fetchVector(gradients);
+            System.out.println(result.getList1D());
+        }
+    }
+
+    @Test
+    public void basicGradientComputation12() {
+        try (QMLContext tf = QMLContext.createContext()) {
+            TF<Variable, Float> a = tf.variable(value(2.0f), named("a"));
+            TF<Constant, Float> b = tf.constant(value(3.5f), named("b"));
+
+            TF<Operation.Multiply, Float> c = tf.multiply(a, b, named("c"));
+
+            TF<Gradient.Gradients, Float> gradients = tf.gradients(c, Arrays.asList(a));
+
+            tf.run(tf.globalVariablesInitializer());
+            VectorWrapper<Float> result = tf.fetchVector(gradients);
+            System.out.println(result.getList1D());
+        }
+    }
+
+
     // difference = tf.subtract(b2, b1, name='difference')
     //
     //1.0
@@ -38,7 +87,7 @@ public class QML101Test extends AbstractTestBase {
     //-0.38
 
     @Test
-    public void basicGradientComputation1() {
+    public void basicGradientComputation20() {
         try (QMLContext tf = QMLContext.createContext()) {
             TF<Variable, Float> a = tf.variable(value(1.0f), named("a"));
 

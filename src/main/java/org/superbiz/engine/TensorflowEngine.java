@@ -105,7 +105,7 @@ public class TensorflowEngine extends BaseEngine{
             for (TF<?, ?> node : this.getNodes()) {
                 makeFromTemplate(node);
             }
-            System.out.println(graphBuilder);
+            // System.out.println(graphBuilder); // graph out
 
             byte[] bytes = graphBuilder.build().toByteArray();
             this.graph = new Graph();

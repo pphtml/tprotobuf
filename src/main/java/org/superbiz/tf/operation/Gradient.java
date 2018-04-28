@@ -1,5 +1,6 @@
 package org.superbiz.tf.operation;
 
+import org.superbiz.engine.TensorflowEngine;
 import org.superbiz.tf.QMLContext;
 import org.superbiz.tf.TF;
 import org.superbiz.tf.annotation.Mapping;
@@ -11,6 +12,7 @@ import org.superbiz.tf.type.NamingSequence;
 import org.superbiz.tf.type.TFType;
 
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -19,6 +21,8 @@ import static org.superbiz.tf.QMLContext.values;
 import static org.superbiz.tf.attribute.Attribute.named;
 
 public class Gradient {
+    private static final Logger LOGGER = Logger.getLogger(Gradient.class.getName());
+
     @Template("gradients.pb.ftl")
     @NamePrefix("gradients")
     public static class Gradients extends AbstractNode implements TFType, NamingSequence {
@@ -43,9 +47,10 @@ public class Gradient {
             Map<String, WrappedNode> mapOfNodes = analyzeOperations(qmlContext);
             OpFinder opFinder = nodeName -> mapOfNodes.get(nodeName);
             WrappedNode wrappedGradientStart = opFinder.find(gradientStart.getName());
-            wrappedGradientStart.setGradientOperation(gradientStart);
+            wrappedGradientStart.setGradientOperations(Collections.singletonList(gradientStart));
 
             List<WrappedNode> toOperations = Collections.singletonList(mapOfNodes.get(sourceOperation.getName()));
+            // TODO jenom specifikovany promenny
             List<WrappedNode> fromOperations = qmlContext.getVariables().stream().map(v -> mapOfNodes.get(v.getName())).collect(Collectors.toList());
             final Set<String> fromOperationsSet = fromOperations.stream().map(wn -> wn.node.getName()).collect(Collectors.toSet());
 
@@ -56,13 +61,16 @@ public class Gradient {
             Deque<WrappedNode> queue = new ArrayDeque<>(toOperations);
             while (!queue.isEmpty()) {
                 WrappedNode wrappedNode = queue.pop();
-                TF<? extends TFType, ?> gradientOperation = computeNodeGradient(wrappedNode, opFinder, qmlContext);
-                wrappedNode.setGradientOperation(gradientOperation);
+                List<TF<? extends TFType, ?>> gradientOps = computeNodeGradients(wrappedNode, opFinder, qmlContext);
+                wrappedNode.setGradientOperations(gradientOps);
 
                 wrappedNode.getInputs().stream().map(input -> mapOfNodes.get(input.getName())).forEach(
                     wrappedInput -> {
                         if (fromOperationsSet.contains(wrappedInput.node.getName())) {
-                            throw new RuntimeException("Uz sem tady");
+                            TF<? extends TFType, ?> result = wrappedNode.findGradientFor(wrappedInput);
+                            //throw new RuntimeException("Uz sem tady");
+                            wrappedInput.addResultingGradientOp(result);
+                            LOGGER.info(String.format("Variable %s reached", wrappedInput.node.getName()));
                         } else {
                             queue.add(wrappedInput);
                         }
@@ -70,14 +78,23 @@ public class Gradient {
                 );
 
 //                if ("difference".equals(wrappedNode.node.getName())) {
-//                    return gradientOperation;
+//                    return gradientOperations;
 //                }
             }
 
-            throw new UnsupportedOperationException(); // musi se dodelat
+            if (fromOperations.size() != 1) {
+                throw new UnsupportedOperationException(); // musi se dodelat
+            }
+
+            List<TF<? extends TFType, ?>> gradientOps = fromOperations.get(0).resultingGradientOps;
+            if (gradientOps.size() != 1) {
+                throw new UnsupportedOperationException(); // musi se dodelat
+            }
+
+            return gradientOps.get(0);
         }
 
-        private TF<? extends TFType, ?> computeNodeGradient(WrappedNode wrappedNode, OpFinder opFinder, QMLContext qmlContext) {
+        private List<TF<? extends TFType, ?>> computeNodeGradients(WrappedNode wrappedNode, OpFinder opFinder, QMLContext qmlContext) {
             //ShapeOperation shapeOperation = wrappedNode.node.getShapeOperation();
             List<TF<? extends TFType, ?>> outputs = wrappedNode.getOutputs();
             if (outputs == null || outputs.size() == 0) {
@@ -88,8 +105,9 @@ public class Gradient {
             //TF<? extends TFType, ?> output = outputs.get(0);
             WrappedNode outputGradientOperationWrapped = opFinder.find(outputs.get(0).getName());
 
-            final TF<? extends TFType, ?> outputGradientOperation = outputGradientOperationWrapped.getGradientOperation();
-            TF<? extends TFType, ?> result = wrappedNode.node.getNode().createGradientOp(qmlContext, outputGradientOperation);
+            final TF<? extends TFType, ?> outputGradientOperation = outputGradientOperationWrapped.findGradientFor(wrappedNode);
+            List<TF<? extends TFType, ?>> result = wrappedNode.node.getNode().createGradientOp(qmlContext, outputGradientOperation);
+            //List<TF<? extends TFType, ?>> result = wrappedNode.node.getNode().createGradientOp(qmlContext, outputGradientOperations);
             return result;
         }
 
@@ -134,7 +152,7 @@ public class Gradient {
         }
 
         @Override
-        public TF<? extends TFType, ?> createGradientOp(QMLContext qmlContext, TF<? extends TFType, ?> output) {
+        public List<TF<? extends TFType, ?>> createGradientOp(QMLContext qmlContext, TF<? extends TFType, ?> output) {
             throw new UnsupportedOperationException("Computation of gradients for gradient operation is not supported.");
         }
     }
@@ -143,7 +161,8 @@ public class Gradient {
         private final int index;
         private final TF<? extends TFType, ?> node;
         private final List<TF<? extends TFType, ?>> outputs = new ArrayList<>();
-        private TF<? extends TFType, ?> gradientOperation;
+        private List<TF<? extends TFType, ?>> gradientOperations;
+        private List<TF<? extends TFType, ?>> resultingGradientOps = new ArrayList<>();
         //private final List<WrappedNode> outputs = new ArrayList<>();
 
         WrappedNode(TF<? extends TFType, ?> node, int index) {
@@ -192,12 +211,33 @@ public class Gradient {
             return this.outputs;
         }
 
-        public void setGradientOperation(TF<? extends TFType,?> gradientOperation) {
-            this.gradientOperation = gradientOperation;
+        public void setGradientOperations(List<TF<? extends TFType,?>> gradientOperations) {
+            this.gradientOperations = gradientOperations;
         }
 
-        public TF<? extends TFType,?> getGradientOperation() {
-            return gradientOperation;
+        public List<TF<? extends TFType,?>> getGradientOperations() {
+            return gradientOperations;
+        }
+
+        public TF<? extends TFType, ?> findGradientFor(WrappedNode forWrappedNode) {
+            if (this.gradientOperations.size() == 1) {
+                return this.gradientOperations.get(0);
+            }
+
+            List<TFType> inputs = this.node.getInputs();
+            for (int index = 0; index < inputs.size(); index++) {
+                TFType input = inputs.get(index);
+                if (input.getName().equals(forWrappedNode.node.getName())) {
+                    TF<? extends TFType, ?> gradientOperation = this.gradientOperations.get(index);
+                    return gradientOperation;
+                }
+            }
+
+            throw new IllegalStateException();
+        }
+
+        public void addResultingGradientOp(TF<? extends TFType,?> gradientOp) {
+            this.resultingGradientOps.add(gradientOp);
         }
     }
 }

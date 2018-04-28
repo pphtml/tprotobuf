@@ -1,5 +1,7 @@
 package org.superbiz.tf.operation;
 
+import org.superbiz.tf.QMLContext;
+import org.superbiz.tf.TF;
 import org.superbiz.tf.annotation.Mapping;
 import org.superbiz.tf.annotation.NamePrefix;
 import org.superbiz.tf.annotation.Template;
@@ -9,6 +11,9 @@ import org.superbiz.tf.type.InitializingOperation;
 import org.superbiz.tf.type.NamingSequence;
 import org.superbiz.tf.type.TFType;
 import org.superbiz.tf.util.TFInitialValueConverter;
+
+import java.util.Collections;
+import java.util.List;
 
 @NamePrefix("const")
 @Template("constant-from-constant.pb.ftl")
@@ -36,5 +41,10 @@ public class Constant extends AbstractNode implements TFType, NamingSequence {
     @Mapping("initialValue")
     public String getInitialValue() {
         return TFInitialValueConverter.getValue(this.initializingOperation);
+    }
+
+    @Override
+    public List<TF<? extends TFType, ?>> createGradientOp(QMLContext qmlContext, TF<? extends TFType, ?> output) {
+        return Collections.emptyList();
     }
 }

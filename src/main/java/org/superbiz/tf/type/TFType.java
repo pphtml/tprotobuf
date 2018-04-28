@@ -26,5 +26,5 @@ public interface TFType {
 
     ShapeOperation getShapeOperation();
 
-    TF<? extends TFType, ?> createGradientOp(QMLContext qmlContext, TF<? extends TFType, ?> output);
+    List<TF<? extends TFType, ?>> createGradientOp(QMLContext qmlContext, TF<? extends TFType, ?> output);
 }

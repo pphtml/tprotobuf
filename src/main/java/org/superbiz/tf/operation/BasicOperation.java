@@ -7,6 +7,10 @@ import org.superbiz.tf.attribute.Attribute;
 import org.superbiz.tf.shape.ShapeOperation;
 import org.superbiz.tf.type.*;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import static org.superbiz.tf.QMLContext.value;
 import static org.superbiz.tf.QMLContext.values;
 import static org.superbiz.tf.attribute.Attribute.named;
@@ -75,11 +79,11 @@ public class BasicOperation {
         }
 
         @Override
-        public TF<? extends TFType, ?> createGradientOp(QMLContext qmlContext, TF<? extends TFType, ?> output) {
+        public List<TF<? extends TFType, ?>> createGradientOp(QMLContext qmlContext, TF<? extends TFType, ?> output) {
 //            ShapeOperation shapeOperation = this.getShapeOperation();
 //            Shape shape = shapeOperation.getTheOnlyFromShape();
 
-            return output.negative();
+            return Arrays.asList(output, output.negative());
         }
     }
 
@@ -100,10 +104,10 @@ public class BasicOperation {
     public static class Multiply extends AbstractNode implements TFType, NamingSequence {
         @TFInput
         @Mapping("operand")
-        public final TF<?, ?> operand1;
+        public final TF<? extends TFType, ?> operand1;
         @TFInput
         @Mapping("operand2")
-        public final TF<?, ?> operand2;
+        public final TF<? extends TFType, ?> operand2;
 
         public <T extends TFType, R extends TFType, NTType> Multiply(TF<T, NTType> operand1, TF<R, NTType> operand2, Attribute[] attributes) {
             super(attributes);
@@ -114,8 +118,11 @@ public class BasicOperation {
         }
 
         @Override
-        public TF<? extends TFType, ?> createGradientOp(QMLContext qmlContext, TF<? extends TFType, ?> output) {
-            return super.createGradientOp(qmlContext, output);
+        public List<TF<? extends TFType, ?>> createGradientOp(QMLContext qmlContext, TF<? extends TFType, ?> output) {
+            TF<?, Float> op1 = (TF<?, Float>) operand1;
+            TF<?, Float> op2 = (TF<?, Float>) operand2;
+            TF<?, Float> coutput = (TF<?, Float>) output;
+            return Arrays.asList(op1.multiply(coutput), op2.multiply(coutput));
         }
     }
 
@@ -200,14 +207,14 @@ public class BasicOperation {
         }
 
         @Override
-        public TF<? extends TFType, ?> createGradientOp(QMLContext qmlContext, TF<? extends TFType, ?> output) {
+        public List<TF<? extends TFType, ?>> createGradientOp(QMLContext qmlContext, TF<? extends TFType, ?> output) {
             ShapeOperation shapeOperation = this.getShapeOperation();
             Shape shape = shapeOperation.getTheOnlyFromShape();
             TF<Constant, Float> squareDerivative = qmlContext.constant(value(2.0f));
             TF input = TF.of(this.getInputs().get(0), qmlContext);
             TF multiplied = input.multiply(squareDerivative, named("squareGrad/Mul"));
             TF result = multiplied.multiply(output, named("squareGrad/Mul2"));
-            return result;
+            return Collections.singletonList(result);
 
 
 //            if (shape.dimensions() != 1) {
@@ -311,7 +318,7 @@ public class BasicOperation {
         }
 
         @Override
-        public TF<? extends TFType, ?> createGradientOp(QMLContext qmlContext, TF<? extends TFType, ?> output) {
+        public List<TF<? extends TFType, ?>> createGradientOp(QMLContext qmlContext, TF<? extends TFType, ?> output) {
             ShapeOperation shapeOperation = this.getShapeOperation();
             Shape shape = shapeOperation.getTheOnlyFromShape();
             if (shape.dimensions() != 1) {
@@ -322,7 +329,7 @@ public class BasicOperation {
             TF<Operation.Tile, Float> tiles = qmlContext.tile(floatOutput, repeatsCount);
 
             TF<Operation.Divide, Float> result = tiles.divide(qmlContext.constant(value(shape.getSize0().floatValue())));
-            return result;
+            return Collections.singletonList(result);
         }
     }
 
