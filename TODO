@@ -1,8 +1,15 @@
+- poresit shape - porovnat
+- napsat testy pro gradienty reduceMean
+- napsat testy pro gradienty square
+- napsat testy pro gradienty minus
+-  implementace gradientu plus
+-  implementace gradientu deleno
 - VectorWrapper<Float> result = tf.fetchVectors(gradients);
 - fetch list
 - testcase na vypocet derivace rozdilu
 - vypocet gradientu pro difference
 - vypocet gradientu pro promenny
+- aplikace gradientu do promennych - matice - jak?
 
 - nastaveni druheho type v Tile DT_INT32
 - kontrola velikosti shape - testy
