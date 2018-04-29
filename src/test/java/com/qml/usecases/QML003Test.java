@@ -112,13 +112,13 @@ public class QML003Test extends AbstractTestBase {
             TF<Operation.ReduceMean, Float> loss = tf.reduceMean(square, named("loss"));
             //TF<BasicOperation.ReduceMean, Float> loss = tf.reduceMean(tf.square(y.subtract(yDataTF, named("difference")), named("square")), named("loss"));
 
-            TF<Gradient.Gradients, Float> gradients = tf.gradients(loss, Arrays.asList(a, b));
+            List<TF<Gradient.Gradients, Float>> gradients = tf.gradients(loss, Arrays.asList(a, b));
 
 
 
             tf.run(tf.globalVariablesInitializer());
             //VectorWrapper<Float> result = tf.fetchVector(loss);
-            VectorWrapper<Float> result = tf.fetchVector(gradients);
+            VectorWrapper<Float> result = tf.fetchVector(gradients.get(0));
             //VectorWrapper<Float> result = tf.fetchVector("gradients_0/Fill");
 //            VectorWrapper<Float> result = tf.fetchVector("gradients_0/add_1_grad/BroadcastGradientArgs");
             System.out.println(result.getList1D());

@@ -40,7 +40,7 @@ public class Gradient {
             WrappedNode find(String nodeName);
         }
 
-        public TF<? extends TFType, ?> computeGradients(QMLContext qmlContext) {
+        public List<TF<? extends TFType, ?>> computeGradients(QMLContext qmlContext, List<TF<Variable, ?>> variables) {
             // TODO nejspis delit 1.0f podle poctu output nodes // TODO muze byt vic instanci - konflikt name
             TF<Constant, Float> gradientStart = qmlContext.constant(values(1.0f), named("gradientStart"));
 
@@ -50,9 +50,11 @@ public class Gradient {
             wrappedGradientStart.setGradientOperations(Collections.singletonList(gradientStart));
 
             List<WrappedNode> toOperations = Collections.singletonList(mapOfNodes.get(sourceOperation.getName()));
-            // TODO jenom specifikovany promenny
-            List<WrappedNode> fromOperations = qmlContext.getVariables().stream().map(v -> mapOfNodes.get(v.getName())).collect(Collectors.toList());
-            final Set<String> fromOperationsSet = fromOperations.stream().map(wn -> wn.node.getName()).collect(Collectors.toSet());
+            final Set<String> fromOperationsSet = variables.stream().map(variable -> variable.getName()).collect(Collectors.toSet());
+            List<WrappedNode> fromOperations = variables.stream()
+                    //.filter(wrappedNode -> fromOperationsSet.contains(wrappedNode.getName()))
+                    .map(v -> mapOfNodes.get(v.getName()))
+                    .collect(Collectors.toList());
 
             for (WrappedNode toOperation : toOperations) {
                 toOperation.getOutputs().add(gradientStart);
@@ -70,7 +72,7 @@ public class Gradient {
                             TF<? extends TFType, ?> result = wrappedNode.findGradientFor(wrappedInput);
                             //throw new RuntimeException("Uz sem tady");
                             wrappedInput.addResultingGradientOp(result);
-                            LOGGER.info(String.format("Variable %s reached", wrappedInput.node.getName()));
+                            // LOGGER.info(String.format("Variable %s reached", wrappedInput.node.getName()));
                         } else {
                             queue.add(wrappedInput);
                         }
@@ -86,12 +88,19 @@ public class Gradient {
                 throw new UnsupportedOperationException(); // musi se dodelat
             }
 
-            List<TF<? extends TFType, ?>> gradientOps = fromOperations.get(0).resultingGradientOps;
-            if (gradientOps.size() != 1) {
-                throw new UnsupportedOperationException(); // musi se dodelat
-            }
+            List<TF<? extends TFType, ?>> result = fromOperations.stream()
+                    .map(wrappedNode -> wrappedNode.resultingGradientOps)
+                    .map(gradientOps -> {
+                        if (gradientOps.size() != 1) {
+                            throw new UnsupportedOperationException(); // musi se dodelat
+                        }
+                        return gradientOps.get(0);
+                    })
+                    .collect(Collectors.toList());
 
-            return gradientOps.get(0);
+//            List<TF<? extends TFType, ?>> gradientOps = fromOperations.get(0).resultingGradientOps;
+
+            return result;
         }
 
         private List<TF<? extends TFType, ?>> computeNodeGradients(WrappedNode wrappedNode, OpFinder opFinder, QMLContext qmlContext) {

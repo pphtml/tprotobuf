@@ -1,4 +1,5 @@
-- je derivace rozdilu 1 nebo -1?
+- VectorWrapper<Float> result = tf.fetchVectors(gradients);
+- fetch list
 - testcase na vypocet derivace rozdilu
 - vypocet gradientu pro difference
 - vypocet gradientu pro promenny

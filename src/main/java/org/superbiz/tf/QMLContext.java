@@ -20,9 +20,11 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 //import static com.google.protobuf.TensorContentEncoder.toStringTensorContent; // TODO prehodit
 import static org.superbiz.engine.Engine.DEFAULT_ML_FRAMEWORK;
@@ -412,12 +414,21 @@ public class QMLContext implements AutoCloseable {
         return this.addToGraph(of, this);
     }
 
-    public <R extends TFType, NTType> TF<Gradient.Gradients, NTType> gradients(TF<R, NTType> operation, List<TF<Variable, ?>> variables, Attribute... attributes) {
+    public <R extends TFType, NTType> TF<Gradient.Gradients, NTType> gradient(TF<R, NTType> operation, TF<Variable, ?> variable, Attribute... attributes) {
+        List<TF<Variable, ?>> variables = Collections.singletonList(variable);
         Gradient.Gradients gradients = new Gradient.Gradients(operation, variables, attributes);
-        TF<? extends TFType, ?> value = gradients.computeGradients(this);
-        return (TF<Gradient.Gradients, NTType>) value;
-//        TF of = TF.of(gradients, this);
-//        return this.addToGraph(of, this);
+        List<TF<? extends TFType, ?>> gradientOps = gradients.computeGradients(this, variables);
+        return (TF<Gradient.Gradients, NTType>) gradientOps.get(0);
+    }
+
+    public <R extends TFType, NTType> List<TF<Gradient.Gradients, NTType>> gradients(TF<R, NTType> operation, List<TF<Variable, ?>> variables, Attribute... attributes) {
+        Gradient.Gradients gradients = new Gradient.Gradients(operation, variables, attributes);
+        List<TF<? extends TFType, ?>> gradientOps = gradients.computeGradients(this, variables);
+        List<TF<Gradient.Gradients, NTType>> result = gradientOps.stream()
+                .map(gradientOp -> ((TF<Gradient.Gradients, NTType>) gradientOp))
+                .collect(Collectors.toList());
+
+        return result;
     }
 
 //    public GraphDef.Builder getGraphBuilder() {
