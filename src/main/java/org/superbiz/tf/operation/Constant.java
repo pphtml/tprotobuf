@@ -25,7 +25,7 @@ public class Constant extends AbstractNode implements TFType, NamingSequence {
     private Constant(InitializingOperation initializingOperation, Attribute[] attributes) {
         super(attributes);
         this.initializingOperation = initializingOperation;
-        this.setShape(initializingOperation.getShape());
+        this.setIshape(initializingOperation.getShape());
     }
 
     public static Constant of(InitializingOperation initializingOperation, Attribute[] attributes) {

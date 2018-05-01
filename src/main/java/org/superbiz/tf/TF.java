@@ -108,8 +108,4 @@ public class TF <T extends TFType, NTType> {
     public T getNode() {
         return node;
     }
-
-    public ShapeOperation getShapeOperation() {
-        return node.getShapeOperation();
-    }
 }

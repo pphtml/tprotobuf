@@ -43,7 +43,6 @@ public class TileAndShapeOperation {
             this.source = source;
             this.multiples = multiples;
             this.setDType(this.source.getDType());
-            this.setExpectedShape(null);
             super.postInit();
         }
     }

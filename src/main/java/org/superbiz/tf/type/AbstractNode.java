@@ -24,8 +24,9 @@ public abstract class AbstractNode implements TFType, NamingSequence {
     String name;
     final Attribute[] attributes;
     private DType dType;
-    private Shape shape;
-    private Shape expectedShape; // for ->C operations
+    private Shape ishape;
+//    private Shape shape;
+//    private Shape expectedShape; // for ->C operations
     private static final Map<Class, ClassMetadata> ANNOTATIONS_CACHE = new HashMap<>();
     private ShapeOperation shapeOperation;
 
@@ -54,24 +55,24 @@ public abstract class AbstractNode implements TFType, NamingSequence {
 
     @Mapping("dTypeArgumentName") // TODO spatny nazev
     public String getDTypeArgumentNameString() {
-        if (shape != null) {
+        if (ishape != null) {
             return "tensor_content";
         } else {
             return this.dType.getArgumentName();
         }
     }
 
-    public Shape getShape() {
-        return shape != null ? shape : Shape.SCALAR;
-    }
-
-    public void setShape(Shape shape) {
-        this.shape = shape;
-    }
+//    public Shape getShape() {
+//        return shape != null ? shape : Shape.SCALAR;
+//    }
+//
+//    public void setShape(Shape shape) {
+//        this.shape = shape;
+//    }
 
     @Mapping("tensorShape")
     public String getTensorShapeString() {
-        return Shape.toProtobufString(this.shape);
+        return Shape.toProtobufString(this.ishape);
     }
 
     public void setDType(DType dType) {
@@ -176,37 +177,37 @@ public abstract class AbstractNode implements TFType, NamingSequence {
         sb.append("name='").append(name).append('\'');
         sb.append(", attributes=").append(Arrays.toString(attributes));
         sb.append(", dType=").append(dType);
-        sb.append(", shape=").append(shape);
+//        sb.append(", shape=").append(shape);
         sb.append('}');
         return sb.toString();
     }
 
     protected void postInit() {
         List<TFType> inputs = getInputs();
-        checkAndSetShape(inputs, expectedShape);
+//        checkAndSetShape(inputs, expectedShape);
     }
 
-    private void checkAndSetShape(List<TFType> inputs, Shape customShape) {
-        if (shape != null && inputs.size() > 0) {
-            throw new IllegalStateException("Inputs > 0 & shape already set.");
-        }
-
-        final List<AllowedShapeTransformation> allowedShapeTransformations = getClassMetadata().getAllowedShapeTransformations();
-
-        if (inputs.size() > 0) {
-            List<Shape> shapes = inputs.stream()
-                    .map(op -> op.getShape())
-                    .collect(Collectors.toList());
-            Optional<ShapeOperation> shapeOperation = TransformationFinder.findMatching(allowedShapeTransformations, shapes, customShape);
-            if (!shapeOperation.isPresent()) {
-                throw new IllegalStateException(String.format("Shape check failed. Allowed transformations: %s, Input shapes: %s",
-                        allowedShapeTransformations, shapes));
-            } else {
-                this.shape = shapeOperation.get().getToShape();
-                this.shapeOperation = shapeOperation.get();
-            }
-        }
-    }
+//    private void checkAndSetShape(List<TFType> inputs, Shape customShape) {
+//        if (shape != null && inputs.size() > 0) {
+//            throw new IllegalStateException("Inputs > 0 & shape already set.");
+//        }
+//
+//        final List<AllowedShapeTransformation> allowedShapeTransformations = getClassMetadata().getAllowedShapeTransformations();
+//
+//        if (inputs.size() > 0) {
+//            List<Shape> shapes = inputs.stream()
+//                    .map(op -> op.getShape())
+//                    .collect(Collectors.toList());
+//            Optional<ShapeOperation> shapeOperation = TransformationFinder.findMatching(allowedShapeTransformations, shapes, customShape);
+//            if (!shapeOperation.isPresent()) {
+//                throw new IllegalStateException(String.format("Shape check failed. Allowed transformations: %s, Input shapes: %s",
+//                        allowedShapeTransformations, shapes));
+//            } else {
+//                this.shape = shapeOperation.get().getToShape();
+//                this.shapeOperation = shapeOperation.get();
+//            }
+//        }
+//    }
 
     protected ClassMetadata getClassMetadata() {
         ClassMetadata result = ANNOTATIONS_CACHE.get(this.getClass());
@@ -214,11 +215,6 @@ public abstract class AbstractNode implements TFType, NamingSequence {
             result = scanClassAnnotations();
         }
         return result;
-    }
-
-    @Override
-    public ShapeOperation getShapeOperation() {
-        return shapeOperation;
     }
 
     @Override
@@ -231,11 +227,19 @@ public abstract class AbstractNode implements TFType, NamingSequence {
                 "Computation of gradients for %s operation is not supported.", this.getClass().getName()));
     }
 
-    public Shape getExpectedShape() {
-        return expectedShape;
+    public Shape getIshape() {
+        return ishape;
     }
 
-    public void setExpectedShape(Shape expectedShape) {
-        this.expectedShape = expectedShape;
+    public void setIshape(Shape ishape) {
+        this.ishape = ishape;
     }
+
+    //    public Shape getExpectedShape() {
+//        return expectedShape;
+//    }
+//
+//    public void setExpectedShape(Shape expectedShape) {
+//        this.expectedShape = expectedShape;
+//    }
 }
