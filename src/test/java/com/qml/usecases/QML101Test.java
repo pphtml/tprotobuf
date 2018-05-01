@@ -155,7 +155,7 @@ public class QML101Test extends AbstractTestBase {
             //TF<Operation.Add, Float> b = tf.add(a, xDataTF);
             TF<Operation.ReduceMean, Float> c = tf.reduceMean(xDataTF);
 
-            tf.gradient(c, xDataTF);
+            TF<Gradient.Gradients, Float> gradient = tf.gradient(c, xDataTF);
 
             tf.run(tf.globalVariablesInitializer());
             Float result = tf.fetch(gradient);

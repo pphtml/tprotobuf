@@ -405,14 +405,14 @@ public class QMLContext implements AutoCloseable {
         return this.addToGraph(of, this);
     }
 
-    public <R extends TFType, NTType> TF<Gradient.Gradients, NTType> gradient(TF<R, NTType> operation, TF<Variable, ?> variable, Attribute... attributes) {
-        List<TF<Variable, ?>> variables = Collections.singletonList(variable);
+    public <R extends TFType, NTType> TF<Gradient.Gradients, NTType> gradient(TF<R, NTType> operation, TF<? extends TFType, ?> variable, Attribute... attributes) {
+        List<TF<? extends TFType, ?>> variables = Collections.singletonList(variable);
         Gradient.Gradients gradients = new Gradient.Gradients(operation, variables, attributes);
         List<TF<? extends TFType, ?>> gradientOps = gradients.computeGradients(this, operation, variables);
         return (TF<Gradient.Gradients, NTType>) gradientOps.get(0);
     }
 
-    public <R extends TFType, NTType> List<TF<Gradient.Gradients, NTType>> gradients(TF<R, NTType> operation, List<TF<Variable, ?>> variables, Attribute... attributes) {
+    public <R extends TFType, NTType> List<TF<Gradient.Gradients, NTType>> gradients(TF<R, NTType> operation, List<TF<? extends TFType, ?>> variables, Attribute... attributes) {
         Gradient.Gradients gradients = new Gradient.Gradients(operation, variables, attributes);
         List<TF<? extends TFType, ?>> gradientOps = gradients.computeGradients(this, operation, variables);
         List<TF<Gradient.Gradients, NTType>> result = gradientOps.stream()

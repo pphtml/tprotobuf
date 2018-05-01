@@ -25,6 +25,7 @@ public abstract class AbstractNode implements TFType, NamingSequence {
     final Attribute[] attributes;
     private DType dType;
     private Shape shape;
+    private Shape expectedShape; // for ->C operations
     private static final Map<Class, ClassMetadata> ANNOTATIONS_CACHE = new HashMap<>();
     private ShapeOperation shapeOperation;
 
@@ -182,10 +183,10 @@ public abstract class AbstractNode implements TFType, NamingSequence {
 
     protected void postInit() {
         List<TFType> inputs = getInputs();
-        checkAndSetShape(inputs);
+        checkAndSetShape(inputs, expectedShape);
     }
 
-    private void checkAndSetShape(List<TFType> inputs) {
+    private void checkAndSetShape(List<TFType> inputs, Shape customShape) {
         if (shape != null && inputs.size() > 0) {
             throw new IllegalStateException("Inputs > 0 & shape already set.");
         }
@@ -196,7 +197,7 @@ public abstract class AbstractNode implements TFType, NamingSequence {
             List<Shape> shapes = inputs.stream()
                     .map(op -> op.getShape())
                     .collect(Collectors.toList());
-            Optional<ShapeOperation> shapeOperation = TransformationFinder.findMatching(allowedShapeTransformations, shapes);
+            Optional<ShapeOperation> shapeOperation = TransformationFinder.findMatching(allowedShapeTransformations, shapes, customShape);
             if (!shapeOperation.isPresent()) {
                 throw new IllegalStateException(String.format("Shape check failed. Allowed transformations: %s, Input shapes: %s",
                         allowedShapeTransformations, shapes));
@@ -228,5 +229,13 @@ public abstract class AbstractNode implements TFType, NamingSequence {
     protected List<TF<? extends TFType, ?>> throwUnsupportedGradientException() {
         throw new UnsupportedOperationException(String.format(
                 "Computation of gradients for %s operation is not supported.", this.getClass().getName()));
+    }
+
+    public Shape getExpectedShape() {
+        return expectedShape;
+    }
+
+    public void setExpectedShape(Shape expectedShape) {
+        this.expectedShape = expectedShape;
     }
 }

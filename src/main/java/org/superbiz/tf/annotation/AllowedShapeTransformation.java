@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AllowedShapeTransformation {
-    private static final Pattern ALLOWED_FORMAT = Pattern.compile("^(?<left>[1N](,[1N])*)->(?<right>[1N])$");
+    private static final Pattern ALLOWED_FORMAT = Pattern.compile("^(?<left>[1N](,[1N])*)->(?<right>[1NC])$");
     private final String[] lefts;
     private final String right;
 

@@ -317,7 +317,7 @@ public class BasicOperation {
             }
             TF<? extends TFType, Float> floatOutput = (TF<? extends TFType, Float>) output;
             TF<Constant, Integer> repeatsCount = qmlContext.constant(values(shape.asInts()));
-            TF<Operation.Tile, Float> tiles = qmlContext.tile(floatOutput, repeatsCount);
+            TF<Operation.Tile, Float> tiles = qmlContext.tile(floatOutput, repeatsCount /* nejak predat shape.asInts() */);
 
             TF<Operation.Divide, Float> result = tiles.divide(qmlContext.constant(value(shape.getSize0().floatValue())));
             return Collections.singletonList(result);

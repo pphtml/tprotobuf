@@ -27,7 +27,7 @@ public class Gradient {
         @Mapping("sourceOperation")
         public final TF<? extends TFType, ?> sourceOperation;
 
-        public <T extends TFType, R extends TFType, NTType> Gradients(TF<T, NTType> sourceOperation, List<TF<Variable, ?>> variables, Attribute[] attributes) {
+        public <T extends TFType, R extends TFType, NTType> Gradients(TF<T, NTType> sourceOperation, List<TF<? extends TFType, ?>> variables, Attribute[] attributes) {
             super(attributes);
             this.sourceOperation = sourceOperation;
             //this.setDType(this.operand.getDType());
@@ -38,7 +38,7 @@ public class Gradient {
             WrappedNode find(String nodeName);
         }
 
-        public <R extends TFType, NTType> List<TF<? extends TFType, ?>> computeGradients(QMLContext qmlContext, TF<R, NTType> operation, List<TF<Variable, ?>> variables) {
+        public <R extends TFType, NTType> List<TF<? extends TFType, ?>> computeGradients(QMLContext qmlContext, TF<R, NTType> operation, List<TF<? extends TFType, ?>> variables) {
             TF<GradientStart, Float> gradientStart = qmlContext.gradientStart(operation.getNode());
             //TF<Constant, Float> gradientStart = qmlContext.constant(values(1.0f), named("gradientStart"));
 
