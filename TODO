@@ -1,7 +1,7 @@
 - poresit shape - porovnat
+- soucet 3 subgradientu
 - napsat testy pro gradienty reduceMean
-- napsat testy pro gradienty square
-- napsat testy pro gradienty minus
+- napsat testy pro gradienty minus - vice gradientu najednou
 -  implementace gradientu plus
 -  implementace gradientu deleno
 - VectorWrapper<Float> result = tf.fetchVectors(gradients);

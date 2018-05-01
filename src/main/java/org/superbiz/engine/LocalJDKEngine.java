@@ -32,6 +32,11 @@ public class LocalJDKEngine extends BaseEngine {
     }
 
     @Override
+    public void inspectAllNodes() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void close() {
     }
 }

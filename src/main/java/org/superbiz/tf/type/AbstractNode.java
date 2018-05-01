@@ -198,7 +198,8 @@ public abstract class AbstractNode implements TFType, NamingSequence {
                     .collect(Collectors.toList());
             Optional<ShapeOperation> shapeOperation = TransformationFinder.findMatching(allowedShapeTransformations, shapes);
             if (!shapeOperation.isPresent()) {
-                throw new IllegalStateException("Missing shape");
+                throw new IllegalStateException(String.format("Shape check failed. Allowed transformations: %s, Input shapes: %s",
+                        allowedShapeTransformations, shapes));
             } else {
                 this.shape = shapeOperation.get().getToShape();
                 this.shapeOperation = shapeOperation.get();

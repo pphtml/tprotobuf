@@ -2,11 +2,7 @@ package org.superbiz.tf;
 
 import org.superbiz.engine.Engine;
 import org.superbiz.tf.attribute.Attribute;
-import org.superbiz.tf.operation.Constant;
-import org.superbiz.tf.operation.Gradient;
-import org.superbiz.tf.operation.Operation;
-import org.superbiz.tf.operation.TileAndShapeOperation;
-import org.superbiz.tf.operation.Variable;
+import org.superbiz.tf.operation.*;
 import org.superbiz.tf.type.*;
 import org.superbiz.tf.util.NamingService;
 //import org.tensorflow.DataType;
@@ -15,10 +11,6 @@ import org.superbiz.tf.util.NamingService;
 //import org.tensorflow.Tensor;
 //import org.tensorflow.framework.GraphDef;
 
-import java.nio.DoubleBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +21,6 @@ import java.util.stream.Collectors;
 //import static com.google.protobuf.TensorContentEncoder.toStringTensorContent; // TODO prehodit
 import static org.superbiz.engine.Engine.DEFAULT_ML_FRAMEWORK;
 import static org.superbiz.engine.Engine.findEngine;
-import static org.superbiz.tf.util.AutoCloseablePriority.priority;
 
 public class QMLContext implements AutoCloseable {
     private static final Logger LOGGER = Logger.getLogger(QMLContext.class.getName());
@@ -141,7 +132,7 @@ public class QMLContext implements AutoCloseable {
     }
 
     public <NTType> NTType fetch(TF<? extends TFType, NTType> node) {
-        return engine.fetch(node.getName());
+        return engine.fetch(node.getOutputNodeName());
     }
 
     public <NTType> VectorWrapper<NTType> fetchVector(String nodeName) {
@@ -149,7 +140,7 @@ public class QMLContext implements AutoCloseable {
     }
 
     public <NTType> VectorWrapper<NTType> fetchVector(TF<? extends TFType, NTType> node) {
-        return fetchVector(node.getName());
+        return fetchVector(node.getOutputNodeName());
     }
 
     public static InitializingOperation zeros(Object shape) {
@@ -417,17 +408,26 @@ public class QMLContext implements AutoCloseable {
     public <R extends TFType, NTType> TF<Gradient.Gradients, NTType> gradient(TF<R, NTType> operation, TF<Variable, ?> variable, Attribute... attributes) {
         List<TF<Variable, ?>> variables = Collections.singletonList(variable);
         Gradient.Gradients gradients = new Gradient.Gradients(operation, variables, attributes);
-        List<TF<? extends TFType, ?>> gradientOps = gradients.computeGradients(this, variables);
+        List<TF<? extends TFType, ?>> gradientOps = gradients.computeGradients(this, operation, variables);
         return (TF<Gradient.Gradients, NTType>) gradientOps.get(0);
     }
 
     public <R extends TFType, NTType> List<TF<Gradient.Gradients, NTType>> gradients(TF<R, NTType> operation, List<TF<Variable, ?>> variables, Attribute... attributes) {
         Gradient.Gradients gradients = new Gradient.Gradients(operation, variables, attributes);
-        List<TF<? extends TFType, ?>> gradientOps = gradients.computeGradients(this, variables);
+        List<TF<? extends TFType, ?>> gradientOps = gradients.computeGradients(this, operation, variables);
         List<TF<Gradient.Gradients, NTType>> result = gradientOps.stream()
                 .map(gradientOp -> ((TF<Gradient.Gradients, NTType>) gradientOp))
                 .collect(Collectors.toList());
 
+        return result;
+    }
+
+    public void inspectAllNodes() {
+        this.engine.inspectAllNodes();
+    }
+
+    public <R extends TFType> TF<GradientStart, Float> gradientStart(R operation, Attribute... attributes) {  // TODO Float -> NTType
+        TF<GradientStart, Float> result = addToGraph(TF.of(GradientStart.of(operation, attributes), this), this);
         return result;
     }
 

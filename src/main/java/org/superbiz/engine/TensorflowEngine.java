@@ -13,10 +13,7 @@ import org.superbiz.tf.annotation.EngineImplementation;
 import org.superbiz.tf.type.TFType;
 import org.superbiz.tf.type.VectorWrapper;
 import org.superbiz.tf.util.NodeFreemarkerVariableReader;
-import org.tensorflow.DataType;
-import org.tensorflow.Graph;
-import org.tensorflow.Session;
-import org.tensorflow.Tensor;
+import org.tensorflow.*;
 import org.tensorflow.framework.GraphDef;
 
 import java.io.IOException;
@@ -25,9 +22,10 @@ import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static org.superbiz.tf.util.AutoCloseablePriority.priority;
 
@@ -185,6 +183,21 @@ public class TensorflowEngine extends BaseEngine{
                 throw new UnsupportedOperationException(String.format("Result type %s is not supported.", result.dataType()));
             }
         }
+    }
+
+    @Override
+    public void inspectAllNodes() {
+        Iterator<Operation> operations = this.graph.operations();
+        StreamSupport.stream(
+                Spliterators.spliteratorUnknownSize(operations, Spliterator.ORDERED), false)
+                .forEach(operation -> {
+                    // System.out.println(String.format("%s", operation));
+                    if (!operation.name().equals("init_0")) {
+                        try (Tensor<?> tensor = session.runner().fetch(operation.name(), 0).run().get(0)) {
+                            System.out.println(String.format("%s - %s", operation, tensor));
+                        }
+                    }
+                });
     }
 
     public <T extends AutoCloseable> T registerAutoCloseable(T autoCloseableSomething) {

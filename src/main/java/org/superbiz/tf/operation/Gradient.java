@@ -1,6 +1,5 @@
 package org.superbiz.tf.operation;
 
-import org.superbiz.engine.TensorflowEngine;
 import org.superbiz.tf.QMLContext;
 import org.superbiz.tf.TF;
 import org.superbiz.tf.annotation.Mapping;
@@ -18,7 +17,6 @@ import java.util.stream.IntStream;
 
 import static java.util.function.Function.identity;
 import static org.superbiz.tf.QMLContext.values;
-import static org.superbiz.tf.attribute.Attribute.named;
 
 public class Gradient {
     private static final Logger LOGGER = Logger.getLogger(Gradient.class.getName());
@@ -40,9 +38,9 @@ public class Gradient {
             WrappedNode find(String nodeName);
         }
 
-        public List<TF<? extends TFType, ?>> computeGradients(QMLContext qmlContext, List<TF<Variable, ?>> variables) {
-            // TODO nejspis delit 1.0f podle poctu output nodes // TODO muze byt vic instanci - konflikt name
-            TF<Constant, Float> gradientStart = qmlContext.constant(values(1.0f), named("gradientStart"));
+        public <R extends TFType, NTType> List<TF<? extends TFType, ?>> computeGradients(QMLContext qmlContext, TF<R, NTType> operation, List<TF<Variable, ?>> variables) {
+            TF<GradientStart, Float> gradientStart = qmlContext.gradientStart(operation.getNode());
+            //TF<Constant, Float> gradientStart = qmlContext.constant(values(1.0f), named("gradientStart"));
 
             Map<String, WrappedNode> mapOfNodes = analyzeOperations(qmlContext);
             OpFinder opFinder = nodeName -> mapOfNodes.get(nodeName);
