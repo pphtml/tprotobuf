@@ -6,6 +6,8 @@ import org.superbiz.tf.annotation.EngineImplementation;
 import org.superbiz.tf.type.TFType;
 import org.superbiz.tf.type.VectorWrapper;
 
+import java.util.Map;
+
 @EngineImplementation(LocalJDKEngine.NAME)
 public class LocalJDKEngine extends BaseEngine {
     public static final String NAME = "LocalJDKEngine";
@@ -22,12 +24,12 @@ public class LocalJDKEngine extends BaseEngine {
     }
 
     @Override
-    public <NTType> NTType fetch(String node) {
+    public <NTType> NTType fetch(String node, Map<String, Object> feedDict) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public <NTType> VectorWrapper<NTType> fetchVector(String nodeName) {
+    public <NTType> VectorWrapper<NTType> fetchVector(String nodeName, Map<String, Object> feedDict) {
         throw new UnsupportedOperationException();
     }
 

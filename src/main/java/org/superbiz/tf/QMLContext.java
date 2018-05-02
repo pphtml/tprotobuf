@@ -14,6 +14,7 @@ import org.superbiz.tf.util.NamingService;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -63,6 +64,12 @@ public class QMLContext implements AutoCloseable {
     public <NTType> TF<Variable, NTType> variable(/*Class<NTType> clazz, */InitializingOperation<NTType> initializingOperation, Attribute... attributes) {
         TF<Variable, NTType> result = addToGraph(TF.of(Variable.of(initializingOperation, attributes), this), this);
         variables.add(result);
+        return result;
+    }
+
+    public <NTType> TF<Placeholder, NTType> placeholder(Class<NTType> type, Attribute... attributes) {
+        TF<Placeholder, NTType> result = addToGraph(TF.of(Placeholder.of(type, attributes), this), this);
+        //variables.add(result);
         return result;
     }
 
@@ -127,20 +134,32 @@ public class QMLContext implements AutoCloseable {
         engine.run(node);
     }
 
-    public <NTType> NTType fetch(String nodeName) {
-        return engine.fetch(nodeName);
+    public <NTType> NTType fetch(String nodeName, Map<String, Object> ...feedDict) {
+        Map<String, Object> feedDictValue = feedDictValue(feedDict);
+        return engine.fetch(nodeName, feedDictValue);
     }
 
-    public <NTType> NTType fetch(TF<? extends TFType, NTType> node) {
-        return engine.fetch(node.getOutputNodeName());
+    public <NTType> NTType fetch(TF<? extends TFType, NTType> node, Map<String, Object> ...feedDict) {
+        return fetch(node.getOutputNodeName(), feedDict);
     }
 
-    public <NTType> VectorWrapper<NTType> fetchVector(String nodeName) {
-        return engine.fetchVector(nodeName);
+    public <NTType> VectorWrapper<NTType> fetchVector(String nodeName, Map<String, Object> ...feedDict) {
+        Map<String, Object> feedDictValue = feedDictValue(feedDict);
+        return engine.fetchVector(nodeName, feedDictValue);
     }
 
-    public <NTType> VectorWrapper<NTType> fetchVector(TF<? extends TFType, NTType> node) {
-        return fetchVector(node.getOutputNodeName());
+    private Map<String,Object> feedDictValue(Map<String,Object>[] feedDict) {
+        if (feedDict.length == 0) {
+            return null;
+        } else if (feedDict.length == 1) {
+            return feedDict[0];
+        } else {
+            throw new IllegalStateException("Merging of multiple Feed Dictionaries is not supported yet");
+        }
+    }
+
+    public <NTType> VectorWrapper<NTType> fetchVector(TF<? extends TFType, NTType> node, Map<String, Object> ...feedDict) {
+        return fetchVector(node.getOutputNodeName(), feedDict);
     }
 
     public static InitializingOperation zeros(Object shape) {

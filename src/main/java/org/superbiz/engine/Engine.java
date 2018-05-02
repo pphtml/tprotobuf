@@ -7,6 +7,7 @@ import org.superbiz.tf.type.VectorWrapper;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public interface Engine extends AutoCloseable {
     String DEFAULT_ML_FRAMEWORK = "TFEngine";
@@ -24,9 +25,9 @@ public interface Engine extends AutoCloseable {
 
     <NTType> void run(TF<? extends TFType, NTType> node);
 
-    <NTType> NTType fetch(String nodeName);
+    <NTType> NTType fetch(String nodeName, Map<String, Object> feedDict);
 
-    <NTType> VectorWrapper<NTType> fetchVector(String nodeName);
+    <NTType> VectorWrapper<NTType> fetchVector(String nodeName, Map<String, Object> feedDict);
 
     List<TF<? extends TFType, ?>> getNodes();
 

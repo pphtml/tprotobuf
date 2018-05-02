@@ -1,13 +1,11 @@
 package org.superbiz.tf.type;
 
-import com.google.common.primitives.Ints;
-
 import java.util.Arrays;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Shape {
     public static final Shape SCALAR = new Shape(new Integer[]{});
+    public static final Shape UNKNOWN = new Shape(new Integer[]{-1});
     private final Integer[] sizes;
 
     private Shape(Integer[] sizes) {

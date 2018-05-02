@@ -27,9 +27,7 @@ public class TileAndShapeOperation {
             "  }\n" +
             "}\n")
     @NamePrefix("tile")
-    //@ShapeTransformations({@ShapeTransformation("1,1->1"), @ShapeTransformation("1,N->N"), @ShapeTransformation("N,1->N"), })
-    @ShapeTransformation("1,1->C")
-    // @ShapeTransformation("N,N->N")
+    @ShapeTransformations({@ShapeTransformation("1,N->U"), @ShapeTransformation("N,N->U"), })
     public static class Tile extends AbstractNode implements TFType, NamingSequence {
         @TFInput
         @Mapping("source")
@@ -43,7 +41,7 @@ public class TileAndShapeOperation {
             this.source = source;
             this.multiples = multiples;
             this.setDType(this.source.getDType());
-            this.setExpectedShape(null);
+            //this.setShape(null);
             super.postInit();
         }
     }

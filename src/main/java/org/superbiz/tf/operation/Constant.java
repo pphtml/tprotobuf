@@ -17,7 +17,6 @@ import java.util.List;
 
 @NamePrefix("const")
 @Template("constant-from-constant.pb.ftl")
-//@OutputNodePostfix("/read")
 public class Constant extends AbstractNode implements TFType, NamingSequence {
 
     private final InitializingOperation initializingOperation;

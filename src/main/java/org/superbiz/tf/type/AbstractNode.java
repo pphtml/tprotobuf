@@ -25,7 +25,7 @@ public abstract class AbstractNode implements TFType, NamingSequence {
     final Attribute[] attributes;
     private DType dType;
     private Shape shape;
-    private Shape expectedShape; // for ->C operations
+    // private Shape expectedShape; // for ->C operations
     private static final Map<Class, ClassMetadata> ANNOTATIONS_CACHE = new HashMap<>();
     private ShapeOperation shapeOperation;
 
@@ -183,7 +183,7 @@ public abstract class AbstractNode implements TFType, NamingSequence {
 
     protected void postInit() {
         List<TFType> inputs = getInputs();
-        checkAndSetShape(inputs, expectedShape);
+        checkAndSetShape(inputs, shape);
     }
 
     private void checkAndSetShape(List<TFType> inputs, Shape customShape) {
@@ -230,12 +230,12 @@ public abstract class AbstractNode implements TFType, NamingSequence {
         throw new UnsupportedOperationException(String.format(
                 "Computation of gradients for %s operation is not supported.", this.getClass().getName()));
     }
-
-    public Shape getExpectedShape() {
-        return expectedShape;
-    }
-
-    public void setExpectedShape(Shape expectedShape) {
-        this.expectedShape = expectedShape;
-    }
+//
+//    public Shape getExpectedShape() {
+//        return expectedShape;
+//    }
+//
+//    public void setExpectedShape(Shape expectedShape) {
+//        this.expectedShape = expectedShape;
+//    }
 }

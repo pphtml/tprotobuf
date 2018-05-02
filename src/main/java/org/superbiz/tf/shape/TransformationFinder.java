@@ -25,13 +25,17 @@ public class TransformationFinder {
                 })
                 .map(transformation -> {
                     String right = transformation.getRight();
-                    if ("C".equals(right)) {
-                        if (customShape == null) {
-                            throw new IllegalStateException("Custom shape is expected to be set for ->C transformation");
-                        }
-                        return ShapeOperation.of(shapes, customShape);
+                    if ("U".equals(right)) {
+                        return ShapeOperation.of(shapes, Shape.UNKNOWN);
                     }
 
+//                    if ("C".equals(right)) {
+//                        if (customShape == null) {
+//                            throw new IllegalStateException("Custom shape is expected to be set for ->C transformation");
+//                        }
+//                        return ShapeOperation.of(shapes, customShape);
+//                    }
+//
                     if ("1".equals(right)) {
                         return ShapeOperation.of(shapes, Shape.SCALAR);
                     }

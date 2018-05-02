@@ -24,6 +24,7 @@ import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -103,7 +104,7 @@ public class TensorflowEngine extends BaseEngine{
             for (TF<?, ?> node : this.getNodes()) {
                 makeFromTemplate(node);
             }
-            // System.out.println(graphBuilder); // graph out
+            System.out.println(graphBuilder); // graph out
 
             byte[] bytes = graphBuilder.build().toByteArray();
             this.graph = new Graph();
@@ -142,7 +143,7 @@ public class TensorflowEngine extends BaseEngine{
     }
 
     @Override
-    public <NTType> NTType fetch(String nodeName) {
+    public <NTType> NTType fetch(String nodeName, Map<String, Object> feedDict) { // TODO doimlementovat
         Session session = this.getSession();
         try (Tensor<?> result = session.runner().fetch(nodeName, 0).run().get(0)) {
             if (result.dataType().equals(DataType.FLOAT)) {
@@ -160,9 +161,20 @@ public class TensorflowEngine extends BaseEngine{
     }
 
     @Override
-    public <NTType> VectorWrapper<NTType> fetchVector(String nodeName) {
+    public <NTType> VectorWrapper<NTType> fetchVector(String nodeName, Map<String, Object> feedDict) {
         Session session = this.getSession();
-        try (Tensor<?> result = session.runner().fetch(nodeName, 0).run().get(0)) {
+        Map<String, Tensor> feedData = Collections.emptyMap();
+
+        if (feedDict != null) {
+            feedData = feedDict.entrySet().stream()
+                    .map(entry -> TensorPair.of(entry.getKey(), entry.getValue()))
+                    .collect(Collectors.toMap(TensorPair::getKey, TensorPair::getTensor));
+        }
+        final Session.Runner runner = session.runner();
+        feedData.entrySet().forEach(tensorEntry -> {
+            runner.feed(tensorEntry.getKey(), tensorEntry.getValue());
+        });
+        try (Tensor<?> result = runner.fetch(nodeName, 0).run().get(0)) {
             if (result.dataType().equals(DataType.FLOAT)) {
                 FloatBuffer floatBuffer = FloatBuffer.allocate(result.numElements());
                 result.writeTo(floatBuffer);
@@ -182,6 +194,14 @@ public class TensorflowEngine extends BaseEngine{
             } else {
                 throw new UnsupportedOperationException(String.format("Result type %s is not supported.", result.dataType()));
             }
+        } finally {
+            feedData.values().forEach(tensor -> {
+                try {
+                    tensor.close();
+                } catch (Exception throwable) {
+                    throwable.printStackTrace();
+                }
+            });
         }
     }
 
@@ -191,7 +211,6 @@ public class TensorflowEngine extends BaseEngine{
         StreamSupport.stream(
                 Spliterators.spliteratorUnknownSize(operations, Spliterator.ORDERED), false)
                 .forEach(operation -> {
-                    // System.out.println(String.format("%s", operation));
                     if (!operation.name().equals("init_0")) {
                         try (Tensor<?> tensor = session.runner().fetch(operation.name(), 0).run().get(0)) {
                             System.out.println(String.format("%s - %s", operation, tensor));
@@ -217,5 +236,33 @@ public class TensorflowEngine extends BaseEngine{
                         e.printStackTrace();
                     }
                 });
+    }
+
+    private static class TensorPair implements AutoCloseable {
+        private final String key;
+        private final Tensor tensor;
+
+        public TensorPair(String key, Tensor tensor) {
+            this.key = key;
+            this.tensor = tensor;
+        }
+
+        public static TensorPair of(String key, Object value) {
+            Tensor tensor = Tensor.create(value);
+            return new TensorPair(key, tensor);
+        }
+
+        @Override
+        public void close() throws Exception {
+            this.tensor.close();
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public Tensor getTensor() {
+            return tensor;
+        }
     }
 }
