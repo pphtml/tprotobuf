@@ -1,6 +1,4 @@
-- placeholder - priklad - linear-regression-reduceMean
 - poresit shape - porovnat
-- this.setIshape(initializingOperation.getShape()); - pro variable
 - soucet 3 subgradientu
 - napsat testy pro gradienty reduceMean
 - napsat testy pro gradienty minus - vice gradientu najednou

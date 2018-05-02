@@ -22,9 +22,9 @@ public interface TFType {
 
     List<TFType> getInputs();
 
-//    Shape getShape();
-//
-//    ShapeOperation getShapeOperation();
+    Shape getShape();
+
+    ShapeOperation getShapeOperation();
 
     List<TF<? extends TFType, ?>> createGradientOp(QMLContext qmlContext, TF<? extends TFType, ?> output);
 }

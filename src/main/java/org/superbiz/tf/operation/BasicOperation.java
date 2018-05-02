@@ -308,20 +308,20 @@ public class BasicOperation {
             super.postInit();
         }
 
-//        @Override
-//        public List<TF<? extends TFType, ?>> createGradientOp(QMLContext qmlContext, TF<? extends TFType, ?> output) {
-////            ShapeOperation shapeOperation = this.getShapeOperation();
-////            Shape shape = shapeOperation.getTheOnlyFromShape();
-////            if (shape.dimensions() != 1) {
-////                throw new UnsupportedOperationException("Gradient for ReduceMean is not supported for bigger dimensions than 1D.");
-////            }
-//            TF<? extends TFType, Float> floatOutput = (TF<? extends TFType, Float>) output;
-//            TF<Constant, Integer> repeatsCount = qmlContext.constant(values(shape.asInts()));
-//            TF<Operation.Tile, Float> tiles = qmlContext.tile(floatOutput, repeatsCount /* nejak predat shape.asInts() */);
-//
-//            TF<Operation.Divide, Float> result = tiles.divide(qmlContext.constant(value(shape.getSize0().floatValue())));
-//            return Collections.singletonList(result);
-//        }
+        @Override
+        public List<TF<? extends TFType, ?>> createGradientOp(QMLContext qmlContext, TF<? extends TFType, ?> output) {
+            ShapeOperation shapeOperation = this.getShapeOperation();
+            Shape shape = shapeOperation.getTheOnlyFromShape();
+            if (shape.dimensions() != 1) {
+                throw new UnsupportedOperationException("Gradient for ReduceMean is not supported for bigger dimensions than 1D.");
+            }
+            TF<? extends TFType, Float> floatOutput = (TF<? extends TFType, Float>) output;
+            TF<Constant, Integer> repeatsCount = qmlContext.constant(values(shape.asInts()));
+            TF<Operation.Tile, Float> tiles = qmlContext.tile(floatOutput, repeatsCount /* nejak predat shape.asInts() */);
+
+            TF<Operation.Divide, Float> result = tiles.divide(qmlContext.constant(value(shape.getSize0().floatValue())));
+            return Collections.singletonList(result);
+        }
     }
 
     @TemplateInline("node {\n" +
