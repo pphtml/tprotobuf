@@ -3,7 +3,6 @@ package org.superbiz.tf.annotation;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import org.superbiz.tf.type.AbstractNode;
-import org.superbiz.tf.type.Shape;
 import org.superbiz.util.ClasspathResource;
 
 import java.io.IOException;
@@ -14,17 +13,18 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ClassMetadata {
+    private static final String TEMPLATE_FOLDER = "qml/template/";
     private Map<String, FieldOrMethod> mappings = new HashMap<>();
     private Map<String, Field> tfInputs = new LinkedHashMap<>();
     private String namePrefix;
     private String templateText;
     private String outputNodePostfix;
     private List<AllowedShapeTransformation> allowedShapeTransformations = new ArrayList<>();
+    private String templateGradient;
 
     public Map<String, FieldOrMethod> getMappings() {
         return mappings;
@@ -76,16 +76,14 @@ public class ClassMetadata {
             }
         }
 
+        GradientTemplate gradientTemplateLocation = aClass.getAnnotation(GradientTemplate.class);
+        if (gradientTemplateLocation != null) {
+            result.templateGradient = readTemplateFromClasspath(gradientTemplateLocation.value(), aClass);
+        }
+
         Template templateLocation = aClass.getAnnotation(Template.class);
         if (templateLocation != null) {
-            String templateName = "qml/template/" + templateLocation.value();
-            ClasspathResource resource = ClasspathResource.of(templateName);
-            try {
-                result.templateText = Resources.toString(resource.getUrl(), Charsets.UTF_8);
-            } catch (IOException e) {
-                throw new IllegalArgumentException(String.format("Cannot read template for class %s", aClass.getName()));
-            }
-
+            result.templateText = readTemplateFromClasspath(templateLocation.value(), aClass);
         } else if (aClass.getAnnotation(TemplateInline.class) != null) {
             result.templateText = aClass.getAnnotation(TemplateInline.class).value();
         } else if (aClass.getSuperclass().getAnnotation(TemplateInline.class) != null) {
@@ -111,6 +109,16 @@ public class ClassMetadata {
         }
 
         return result;
+    }
+
+    private static String readTemplateFromClasspath(String location, Class<?> aClass) {
+        String templateName = TEMPLATE_FOLDER + location;
+        ClasspathResource resource = ClasspathResource.of(templateName);
+        try {
+            return Resources.toString(resource.getUrl(), Charsets.UTF_8);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(String.format("Cannot read template for class %s", aClass.getName()));
+        }
     }
 
     public String getTemplateText() {

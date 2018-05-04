@@ -294,6 +294,7 @@ public class BasicOperation {
             "    }\n" +
             "  }\n" +
             "}\n")
+    @GradientTemplate("reduce-mean.gradient.pb.ftl")
     @NamePrefix("square")
     @ShapeTransformation("N->1")
     public static class ReduceMean extends AbstractNode implements TFType, NamingSequence {
